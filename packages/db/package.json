@@ -1,0 +1,1 @@
+{ "name": "@tecnio/db", "private": true, "main": "database.types.ts" }

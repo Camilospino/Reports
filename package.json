@@ -1,0 +1,12 @@
+{
+  "name": "tecnio",
+  "private": true,
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "dev:web": "npm run dev -w web",
+    "db:start": "npx supabase start",
+    "db:stop": "npx supabase stop",
+    "db:reset": "npx supabase db reset",
+    "db:types": "npx supabase gen types typescript --local > packages/db/database.types.ts"
+  }
+}
