@@ -23,16 +23,42 @@ export type Database = {
           }
         },"public": {
           Tables: {
-            "assets": {
+            "absences": {
                   Row: {
-                    "brand": string | null,"company_id": string,"created_at": string,"id": string,"kind": string,"model": string | null,"serial": string | null,"site_id": string
+                    "company_id": string,"created_at": string,"ends_at": string,"id": string,"reason": string,"starts_at": string,"technician_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "brand"?: string | null,"company_id"?: string,"created_at"?: string,"id"?: string,"kind": string,"model"?: string | null,"serial"?: string | null,"site_id": string
+                    "company_id": string,"created_at"?: string,"ends_at": string,"id"?: string,"reason"?: string,"starts_at": string,"technician_id": string
                   }
                   Update: {
-                    "brand"?: string | null,"company_id"?: string,"created_at"?: string,"id"?: string,"kind"?: string,"model"?: string | null,"serial"?: string | null,"site_id"?: string
+                    "company_id"?: string,"created_at"?: string,"ends_at"?: string,"id"?: string,"reason"?: string,"starts_at"?: string,"technician_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "absences_company_id_fkey"
+      columns: ["company_id"]
+isOneToOne: false
+      referencedRelation: "companies"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "absences_company_id_technician_id_fkey"
+      columns: ["company_id","technician_id"]
+isOneToOne: false
+      referencedRelation: "memberships"
+      referencedColumns: ["company_id","id"]
+    }
+                  ]
+                },"assets": {
+                  Row: {
+                    "brand": string | null,"company_id": string,"created_at": string,"id": string,"model": string | null,"serial": string | null,"site_id": string,"type": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "brand"?: string | null,"company_id": string,"created_at"?: string,"id"?: string,"model"?: string | null,"serial"?: string | null,"site_id": string,"type": string
+                  }
+                  Update: {
+                    "brand"?: string | null,"company_id"?: string,"created_at"?: string,"id"?: string,"model"?: string | null,"serial"?: string | null,"site_id"?: string,"type"?: string
                   }
                   Relationships: [
                     {
@@ -42,23 +68,23 @@ isOneToOne: false
       referencedRelation: "companies"
       referencedColumns: ["id"]
     },{
-      foreignKeyName: "assets_site_id_fkey"
-      columns: ["site_id"]
+      foreignKeyName: "assets_company_id_site_id_fkey"
+      columns: ["company_id","site_id"]
 isOneToOne: false
       referencedRelation: "sites"
-      referencedColumns: ["id"]
+      referencedColumns: ["company_id","id"]
     }
                   ]
                 },"attachments": {
                   Row: {
-                    "company_id": string,"created_at": string,"id": string,"kind": Database["public"]['Enums']["attachment_kind"],"storage_path": string,"work_order_id": string
+                    "caption": string | null,"company_id": string,"created_at": string,"id": string,"kind": Database["public"]['Enums']["attachment_kind"],"storage_path": string,"uploaded_by": string | null,"work_order_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "company_id"?: string,"created_at"?: string,"id"?: string,"kind": Database["public"]['Enums']["attachment_kind"],"storage_path": string,"work_order_id": string
+                    "caption"?: string | null,"company_id": string,"created_at"?: string,"id"?: string,"kind": Database["public"]['Enums']["attachment_kind"],"storage_path": string,"uploaded_by"?: string | null,"work_order_id": string
                   }
                   Update: {
-                    "company_id"?: string,"created_at"?: string,"id"?: string,"kind"?: Database["public"]['Enums']["attachment_kind"],"storage_path"?: string,"work_order_id"?: string
+                    "caption"?: string | null,"company_id"?: string,"created_at"?: string,"id"?: string,"kind"?: Database["public"]['Enums']["attachment_kind"],"storage_path"?: string,"uploaded_by"?: string | null,"work_order_id"?: string
                   }
                   Relationships: [
                     {
@@ -68,37 +94,37 @@ isOneToOne: false
       referencedRelation: "companies"
       referencedColumns: ["id"]
     },{
-      foreignKeyName: "attachments_work_order_id_fkey"
-      columns: ["work_order_id"]
+      foreignKeyName: "attachments_company_id_work_order_id_fkey"
+      columns: ["company_id","work_order_id"]
 isOneToOne: false
       referencedRelation: "work_orders"
-      referencedColumns: ["id"]
+      referencedColumns: ["company_id","id"]
     }
                   ]
                 },"companies": {
                   Row: {
-                    "created_at": string,"id": string,"logo_url": string | null,"name": string,"nit": string | null,"plan": string,"subscription_status": Database["public"]['Enums']["subscription_status"],"trial_ends_at": string
+                    "created_at": string,"id": string,"logo_url": string | null,"name": string,"nit": string | null,"payment_account_holder": string | null,"payment_account_number": string | null,"payment_account_type": string | null,"payment_bank": string | null,"payment_holder_id": string | null,"payment_nequi": string | null,"payment_notes": string | null,"phone": string | null,"plan": string,"subscription_status": string,"trial_ends_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"id"?: string,"logo_url"?: string | null,"name": string,"nit"?: string | null,"plan"?: string,"subscription_status"?: Database["public"]['Enums']["subscription_status"],"trial_ends_at"?: string
+                    "created_at"?: string,"id"?: string,"logo_url"?: string | null,"name": string,"nit"?: string | null,"payment_account_holder"?: string | null,"payment_account_number"?: string | null,"payment_account_type"?: string | null,"payment_bank"?: string | null,"payment_holder_id"?: string | null,"payment_nequi"?: string | null,"payment_notes"?: string | null,"phone"?: string | null,"plan"?: string,"subscription_status"?: string,"trial_ends_at"?: string
                   }
                   Update: {
-                    "created_at"?: string,"id"?: string,"logo_url"?: string | null,"name"?: string,"nit"?: string | null,"plan"?: string,"subscription_status"?: Database["public"]['Enums']["subscription_status"],"trial_ends_at"?: string
+                    "created_at"?: string,"id"?: string,"logo_url"?: string | null,"name"?: string,"nit"?: string | null,"payment_account_holder"?: string | null,"payment_account_number"?: string | null,"payment_account_type"?: string | null,"payment_bank"?: string | null,"payment_holder_id"?: string | null,"payment_nequi"?: string | null,"payment_notes"?: string | null,"phone"?: string | null,"plan"?: string,"subscription_status"?: string,"trial_ends_at"?: string
                   }
                   Relationships: [
                     
                   ]
                 },"company_counters": {
                   Row: {
-                    "company_id": string,"last_value": number,"name": string
+                    "company_id": string,"kind": string,"last_value": number
                   }
                   ComputedFields: never
                   Insert: {
-                    "company_id": string,"last_value"?: number,"name": string
+                    "company_id": string,"kind": string,"last_value": number
                   }
                   Update: {
-                    "company_id"?: string,"last_value"?: number,"name"?: string
+                    "company_id"?: string,"kind"?: string,"last_value"?: number
                   }
                   Relationships: [
                     {
@@ -111,14 +137,14 @@ isOneToOne: false
                   ]
                 },"customers": {
                   Row: {
-                    "company_id": string,"created_at": string,"data_consent_at": string | null,"document_id": string | null,"email": string | null,"id": string,"name": string,"whatsapp": string | null
+                    "company_id": string,"contact_name": string | null,"created_at": string,"email": string | null,"id": string,"name": string,"notes": string | null,"phone_whatsapp": string | null,"tax_id": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "company_id"?: string,"created_at"?: string,"data_consent_at"?: string | null,"document_id"?: string | null,"email"?: string | null,"id"?: string,"name": string,"whatsapp"?: string | null
+                    "company_id": string,"contact_name"?: string | null,"created_at"?: string,"email"?: string | null,"id"?: string,"name": string,"notes"?: string | null,"phone_whatsapp"?: string | null,"tax_id"?: string | null
                   }
                   Update: {
-                    "company_id"?: string,"created_at"?: string,"data_consent_at"?: string | null,"document_id"?: string | null,"email"?: string | null,"id"?: string,"name"?: string,"whatsapp"?: string | null
+                    "company_id"?: string,"contact_name"?: string | null,"created_at"?: string,"email"?: string | null,"id"?: string,"name"?: string,"notes"?: string | null,"phone_whatsapp"?: string | null,"tax_id"?: string | null
                   }
                   Relationships: [
                     {
@@ -131,14 +157,14 @@ isOneToOne: false
                   ]
                 },"materials": {
                   Row: {
-                    "active": boolean,"company_id": string,"created_at": string,"id": string,"name": string,"price": number,"unit": string
+                    "active": boolean,"company_id": string,"created_at": string,"id": string,"min_stock": number,"name": string,"sku": string | null,"stock": number,"track_stock": boolean,"unit": string,"unit_price": number
                   }
                   ComputedFields: never
                   Insert: {
-                    "active"?: boolean,"company_id"?: string,"created_at"?: string,"id"?: string,"name": string,"price"?: number,"unit"?: string
+                    "active"?: boolean,"company_id": string,"created_at"?: string,"id"?: string,"min_stock"?: number,"name": string,"sku"?: string | null,"stock"?: number,"track_stock"?: boolean,"unit"?: string,"unit_price"?: number
                   }
                   Update: {
-                    "active"?: boolean,"company_id"?: string,"created_at"?: string,"id"?: string,"name"?: string,"price"?: number,"unit"?: string
+                    "active"?: boolean,"company_id"?: string,"created_at"?: string,"id"?: string,"min_stock"?: number,"name"?: string,"sku"?: string | null,"stock"?: number,"track_stock"?: boolean,"unit"?: string,"unit_price"?: number
                   }
                   Relationships: [
                     {
@@ -149,132 +175,68 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
-                },"messages": {
+                },"memberships": {
                   Row: {
-                    "channel": Database["public"]['Enums']["message_channel"],"company_id": string,"cost_usd": number,"created_at": string,"id": string,"status": Database["public"]['Enums']["message_status"],"template": string,"work_order_id": string | null
+                    "active": boolean,"company_id": string,"created_at": string,"full_name": string,"id": string,"phone": string | null,"role": Database["public"]['Enums']["member_role"],"skills": (string)[],"user_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "channel": Database["public"]['Enums']["message_channel"],"company_id"?: string,"cost_usd"?: number,"created_at"?: string,"id"?: string,"status"?: Database["public"]['Enums']["message_status"],"template": string,"work_order_id"?: string | null
+                    "active"?: boolean,"company_id": string,"created_at"?: string,"full_name": string,"id"?: string,"phone"?: string | null,"role": Database["public"]['Enums']["member_role"],"skills"?: (string)[],"user_id": string
                   }
                   Update: {
-                    "channel"?: Database["public"]['Enums']["message_channel"],"company_id"?: string,"cost_usd"?: number,"created_at"?: string,"id"?: string,"status"?: Database["public"]['Enums']["message_status"],"template"?: string,"work_order_id"?: string | null
+                    "active"?: boolean,"company_id"?: string,"created_at"?: string,"full_name"?: string,"id"?: string,"phone"?: string | null,"role"?: Database["public"]['Enums']["member_role"],"skills"?: (string)[],"user_id"?: string
                   }
                   Relationships: [
                     {
-      foreignKeyName: "messages_company_id_fkey"
+      foreignKeyName: "memberships_company_id_fkey"
       columns: ["company_id"]
 isOneToOne: false
       referencedRelation: "companies"
-      referencedColumns: ["id"]
-    },{
-      foreignKeyName: "messages_work_order_id_fkey"
-      columns: ["work_order_id"]
-isOneToOne: false
-      referencedRelation: "work_orders"
-      referencedColumns: ["id"]
-    }
-                  ]
-                },"profiles": {
-                  Row: {
-                    "active": boolean,"company_id": string,"created_at": string,"full_name": string,"id": string,"phone": string | null,"role": Database["public"]['Enums']["user_role"]
-                  }
-                  ComputedFields: never
-                  Insert: {
-                    "active"?: boolean,"company_id": string,"created_at"?: string,"full_name": string,"id": string,"phone"?: string | null,"role"?: Database["public"]['Enums']["user_role"]
-                  }
-                  Update: {
-                    "active"?: boolean,"company_id"?: string,"created_at"?: string,"full_name"?: string,"id"?: string,"phone"?: string | null,"role"?: Database["public"]['Enums']["user_role"]
-                  }
-                  Relationships: [
-                    {
-      foreignKeyName: "profiles_company_id_fkey"
-      columns: ["company_id"]
-isOneToOne: false
-      referencedRelation: "companies"
-      referencedColumns: ["id"]
-    }
-                  ]
-                },"quote_items": {
-                  Row: {
-                    "company_id": string,"description": string,"id": string,"kind": Database["public"]['Enums']["item_kind"],"material_id": string | null,"quantity": number,"quote_id": string,"unit_price": number
-                  }
-                  ComputedFields: never
-                  Insert: {
-                    "company_id"?: string,"description": string,"id"?: string,"kind": Database["public"]['Enums']["item_kind"],"material_id"?: string | null,"quantity"?: number,"quote_id": string,"unit_price"?: number
-                  }
-                  Update: {
-                    "company_id"?: string,"description"?: string,"id"?: string,"kind"?: Database["public"]['Enums']["item_kind"],"material_id"?: string | null,"quantity"?: number,"quote_id"?: string,"unit_price"?: number
-                  }
-                  Relationships: [
-                    {
-      foreignKeyName: "quote_items_company_id_fkey"
-      columns: ["company_id"]
-isOneToOne: false
-      referencedRelation: "companies"
-      referencedColumns: ["id"]
-    },{
-      foreignKeyName: "quote_items_material_id_fkey"
-      columns: ["material_id"]
-isOneToOne: false
-      referencedRelation: "materials"
-      referencedColumns: ["id"]
-    },{
-      foreignKeyName: "quote_items_quote_id_fkey"
-      columns: ["quote_id"]
-isOneToOne: false
-      referencedRelation: "quotes"
       referencedColumns: ["id"]
     }
                   ]
                 },"quotes": {
                   Row: {
-                    "company_id": string,"created_at": string,"customer_id": string,"id": string,"number": number,"site_id": string | null,"status": Database["public"]['Enums']["quote_status"],"total": number,"valid_until": string | null,"work_order_id": string | null
+                    "company_id": string,"created_at": string,"customer_id": string,"id": string,"items": NonNullable<Json>,"notes": string | null,"number": number,"public_token": string,"sent_at": string | null,"status": Database["public"]['Enums']["quote_status"],"total": number,"valid_until": string | null,"work_order_id": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "company_id"?: string,"created_at"?: string,"customer_id": string,"id"?: string,"number": number,"site_id"?: string | null,"status"?: Database["public"]['Enums']["quote_status"],"total"?: number,"valid_until"?: string | null,"work_order_id"?: string | null
+                    "company_id": string,"created_at"?: string,"customer_id": string,"id"?: string,"items"?: NonNullable<Json>,"notes"?: string | null,"number"?: number,"public_token"?: string,"sent_at"?: string | null,"status"?: Database["public"]['Enums']["quote_status"],"total"?: number,"valid_until"?: string | null,"work_order_id"?: string | null
                   }
                   Update: {
-                    "company_id"?: string,"created_at"?: string,"customer_id"?: string,"id"?: string,"number"?: number,"site_id"?: string | null,"status"?: Database["public"]['Enums']["quote_status"],"total"?: number,"valid_until"?: string | null,"work_order_id"?: string | null
+                    "company_id"?: string,"created_at"?: string,"customer_id"?: string,"id"?: string,"items"?: NonNullable<Json>,"notes"?: string | null,"number"?: number,"public_token"?: string,"sent_at"?: string | null,"status"?: Database["public"]['Enums']["quote_status"],"total"?: number,"valid_until"?: string | null,"work_order_id"?: string | null
                   }
                   Relationships: [
                     {
+      foreignKeyName: "quotes_company_id_customer_id_fkey"
+      columns: ["company_id","customer_id"]
+isOneToOne: false
+      referencedRelation: "customers"
+      referencedColumns: ["company_id","id"]
+    },{
       foreignKeyName: "quotes_company_id_fkey"
       columns: ["company_id"]
 isOneToOne: false
       referencedRelation: "companies"
       referencedColumns: ["id"]
     },{
-      foreignKeyName: "quotes_customer_id_fkey"
-      columns: ["customer_id"]
-isOneToOne: false
-      referencedRelation: "customers"
-      referencedColumns: ["id"]
-    },{
-      foreignKeyName: "quotes_site_id_fkey"
-      columns: ["site_id"]
-isOneToOne: false
-      referencedRelation: "sites"
-      referencedColumns: ["id"]
-    },{
-      foreignKeyName: "quotes_work_order_id_fkey"
-      columns: ["work_order_id"]
+      foreignKeyName: "quotes_company_id_work_order_id_fkey"
+      columns: ["company_id","work_order_id"]
 isOneToOne: false
       referencedRelation: "work_orders"
-      referencedColumns: ["id"]
+      referencedColumns: ["company_id","id"]
     }
                   ]
                 },"service_types": {
                   Row: {
-                    "checklist": NonNullable<Json>,"company_id": string,"created_at": string,"estimated_minutes": number,"id": string,"name": string
+                    "active": boolean,"checklist": NonNullable<Json>,"company_id": string,"created_at": string,"estimated_minutes": number,"id": string,"name": string,"skill": string | null,"warranty_months": number | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "checklist"?: NonNullable<Json>,"company_id"?: string,"created_at"?: string,"estimated_minutes"?: number,"id"?: string,"name": string
+                    "active"?: boolean,"checklist"?: NonNullable<Json>,"company_id": string,"created_at"?: string,"estimated_minutes"?: number,"id"?: string,"name": string,"skill"?: string | null,"warranty_months"?: number | null
                   }
                   Update: {
-                    "checklist"?: NonNullable<Json>,"company_id"?: string,"created_at"?: string,"estimated_minutes"?: number,"id"?: string,"name"?: string
+                    "active"?: boolean,"checklist"?: NonNullable<Json>,"company_id"?: string,"created_at"?: string,"estimated_minutes"?: number,"id"?: string,"name"?: string,"skill"?: string | null,"warranty_months"?: number | null
                   }
                   Relationships: [
                     {
@@ -287,40 +249,72 @@ isOneToOne: false
                   ]
                 },"sites": {
                   Row: {
-                    "access_notes": string | null,"address": string,"company_id": string,"created_at": string,"customer_id": string,"id": string,"lat": number | null,"lng": number | null
+                    "access_notes": string | null,"address": string,"city": string | null,"company_id": string,"created_at": string,"customer_id": string,"id": string,"lat": number | null,"lng": number | null,"neighborhood": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "access_notes"?: string | null,"address": string,"company_id"?: string,"created_at"?: string,"customer_id": string,"id"?: string,"lat"?: number | null,"lng"?: number | null
+                    "access_notes"?: string | null,"address": string,"city"?: string | null,"company_id": string,"created_at"?: string,"customer_id": string,"id"?: string,"lat"?: number | null,"lng"?: number | null,"neighborhood"?: string | null
                   }
                   Update: {
-                    "access_notes"?: string | null,"address"?: string,"company_id"?: string,"created_at"?: string,"customer_id"?: string,"id"?: string,"lat"?: number | null,"lng"?: number | null
+                    "access_notes"?: string | null,"address"?: string,"city"?: string | null,"company_id"?: string,"created_at"?: string,"customer_id"?: string,"id"?: string,"lat"?: number | null,"lng"?: number | null,"neighborhood"?: string | null
                   }
                   Relationships: [
                     {
+      foreignKeyName: "sites_company_id_customer_id_fkey"
+      columns: ["company_id","customer_id"]
+isOneToOne: false
+      referencedRelation: "customers"
+      referencedColumns: ["company_id","id"]
+    },{
       foreignKeyName: "sites_company_id_fkey"
       columns: ["company_id"]
 isOneToOne: false
       referencedRelation: "companies"
       referencedColumns: ["id"]
-    },{
-      foreignKeyName: "sites_customer_id_fkey"
-      columns: ["customer_id"]
+    }
+                  ]
+                },"stock_movements": {
+                  Row: {
+                    "company_id": string,"created_at": string,"delta": number,"id": string,"material_id": string,"reason": string,"stock_after": number,"user_id": string | null,"work_order_id": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "company_id": string,"created_at"?: string,"delta": number,"id"?: string,"material_id": string,"reason": string,"stock_after": number,"user_id"?: string | null,"work_order_id"?: string | null
+                  }
+                  Update: {
+                    "company_id"?: string,"created_at"?: string,"delta"?: number,"id"?: string,"material_id"?: string,"reason"?: string,"stock_after"?: number,"user_id"?: string | null,"work_order_id"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "stock_movements_company_id_fkey"
+      columns: ["company_id"]
 isOneToOne: false
-      referencedRelation: "customers"
+      referencedRelation: "companies"
       referencedColumns: ["id"]
+    },{
+      foreignKeyName: "stock_movements_company_id_material_id_fkey"
+      columns: ["company_id","material_id"]
+isOneToOne: false
+      referencedRelation: "materials"
+      referencedColumns: ["company_id","id"]
+    },{
+      foreignKeyName: "stock_movements_company_id_work_order_id_fkey"
+      columns: ["company_id","work_order_id"]
+isOneToOne: false
+      referencedRelation: "work_orders"
+      referencedColumns: ["company_id","id"]
     }
                   ]
                 },"work_order_events": {
                   Row: {
-                    "company_id": string,"created_at": string,"data": NonNullable<Json>,"id": string,"kind": string,"lat": number | null,"lng": number | null,"user_id": string | null,"work_order_id": string
+                    "company_id": string,"created_at": string,"id": string,"lat": number | null,"lng": number | null,"payload": NonNullable<Json>,"type": string,"user_id": string | null,"work_order_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "company_id"?: string,"created_at"?: string,"data"?: NonNullable<Json>,"id"?: string,"kind": string,"lat"?: number | null,"lng"?: number | null,"user_id"?: string | null,"work_order_id": string
+                    "company_id": string,"created_at"?: string,"id"?: string,"lat"?: number | null,"lng"?: number | null,"payload"?: NonNullable<Json>,"type": string,"user_id"?: string | null,"work_order_id": string
                   }
                   Update: {
-                    "company_id"?: string,"created_at"?: string,"data"?: NonNullable<Json>,"id"?: string,"kind"?: string,"lat"?: number | null,"lng"?: number | null,"user_id"?: string | null,"work_order_id"?: string
+                    "company_id"?: string,"created_at"?: string,"id"?: string,"lat"?: number | null,"lng"?: number | null,"payload"?: NonNullable<Json>,"type"?: string,"user_id"?: string | null,"work_order_id"?: string
                   }
                   Relationships: [
                     {
@@ -330,29 +324,23 @@ isOneToOne: false
       referencedRelation: "companies"
       referencedColumns: ["id"]
     },{
-      foreignKeyName: "work_order_events_user_id_fkey"
-      columns: ["user_id"]
-isOneToOne: false
-      referencedRelation: "profiles"
-      referencedColumns: ["id"]
-    },{
-      foreignKeyName: "work_order_events_work_order_id_fkey"
-      columns: ["work_order_id"]
+      foreignKeyName: "work_order_events_company_id_work_order_id_fkey"
+      columns: ["company_id","work_order_id"]
 isOneToOne: false
       referencedRelation: "work_orders"
-      referencedColumns: ["id"]
+      referencedColumns: ["company_id","id"]
     }
                   ]
                 },"work_order_items": {
                   Row: {
-                    "company_id": string,"created_at": string,"description": string,"id": string,"kind": Database["public"]['Enums']["item_kind"],"material_id": string | null,"quantity": number,"unit_price": number,"work_order_id": string
+                    "company_id": string,"created_at": string,"description": string,"id": string,"material_id": string | null,"quantity": number,"total": number | null,"unit_price": number,"work_order_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "company_id"?: string,"created_at"?: string,"description": string,"id"?: string,"kind": Database["public"]['Enums']["item_kind"],"material_id"?: string | null,"quantity"?: number,"unit_price"?: number,"work_order_id": string
+                    "company_id": string,"created_at"?: string,"description": string,"id"?: string,"material_id"?: string | null,"quantity"?: number,"total"?: never,"unit_price"?: number,"work_order_id": string
                   }
                   Update: {
-                    "company_id"?: string,"created_at"?: string,"description"?: string,"id"?: string,"kind"?: Database["public"]['Enums']["item_kind"],"material_id"?: string | null,"quantity"?: number,"unit_price"?: number,"work_order_id"?: string
+                    "company_id"?: string,"created_at"?: string,"description"?: string,"id"?: string,"material_id"?: string | null,"quantity"?: number,"total"?: never,"unit_price"?: number,"work_order_id"?: string
                   }
                   Relationships: [
                     {
@@ -362,37 +350,69 @@ isOneToOne: false
       referencedRelation: "companies"
       referencedColumns: ["id"]
     },{
-      foreignKeyName: "work_order_items_material_id_fkey"
-      columns: ["material_id"]
+      foreignKeyName: "work_order_items_company_id_material_id_fkey"
+      columns: ["company_id","material_id"]
 isOneToOne: false
       referencedRelation: "materials"
-      referencedColumns: ["id"]
+      referencedColumns: ["company_id","id"]
     },{
-      foreignKeyName: "work_order_items_work_order_id_fkey"
-      columns: ["work_order_id"]
+      foreignKeyName: "work_order_items_company_id_work_order_id_fkey"
+      columns: ["company_id","work_order_id"]
 isOneToOne: false
       referencedRelation: "work_orders"
+      referencedColumns: ["company_id","id"]
+    }
+                  ]
+                },"work_order_ratings": {
+                  Row: {
+                    "comment": string | null,"commented_at": string | null,"company_id": string,"created_at": string,"stars": number,"work_order_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "comment"?: string | null,"commented_at"?: string | null,"company_id": string,"created_at"?: string,"stars": number,"work_order_id": string
+                  }
+                  Update: {
+                    "comment"?: string | null,"commented_at"?: string | null,"company_id"?: string,"created_at"?: string,"stars"?: number,"work_order_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "work_order_ratings_company_id_fkey"
+      columns: ["company_id"]
+isOneToOne: false
+      referencedRelation: "companies"
       referencedColumns: ["id"]
+    },{
+      foreignKeyName: "work_order_ratings_company_id_work_order_id_fkey"
+      columns: ["company_id","work_order_id"]
+isOneToOne: false
+      referencedRelation: "work_orders"
+      referencedColumns: ["company_id","id"]
     }
                   ]
                 },"work_orders": {
                   Row: {
-                    "asset_id": string | null,"checklist": NonNullable<Json>,"company_id": string,"completed_at": string | null,"created_at": string,"customer_id": string,"description": string | null,"id": string,"number": number,"priority": Database["public"]['Enums']["work_order_priority"],"report_token": string,"scheduled_end": string | null,"scheduled_start": string | null,"service_type_id": string | null,"site_id": string | null,"status": Database["public"]['Enums']["work_order_status"],"technician_id": string | null,"total": number
+                    "asset_id": string | null,"checklist_state": NonNullable<Json>,"company_id": string,"completed_at": string | null,"created_at": string,"customer_id": string,"description": string | null,"id": string,"invoiced_at": string | null,"number": number,"observations": string | null,"priority": Database["public"]['Enums']["work_order_priority"],"public_token": string | null,"scheduled_end": string | null,"scheduled_start": string | null,"service_type_id": string | null,"signer_id_number": string | null,"signer_name": string | null,"site_id": string | null,"status": Database["public"]['Enums']["work_order_status"],"technician_id": string | null,"title": string,"total": number
                   }
                   ComputedFields: never
                   Insert: {
-                    "asset_id"?: string | null,"checklist"?: NonNullable<Json>,"company_id"?: string,"completed_at"?: string | null,"created_at"?: string,"customer_id": string,"description"?: string | null,"id"?: string,"number": number,"priority"?: Database["public"]['Enums']["work_order_priority"],"report_token"?: string,"scheduled_end"?: string | null,"scheduled_start"?: string | null,"service_type_id"?: string | null,"site_id"?: string | null,"status"?: Database["public"]['Enums']["work_order_status"],"technician_id"?: string | null,"total"?: number
+                    "asset_id"?: string | null,"checklist_state"?: NonNullable<Json>,"company_id": string,"completed_at"?: string | null,"created_at"?: string,"customer_id": string,"description"?: string | null,"id"?: string,"invoiced_at"?: string | null,"number"?: number,"observations"?: string | null,"priority"?: Database["public"]['Enums']["work_order_priority"],"public_token"?: string | null,"scheduled_end"?: string | null,"scheduled_start"?: string | null,"service_type_id"?: string | null,"signer_id_number"?: string | null,"signer_name"?: string | null,"site_id"?: string | null,"status"?: Database["public"]['Enums']["work_order_status"],"technician_id"?: string | null,"title": string,"total"?: number
                   }
                   Update: {
-                    "asset_id"?: string | null,"checklist"?: NonNullable<Json>,"company_id"?: string,"completed_at"?: string | null,"created_at"?: string,"customer_id"?: string,"description"?: string | null,"id"?: string,"number"?: number,"priority"?: Database["public"]['Enums']["work_order_priority"],"report_token"?: string,"scheduled_end"?: string | null,"scheduled_start"?: string | null,"service_type_id"?: string | null,"site_id"?: string | null,"status"?: Database["public"]['Enums']["work_order_status"],"technician_id"?: string | null,"total"?: number
+                    "asset_id"?: string | null,"checklist_state"?: NonNullable<Json>,"company_id"?: string,"completed_at"?: string | null,"created_at"?: string,"customer_id"?: string,"description"?: string | null,"id"?: string,"invoiced_at"?: string | null,"number"?: number,"observations"?: string | null,"priority"?: Database["public"]['Enums']["work_order_priority"],"public_token"?: string | null,"scheduled_end"?: string | null,"scheduled_start"?: string | null,"service_type_id"?: string | null,"signer_id_number"?: string | null,"signer_name"?: string | null,"site_id"?: string | null,"status"?: Database["public"]['Enums']["work_order_status"],"technician_id"?: string | null,"title"?: string,"total"?: number
                   }
                   Relationships: [
                     {
-      foreignKeyName: "work_orders_asset_id_fkey"
-      columns: ["asset_id"]
+      foreignKeyName: "work_orders_company_id_asset_id_fkey"
+      columns: ["company_id","asset_id"]
 isOneToOne: false
       referencedRelation: "assets"
-      referencedColumns: ["id"]
+      referencedColumns: ["company_id","id"]
+    },{
+      foreignKeyName: "work_orders_company_id_customer_id_fkey"
+      columns: ["company_id","customer_id"]
+isOneToOne: false
+      referencedRelation: "customers"
+      referencedColumns: ["company_id","id"]
     },{
       foreignKeyName: "work_orders_company_id_fkey"
       columns: ["company_id"]
@@ -400,61 +420,149 @@ isOneToOne: false
       referencedRelation: "companies"
       referencedColumns: ["id"]
     },{
-      foreignKeyName: "work_orders_customer_id_fkey"
-      columns: ["customer_id"]
-isOneToOne: false
-      referencedRelation: "customers"
-      referencedColumns: ["id"]
-    },{
-      foreignKeyName: "work_orders_service_type_id_fkey"
-      columns: ["service_type_id"]
+      foreignKeyName: "work_orders_company_id_service_type_id_fkey"
+      columns: ["company_id","service_type_id"]
 isOneToOne: false
       referencedRelation: "service_types"
-      referencedColumns: ["id"]
+      referencedColumns: ["company_id","id"]
     },{
-      foreignKeyName: "work_orders_site_id_fkey"
-      columns: ["site_id"]
+      foreignKeyName: "work_orders_company_id_site_id_fkey"
+      columns: ["company_id","site_id"]
 isOneToOne: false
       referencedRelation: "sites"
-      referencedColumns: ["id"]
+      referencedColumns: ["company_id","id"]
     },{
-      foreignKeyName: "work_orders_technician_id_fkey"
-      columns: ["technician_id"]
+      foreignKeyName: "work_orders_company_id_technician_id_fkey"
+      columns: ["company_id","technician_id"]
 isOneToOne: false
-      referencedRelation: "profiles"
-      referencedColumns: ["id"]
+      referencedRelation: "memberships"
+      referencedColumns: ["company_id","id"]
     }
                   ]
                 }
           }
           Views: {
-            [_ in never]: never
+            "customer_stats": {
+                  Row: {
+                    "billed": number | null,"company_id": string | null,"customer_id": string | null,"last_service": string | null,"open_orders": number | null,"orders": number | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    {
+      foreignKeyName: "work_orders_company_id_customer_id_fkey"
+      columns: ["company_id","customer_id"]
+isOneToOne: false
+      referencedRelation: "customers"
+      referencedColumns: ["company_id","id"]
+    },{
+      foreignKeyName: "work_orders_company_id_fkey"
+      columns: ["company_id"]
+isOneToOne: false
+      referencedRelation: "companies"
+      referencedColumns: ["id"]
+    }
+                  ]
+                }
           }
           Functions: {
-            "can_access_work_order":
-{ Args: { "wo": string }; Returns: boolean
+            "adjust_stock":
+{ Args: { "p_kind": string,"p_material": string,"p_note"?: string,"p_quantity": number }; Returns: number
+                           },
+"assert_technician":
+{ Args: { "p_company": string,"p_membership": string }; Returns: undefined
+                           },
+"can_access_evidence":
+{ Args: { "p_path": string,"p_write": boolean }; Returns: boolean
+                           },
+"comment_report":
+{ Args: { "p_comment": string,"p_token": string }; Returns: boolean
+                           },
+"convert_quote_to_order":
+{ Args: { "p_quote": string }; Returns: string
                            },
 "create_company":
-{ Args: { "p_full_name": string,"p_name": string,"p_nit"?: string }; Returns: string
+{ Args: { "p_company_name": string,"p_full_name": string,"p_nit"?: string,"p_phone"?: string }; Returns: string
                            },
-"current_company_id":
-{ Args: Record<PropertyKey, never>; Returns: string
+"dashboard_kpis":
+{ Args: { "p_company": string }; Returns: Json
                            },
-"current_role_is":
-{ Args: { "roles": (Database["public"]['Enums']["user_role"])[] }; Returns: boolean
+"find_user_id_by_email":
+{ Args: { "p_email": string }; Returns: string
+                           },
+"is_member":
+{ Args: { "company": string }; Returns: boolean
+                           },
+"is_my_membership":
+{ Args: { "membership": string }; Returns: boolean
+                           },
+"is_my_open_work_order":
+{ Args: { "wo": string }; Returns: boolean
+                           },
+"is_my_work_order":
+{ Args: { "wo": string }; Returns: boolean
                            },
 "is_staff":
-{ Args: Record<PropertyKey, never>; Returns: boolean
+{ Args: { "company": string }; Returns: boolean
+                           },
+"my_role":
+{ Args: { "company": string }; Returns: Database["public"]['Enums']["member_role"]
                            },
 "next_number":
-{ Args: { "p_company": string,"p_name": string }; Returns: number
+{ Args: { "p_company": string,"p_kind": string }; Returns: number
+                           },
+"public_quote":
+{ Args: { "p_token": string }; Returns: Json
                            },
 "public_report":
 { Args: { "p_token": string }; Returns: Json
+                           },
+"rate_report":
+{ Args: { "p_stars": number,"p_token": string }; Returns: number
+                           },
+"report_order":
+{ Args: { "p_token": string }; Returns: {
+              "asset_id": string | null,
+"checklist_state": NonNullable<Json>,
+"company_id": string,
+"completed_at": string | null,
+"created_at": string,
+"customer_id": string,
+"description": string | null,
+"id": string,
+"invoiced_at": string | null,
+"number": number,
+"observations": string | null,
+"priority": Database["public"]['Enums']["work_order_priority"],
+"public_token": string | null,
+"scheduled_end": string | null,
+"scheduled_start": string | null,
+"service_type_id": string | null,
+"signer_id_number": string | null,
+"signer_name": string | null,
+"site_id": string | null,
+"status": Database["public"]['Enums']["work_order_status"],
+"technician_id": string | null,
+"title": string,
+"total": number
+            }
+                          SetofOptions: {
+        from: "*"
+        to: "work_orders"
+        isOneToOne: true
+        isSetofReturn: false
+      } },
+"sync_order_stock":
+{ Args: { "p_order": string }; Returns: undefined
+                           },
+"try_timestamptz":
+{ Args: { "p": string }; Returns: string
+                           },
+"try_uuid":
+{ Args: { "p": string }; Returns: string
                            }
           }
           Enums: {
-            "attachment_kind": "photo_before"|"photo_after"|"signature"|"other","item_kind": "material"|"labor","message_channel": "whatsapp_link"|"whatsapp_api"|"email","message_status": "queued"|"sent"|"delivered"|"read"|"failed","quote_status": "draft"|"sent"|"approved"|"rejected"|"expired","subscription_status": "trial"|"active"|"past_due"|"canceled","user_role": "owner"|"dispatcher"|"technician","work_order_priority": "low"|"normal"|"high"|"urgent","work_order_status": "pending"|"assigned"|"en_route"|"in_progress"|"completed"|"canceled"
+            "attachment_kind": "foto_antes"|"foto_despues"|"firma","member_role": "owner"|"dispatcher"|"technician","quote_status": "borrador"|"enviada"|"aprobada"|"rechazada","work_order_priority": "baja"|"normal"|"alta","work_order_status": "pendiente"|"asignada"|"en_camino"|"en_proceso"|"completada"|"cancelada"
           }
           CompositeTypes: {
             [_ in never]: never
@@ -574,7 +682,7 @@ export const Constants = {
           }
         },"public": {
           Enums: {
-            "attachment_kind": ["photo_before", "photo_after", "signature", "other"],"item_kind": ["material", "labor"],"message_channel": ["whatsapp_link", "whatsapp_api", "email"],"message_status": ["queued", "sent", "delivered", "read", "failed"],"quote_status": ["draft", "sent", "approved", "rejected", "expired"],"subscription_status": ["trial", "active", "past_due", "canceled"],"user_role": ["owner", "dispatcher", "technician"],"work_order_priority": ["low", "normal", "high", "urgent"],"work_order_status": ["pending", "assigned", "en_route", "in_progress", "completed", "canceled"]
+            "attachment_kind": ["foto_antes", "foto_despues", "firma"],"member_role": ["owner", "dispatcher", "technician"],"quote_status": ["borrador", "enviada", "aprobada", "rechazada"],"work_order_priority": ["baja", "normal", "alta"],"work_order_status": ["pendiente", "asignada", "en_camino", "en_proceso", "completada", "cancelada"]
           }
         }
 } as const

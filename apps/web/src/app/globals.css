@@ -1,26 +1,100 @@
 @import "tailwindcss";
 
+/* Sistema de diseño de Tecnio. Los colores existen como variables CSS (--bg, --ink...)
+   y como clases de Tailwind (bg-bg, text-ink, border-line...). */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #f3f5f4;
+  --surface: #ffffff;
+  --ink: #10211c;
+  --ink-2: #1b3029;
+  --muted: #55645f;
+  --line: #dde3e0;
+  --line-soft: #eef2f0;
+  --primary: #0e5a4a;
+  --primary-soft: #e3efeb;
+  --accent: #c2400d; /* #D9480F oscurecido: texto blanco encima con contraste >= 4.5:1 */
+  --accent-soft: #fdebdf;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@theme {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-line-soft: var(--line-soft);
+  --color-primary: var(--primary);
+  --color-primary-soft: var(--primary-soft);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: var(--font-plex), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-grotesk), ui-sans-serif, system-ui, sans-serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+}
+
+/* Foco visible en todo lo que se alcanza con teclado (el navegador a veces no lo muestra
+   sobre fondos oscuros). En el menú lateral, que es oscuro, el anillo va en blanco. */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+aside :focus-visible {
+  outline-color: #ffffff;
+}
+
+/* Reporte público: que el pie fijo no tape lo que recibe el foco o se desplaza a la vista. */
+html:has(.report-footer) {
+  scroll-padding-bottom: 190px;
+}
+
+/* Números alineados en tablas e indicadores */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@utility btn {
+  @apply inline-flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-[10px] px-4 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-60;
+}
+
+@layer components {
+  .card {
+    @apply rounded-[14px] border border-line bg-surface p-5;
+  }
+  .input {
+    @apply h-11 w-full rounded-[10px] border border-line bg-surface px-3 text-sm text-ink outline-none placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-primary-soft;
+  }
+  .textarea {
+    @apply w-full rounded-[10px] border border-line bg-surface p-3 text-sm text-ink outline-none placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-primary-soft;
+  }
+  .label {
+    @apply mb-1.5 block text-sm font-medium text-ink;
+  }
+  .btn-accent {
+    @apply btn bg-accent text-white hover:bg-[#a63609];
+  }
+  .btn-primary {
+    @apply btn bg-primary text-white hover:bg-[#0b4b3e];
+  }
+  .btn-dark {
+    @apply btn bg-ink text-white hover:bg-ink-2;
+  }
+  .btn-outline {
+    @apply btn border border-line bg-surface text-ink hover:bg-bg;
+  }
+  .link {
+    @apply font-semibold text-primary hover:underline;
+  }
+  .th {
+    @apply px-3 pb-2.5 text-left text-xs font-semibold tracking-[0.04em] whitespace-nowrap text-muted uppercase;
+  }
+  .td {
+    @apply border-t border-line-soft px-3 py-[13px] align-middle;
+  }
 }

@@ -1,0 +1,56 @@
+{
+  "expo": {
+    "name": "Tecnio",
+    "slug": "tecnio",
+    "scheme": "tecnio",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "co.tecnio.app"
+    },
+    "android": {
+      "package": "co.tecnio.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#C2400D",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "permissions": [
+        "CAMERA",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
+      ],
+      "predictiveBackGestureEnabled": false
+    },
+    "plugins": [
+      "expo-router",
+      "expo-sqlite",
+      "expo-font",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#10211C",
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 120
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Tecnio guarda tu ubicación al salir y al llegar a cada servicio."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "cameraPermission": "Tecnio usa la cámara para las fotos del antes y el después del servicio.",
+          "photosPermission": "Tecnio usa tus fotos para adjuntarlas a la orden."
+        }
+      ],
+      "@sentry/react-native"
+    ]
+  }
+}

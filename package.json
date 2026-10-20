@@ -1,12 +1,18 @@
 {
   "name": "tecnio",
   "private": true,
-  "workspaces": ["apps/*", "packages/*"],
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "dev:web": "npm run dev -w web",
     "db:start": "npx supabase start",
     "db:stop": "npx supabase stop",
     "db:reset": "npx supabase db reset",
-    "db:types": "npx supabase gen types typescript --local > packages/db/database.types.ts"
+    "db:types": "npx supabase gen types typescript --local > packages/db/database.types.ts",
+    "dev:mobile": "npm run start -w mobile",
+    "db:test": "npx supabase test db",
+    "check": "npm run db:test && npx tsc --noEmit -p apps/web && npx tsc --noEmit -p apps/mobile && npm run lint -w web"
   }
 }
