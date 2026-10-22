@@ -1,0 +1,68 @@
+.hero {
+  position: relative;
+  overflow: hidden;
+  background: var(--bg);
+  padding-block: clamp(56px, 9vw, 112px);
+}
+
+/* Brillo ámbar que respira detrás de la orden de ejemplo (solo opacidad). */
+.glow {
+  position: absolute;
+  top: 50%;
+  right: -10%;
+  width: 760px;
+  height: 760px;
+  margin-top: -380px;
+  background: radial-gradient(closest-side, rgb(251 191 36 / 0.28), transparent);
+  opacity: 0.4;
+  animation: breathe 3s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+@keyframes breathe {
+  to {
+    opacity: 0.85;
+  }
+}
+
+.layout {
+  position: relative;
+  display: grid;
+  align-items: center;
+  gap: 48px 64px;
+  grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr));
+}
+
+.title {
+  margin-top: 16px;
+  font-size: clamp(44px, 6.4vw, 76px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+.subtitle {
+  margin-top: 22px;
+  max-width: 520px;
+  font-size: 19px;
+  line-height: 1.55;
+  color: var(--text-2);
+}
+.actions {
+  display: flex;
+  margin-top: 32px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* La orden flota suave. */
+.card {
+  max-width: 460px;
+  justify-self: center;
+  width: 100%;
+  animation: float 6s ease-in-out infinite;
+}
+@keyframes float {
+  50% {
+    transform: translateY(-10px);
+  }
+}

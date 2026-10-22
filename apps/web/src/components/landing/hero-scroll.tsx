@@ -10,16 +10,16 @@ const showHint = (p: number) => p < 0.04;
 
 // Texto de cada tramo de la animación: es texto real, así que el lector de pantalla lo lee completo.
 const CAPTIONS = [
-  { from: 1, to: 2, text: "La foto del daño entra con fecha, hora y ubicación." },
-  { from: 3, to: 4, text: "El técnico la toma y marca cada paso desde su celular." },
-  { from: 5, to: 8, text: "Y todo llega, solo, al panel del dueño." },
+  { from: 1, to: 2, text: "Llega el pedido del cliente y se vuelve una orden con dirección y hora." },
+  { from: 3, to: 4, text: "El técnico la toma en su celular y marca cada paso, aunque no tenga señal." },
+  { from: 5, to: 8, text: "Fotos, firma y materiales llegan solos a tu panel." },
   { from: 9, to: 10, text: "Tú lo ves todo, sin estar ahí.", final: true },
 ];
 
 const ROWS = [
-  { type: "No hay servicio de internet, daño en la fibra", place: "Calle 34 #15-04", status: "Terminado", tone: "ok", time: "07:58", highlight: true },
-  { type: "[Tipo de daño]", place: "[Ubicación]", status: "En curso", tone: "progress", time: "08:35" },
-  { type: "[Tipo de daño]", place: "[Ubicación]", status: "Pendiente", tone: "pending", time: "09:10" },
+  { type: "[Tipo de trabajo]", place: "[Cliente]", status: "Completada", tone: "ok", time: "08:00", highlight: true },
+  { type: "[Tipo de trabajo]", place: "[Cliente]", status: "En proceso", tone: "progress", time: "09:30" },
+  { type: "[Tipo de trabajo]", place: "[Cliente]", status: "En camino", tone: "pending", time: "10:45" },
 ] as const;
 
 /**
@@ -57,7 +57,7 @@ export function HeroScroll() {
     <section
       ref={sectionRef}
       className={styles.section}
-      aria-label="Demostración: cómo la foto de un daño llega del celular al panel del dueño"
+      aria-label="Demostración: cómo un trabajo del técnico llega, con foto y firma, al panel de la empresa"
     >
       <div ref={stageRef} className={[styles.stage, reduced && styles.reduced, ...reached].filter(Boolean).join(" ")}>
         <div className={styles.glow} aria-hidden="true" />
@@ -76,27 +76,27 @@ export function HeroScroll() {
           <div className={styles.phone} aria-hidden="true">
             <div className={styles.frame} />
             <div className={styles.screen}>
-              <DamagePhoto />
+              <WorkPhoto />
               <div className={styles.photoDim} />
               <div className={styles.scanner}>
                 <span />
               </div>
               <div className={styles.island} />
-              <p className={styles.photoTag}>[Foto real de un daño] · 07:58</p>
+              <p className={styles.photoTag}>[Foto real del trabajo] · 10:12</p>
             </div>
           </div>
 
           <div className={`${styles.tag} ${styles.tagLoc}`} aria-hidden="true">
-            <span className={styles.tagLabel}>Ubicación</span>
-            <span className={styles.tagValue}>El Boca</span>
+            <span className={styles.tagLabel}>Cliente</span>
+            <span className={styles.tagValue}>[Nombre del cliente] · [Barrio]</span>
           </div>
           <div className={`${styles.tag} ${styles.tagTech}`} aria-hidden="true">
             <span className={styles.tagLabel}>Técnico</span>
-            <span className={styles.tagValue}>Bocagrande · tomó 08:20</span>
+            <span className={styles.tagValue}>[Nombre] · en camino 08:20</span>
           </div>
           <div className={`${styles.tag} ${styles.tagDone}`} aria-hidden="true">
             <CheckIcon />
-            <span className={styles.tagValue}>Terminado · 10:12</span>
+            <span className={styles.tagValue}>Terminado y firmado · 10:12</span>
           </div>
 
           <Laptop />
@@ -107,8 +107,8 @@ export function HeroScroll() {
               Demo en vivo
             </p>
             <h1 className={styles.h1}>
-              Todo empieza con una foto.
-              <span className={styles.h1Accent}>Y termina en tu panel.</span>
+              Cada trabajo de tus técnicos, con foto, hora y firma.
+              <span className={styles.h1Accent}>Y tú lo ves todo en tu panel.</span>
             </h1>
           </div>
 
@@ -144,17 +144,17 @@ function Laptop() {
       <div className={styles.lid}>
         <div className={styles.panel}>
           <aside className={styles.side}>
-            <p className={styles.sideBrand}>Reportes</p>
+            <p className={styles.sideBrand}>Tecnio</p>
             <ul>
               <li className={styles.sideActive}>Resumen</li>
-              <li>Reportes</li>
-              <li>Técnicos</li>
-              <li>Ubicaciones</li>
+              <li>Agenda</li>
+              <li>Órdenes</li>
+              <li>Inventario</li>
             </ul>
           </aside>
           <div className={styles.main}>
             <div className={styles.head}>
-              <p className={styles.headTitle}>Hoy en Apartamento</p>
+              <p className={styles.headTitle}>Hoy en [Tu empresa]</p>
               <p className={styles.headLive}>
                 <span className={styles.headDot} />
                 en vivo
@@ -163,16 +163,16 @@ function Laptop() {
             <p className={styles.sample}>Datos de ejemplo</p>
             <div className={styles.kpis}>
               <div className={styles.kpi}>
-                <span>Abiertos</span>
-                <strong>4</strong>
+                <span>Hoy</span>
+                <strong>14</strong>
               </div>
               <div className={styles.kpi}>
-                <span>Terminados</span>
-                <strong>12</strong>
+                <span>Completadas</span>
+                <strong>9</strong>
               </div>
               <div className={`${styles.kpi} ${styles.kpiWarn}`}>
-                <span>Atención</span>
-                <strong>2</strong>
+                <span>Atrasadas</span>
+                <strong>1</strong>
               </div>
             </div>
             <ul className={styles.rows}>
@@ -198,8 +198,8 @@ function Laptop() {
 }
 
 
-// Marcador de la foto del daño: muro gris con grietas. Se reemplaza por una foto real.
-function DamagePhoto() {
+// Marcador de la foto del trabajo: un equipo instalado en la pared. Se reemplaza por una foto real.
+function WorkPhoto() {
   return (
     <svg className={styles.photo} viewBox="0 0 294 614" preserveAspectRatio="xMidYMid slice">
       <rect width="294" height="614" fill="#3F3F46" />
@@ -207,16 +207,15 @@ function DamagePhoto() {
         <path d="M0 120h294M0 250h294M0 380h294M0 510h294" />
         <path d="M90 0v120M210 120v130M60 250v130M180 380v130M120 510v104" />
       </g>
-      <ellipse cx="190" cy="330" rx="70" ry="48" fill="#35353B" />
-      <g fill="none" stroke="#18181B" strokeLinecap="round" strokeLinejoin="round">
-        <path strokeWidth="4" d="M150 40 L162 120 L140 190 L172 262 L150 330 L186 402 L166 470 L192 560 L180 614" />
-        <path strokeWidth="2.5" d="M162 120 L210 150 L238 196" />
-        <path strokeWidth="2" d="M140 190 L98 214 L70 270" />
-        <path strokeWidth="2.5" d="M172 262 L226 286 L262 278" />
-        <path strokeWidth="2" d="M150 330 L104 352 L88 404" />
-        <path strokeWidth="2" d="M186 402 L236 430" />
-        <path strokeWidth="1.5" d="M166 470 L120 500" />
+      <rect x="47" y="190" width="200" height="190" rx="14" fill="#52525B" stroke="#18181B" strokeWidth="3" />
+      <circle cx="147" cy="285" r="64" fill="#3F3F46" stroke="#18181B" strokeWidth="3" />
+      <g fill="none" stroke="#18181B" strokeWidth="2">
+        <circle cx="147" cy="285" r="44" />
+        <circle cx="147" cy="285" r="24" />
+        <path d="M83 285h128M147 221v128" />
       </g>
+      <path d="M147 380v120" stroke="#18181B" strokeWidth="5" strokeLinecap="round" />
+      <circle cx="226" cy="208" r="5" fill="#86EFAC" />
     </svg>
   );
 }

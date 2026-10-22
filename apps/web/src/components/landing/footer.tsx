@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { BRAND, CONTACT_EMAIL, DEMO_HREF, NAV_LINKS } from "./config";
+import { BRAND, CONTACT_EMAIL, DEMO_HREF, LOGIN_HREF, NAV_LINKS } from "./config";
+import { SECTORES } from "./sectores";
 import { WhatsappLink } from "./whatsapp";
 import ui from "./landing.module.css";
 import styles from "./footer.module.css";
@@ -11,7 +12,7 @@ export function Footer() {
         <div className={styles.grid}>
           <div>
             <p className={styles.brandName}>{BRAND}</p>
-            <p className={styles.tagline}>De una foto a tu panel.</p>
+            <p className={styles.tagline}>Cada trabajo, con evidencia.</p>
           </div>
 
           <nav aria-labelledby="pie-producto">
@@ -22,6 +23,23 @@ export function Footer() {
                   <a href={l.href} className={styles.link}>{l.label}</a>
                 </li>
               ))}
+              <li>
+                <Link href={LOGIN_HREF} className={styles.link}>Entrar</Link>
+              </li>
+            </ul>
+          </nav>
+
+          <nav aria-labelledby="pie-sectores">
+            <h2 id="pie-sectores" className={styles.title}>Sectores</h2>
+            <ul>
+              {SECTORES.map((s) => (
+                <li key={s.slug}>
+                  <Link href={`/para/${s.slug}`} className={styles.link}>{s.name}</Link>
+                </li>
+              ))}
+              <li>
+                <a href={DEMO_HREF} className={styles.link}>Otros sectores</a>
+              </li>
             </ul>
           </nav>
 
@@ -34,7 +52,9 @@ export function Footer() {
               <li>
                 <WhatsappLink className={styles.link} lugar="pie">WhatsApp</WhatsappLink>
               </li>
-              <li className={styles.plain}>Correo:&nbsp;<a href={`mailto:${CONTACT_EMAIL}`} className={styles.link}>{CONTACT_EMAIL}</a></li>
+              <li className={styles.plain}>
+                Correo:&nbsp;<a href={`mailto:${CONTACT_EMAIL}`} className={styles.link}>{CONTACT_EMAIL}</a>
+              </li>
             </ul>
           </nav>
 

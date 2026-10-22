@@ -5,21 +5,21 @@ import Link from "next/link";
 import { CONTACT_EMAIL, WHATSAPP_NUMBER } from "./config";
 import { track } from "./analytics";
 import { WhatsappLink } from "./whatsapp";
-import { PROPERTY_COUNTS, PROPERTY_TYPES, validateLead, type LeadErrors, type LeadField, type LeadInput } from "./lead";
+import { COMPANY_TYPES, TECHNICIAN_COUNTS, validateLead, type LeadErrors, type LeadField, type LeadInput } from "./lead";
 import ui from "./landing.module.css";
 import styles from "./demo.module.css";
 
 type Status = "idle" | "sending" | "success" | "error";
 
-const EMPTY: LeadInput = { name: "", contact: "", propertyType: "", properties: "", consent: false };
-const FIELD_ORDER: LeadField[] = ["name", "contact", "propertyType", "properties", "consent"];
+const FIELD_ORDER: LeadField[] = ["name", "contact", "companyType", "technicians", "consent"];
 
 // 573002823551 → 300 282 3551
 const whatsappLabel = WHATSAPP_NUMBER.replace(/^57/, "").replace(/(\d{3})(\d{3})(\d{4})/, "$1 $2 $3");
 
-export function Demo() {
+// `sector`: en las páginas de cada sector, el tipo de empresa ya viene elegido.
+export function Demo({ sector = "" }: { sector?: string }) {
   const formRef = useRef<HTMLFormElement>(null);
-  const [values, setValues] = useState<LeadInput>(EMPTY);
+  const [values, setValues] = useState<LeadInput>({ name: "", contact: "", companyType: sector, technicians: "", consent: false });
   const [errors, setErrors] = useState<LeadErrors>({});
   const [status, setStatus] = useState<Status>("idle");
   const [serverError, setServerError] = useState("");
@@ -51,12 +51,12 @@ export function Demo() {
       const res = await fetch("/api/lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...values, website }),
+        body: JSON.stringify({ ...values, website, source: window.location.pathname }),
       });
       const data = await res.json().catch(() => ({}));
       if (res.ok) {
         setStatus("success");
-        track("envío formulario", { tipo: values.propertyType, propiedades: values.properties });
+        track("envío formulario", { tipo: values.companyType, tecnicos: values.technicians });
         return;
       }
       if (data.errors) {
@@ -81,9 +81,9 @@ export function Demo() {
         <div className={styles.block}>
           <div className={styles.intro}>
             <h2 id="demo-titulo" className={`${ui.h2} ${styles.title}`}>
-              De una foto a tu panel. Pruébalo.
+              Mira tu empresa en Tecnio.
             </h2>
-            <p className={styles.lead}>Te armamos un panel de ejemplo con tu propiedad.</p>
+            <p className={styles.lead}>Te armamos una demo con tus tipos de trabajo.</p>
             <ul className={styles.contact}>
               <li>
                 Correo: <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
@@ -136,21 +136,21 @@ export function Demo() {
               </Field>
 
               <div className={styles.row}>
-                <Field id="propertyType" label="Tipo de propiedad" error={errors.propertyType}>
+                <Field id="companyType" label="Tipo de empresa" error={errors.companyType}>
                   <select
-                    id="demo-propertyType"
-                    name="propertyType"
+                    id="demo-companyType"
+                    name="companyType"
                     required
-                    value={values.propertyType}
-                    onChange={(e) => set("propertyType", e.target.value)}
-                    aria-invalid={Boolean(errors.propertyType)}
-                    aria-describedby={describedBy("propertyType")}
+                    value={values.companyType}
+                    onChange={(e) => set("companyType", e.target.value)}
+                    aria-invalid={Boolean(errors.companyType)}
+                    aria-describedby={describedBy("companyType")}
                     className={`${styles.input} ${styles.select}`}
                   >
                     <option value="" disabled>
                       Elige una opción
                     </option>
-                    {PROPERTY_TYPES.map((t) => (
+                    {COMPANY_TYPES.map((t) => (
                       <option key={t.value} value={t.value}>
                         {t.label}
                       </option>
@@ -158,21 +158,21 @@ export function Demo() {
                   </select>
                 </Field>
 
-                <Field id="properties" label="¿Cuántas propiedades?" error={errors.properties}>
+                <Field id="technicians" label="¿Cuántos técnicos tienes?" error={errors.technicians}>
                   <select
-                    id="demo-properties"
-                    name="properties"
+                    id="demo-technicians"
+                    name="technicians"
                     required
-                    value={values.properties}
-                    onChange={(e) => set("properties", e.target.value)}
-                    aria-invalid={Boolean(errors.properties)}
-                    aria-describedby={describedBy("properties")}
+                    value={values.technicians}
+                    onChange={(e) => set("technicians", e.target.value)}
+                    aria-invalid={Boolean(errors.technicians)}
+                    aria-describedby={describedBy("technicians")}
                     className={`${styles.input} ${styles.select}`}
                   >
                     <option value="" disabled>
                       Elige una opción
                     </option>
-                    {PROPERTY_COUNTS.map((c) => (
+                    {TECHNICIAN_COUNTS.map((c) => (
                       <option key={c.value} value={c.value}>
                         {c.label}
                       </option>
@@ -221,7 +221,7 @@ export function Demo() {
               )}
 
               <button type="submit" className={`${ui.btn} ${styles.submit}`} disabled={status === "sending"}>
-                {status === "sending" ? "Enviando…" : "Quiero mi panel de ejemplo"}
+                {status === "sending" ? "Enviando…" : "Quiero ver mi demo"}
               </button>
             </form>
           )}

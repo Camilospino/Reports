@@ -1,7 +1,10 @@
+import path from "node:path";
 import type { NextConfig } from "next";
 import { withSentryConfig } from "@sentry/nextjs/config";
 
 const nextConfig: NextConfig = {
+  // Raíz del monorepo (incluye packages/db). Fija, para que no dependa de otros package.json fuera del repo.
+  outputFileTracingRoot: path.join(__dirname, "../.."),
   // @react-pdf/renderer genera los PDF en el servidor; se carga tal cual, sin empaquetar.
   serverExternalPackages: ["@react-pdf/renderer"],
 };

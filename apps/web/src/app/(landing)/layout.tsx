@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist_Mono, Onest } from "next/font/google";
 import { Footer } from "@/components/landing/footer";
 import { Navbar } from "@/components/landing/navbar";
-import { Plausible } from "@/components/landing/plausible";
+import { Umami } from "@/components/landing/umami";
 import { WhatsappButton } from "@/components/landing/whatsapp";
 import ui from "@/components/landing/landing.module.css";
 
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:4000"),
 };
 
-// Página pública (marca "Reportes"). Fuentes y colores propios: no se mezclan con el panel.
+// Página pública de Tecnio. Fuentes y colores propios: no se mezclan con el panel.
 export default function LandingLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className={`${onest.variable} ${geistMono.variable} ${ui.root}`}>
@@ -22,7 +22,7 @@ export default function LandingLayout({ children }: { children: React.ReactNode 
       <main id="contenido">{children}</main>
       <Footer />
       <WhatsappButton />
-      <Plausible />
+      <Umami />
     </div>
   );
 }

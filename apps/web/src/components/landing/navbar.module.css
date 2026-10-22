@@ -56,6 +56,9 @@
 .link:hover {
   color: var(--text);
 }
+.login {
+  margin-right: -12px;
+}
 
 .menuButton {
   display: none;
@@ -88,7 +91,8 @@
 }
 
 @media (max-width: 959px) {
-  .links {
+  .links,
+  .login {
     display: none;
   }
   .demo {
@@ -111,8 +115,11 @@
   .menuButton {
     margin-left: auto;
   }
+}
+/* La frase junto a la marca solo cabe en pantallas medianas en adelante. */
+@media (max-width: 639px) {
   .brandTag {
-    font-size: 12px;
+    display: none;
   }
 }
 @media (min-width: 480px) {

@@ -4,8 +4,8 @@ import { CONTACT_EMAIL } from "@/components/landing/config";
 import { LegalPage } from "@/components/landing/legal-page";
 
 export const metadata: Metadata = {
-  title: "Términos de servicio · Reportes",
-  description: "Condiciones de uso de Reportes: el servicio, las cuentas, los pagos y las responsabilidades de cada parte.",
+  title: "Términos de servicio · Tecnio",
+  description: "Condiciones de uso de Tecnio: el servicio, las cuentas, los pagos y las responsabilidades de cada parte.",
   alternates: { canonical: "/terminos" },
 };
 
@@ -15,26 +15,26 @@ export default function TermsPage() {
     <LegalPage title="Términos de servicio">
       <h2>1. Quiénes somos</h2>
       <p>
-        Reportes es un servicio de [Razón social], identificada con NIT [pendiente], con domicilio en [ciudad], Colombia. Al crear una
+        Tecnio es un servicio de [Razón social], identificada con NIT [pendiente], con domicilio en [ciudad], Colombia. Al crear una
         cuenta o usar el servicio aceptas estos términos.
       </p>
 
       <h2>2. El servicio</h2>
       <p>
-        Reportes permite registrar daños de una propiedad con foto, fecha, hora y ubicación; que el técnico marque cada paso del arreglo; y
-        que el dueño o administrador vea todo en un panel. [Pendiente: qué incluye cada plan y qué no incluye.]
+        Tecnio permite a empresas de servicio técnico crear y asignar órdenes de trabajo; que sus técnicos marquen cada paso desde el
+        celular, con fotos, firma del cliente y materiales; y ver todo en un panel. [Pendiente: qué incluye cada plan y qué no incluye.]
       </p>
 
       <h2>3. Cuentas y usuarios</h2>
       <ul>
-        <li>Quien contrata (el dueño o administrador) es responsable de las personas que invita y de los permisos que les da.</li>
+        <li>Quien contrata (el dueño de la empresa) es responsable de las personas que invita y de los permisos que les da.</li>
         <li>Cada usuario debe cuidar su contraseña y avisarnos si sospecha un acceso indebido.</li>
         <li>Quien invita a otras personas debe contar con su autorización para registrar sus datos.</li>
       </ul>
 
       <h2>4. Tu información</h2>
       <p>
-        Los reportes, fotos y datos que registras son tuyos. Nos das permiso para guardarlos y procesarlos solo para prestarte el servicio.
+        Las órdenes, fotos y datos que registras, incluidos los de tus clientes, son tuyos. Nos das permiso para guardarlos y procesarlos solo para prestarte el servicio.
         Los tratamos según la <Link href="/privacidad">Política de privacidad</Link>. Al terminar el servicio puedes pedir una copia de tu
         información dentro de [plazo].
       </p>
@@ -56,7 +56,7 @@ export default function TermsPage() {
 
       <h2>8. Responsabilidad</h2>
       <p>
-        Reportes es una herramienta de registro y seguimiento: no ejecuta los arreglos ni responde por el trabajo de los técnicos.
+        Tecnio es una herramienta de registro y seguimiento: no ejecuta los trabajos ni responde por la labor de los técnicos.
         [Pendiente: límite de responsabilidad, revisado por un abogado.]
       </p>
 

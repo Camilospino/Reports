@@ -157,14 +157,14 @@ isOneToOne: false
                   ]
                 },"leads": {
                   Row: {
-                    "consent": boolean,"consent_text": string,"contact": string,"created_at": string,"id": string,"ip_hash": string | null,"name": string,"properties": string,"property_type": string,"user_agent": string | null
+                    "company_type": string,"consent": boolean,"consent_text": string,"contact": string,"created_at": string,"id": string,"ip_hash": string | null,"name": string,"source": string | null,"technicians": string,"user_agent": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "consent": boolean,"consent_text": string,"contact": string,"created_at"?: string,"id"?: string,"ip_hash"?: string | null,"name": string,"properties": string,"property_type": string,"user_agent"?: string | null
+                    "company_type": string,"consent": boolean,"consent_text": string,"contact": string,"created_at"?: string,"id"?: string,"ip_hash"?: string | null,"name": string,"source"?: string | null,"technicians": string,"user_agent"?: string | null
                   }
                   Update: {
-                    "consent"?: boolean,"consent_text"?: string,"contact"?: string,"created_at"?: string,"id"?: string,"ip_hash"?: string | null,"name"?: string,"properties"?: string,"property_type"?: string,"user_agent"?: string | null
+                    "company_type"?: string,"consent"?: boolean,"consent_text"?: string,"contact"?: string,"created_at"?: string,"id"?: string,"ip_hash"?: string | null,"name"?: string,"source"?: string | null,"technicians"?: string,"user_agent"?: string | null
                   }
                   Relationships: [
                     

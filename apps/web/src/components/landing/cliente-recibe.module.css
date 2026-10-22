@@ -1,0 +1,221 @@
+.layout {
+  display: grid;
+  align-items: center;
+  gap: 56px;
+  grid-template-columns: repeat(auto-fit, minmax(min(360px, 100%), 1fr));
+}
+
+.title {
+  margin-top: 16px;
+  max-width: 15ch;
+}
+.lead {
+  margin-top: 20px;
+  max-width: 480px;
+}
+.points {
+  display: grid;
+  margin-top: 28px;
+  gap: 14px;
+  font-size: 17px;
+  font-weight: 500;
+}
+.points li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.check {
+  display: inline-flex;
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--l-text);
+  color: var(--amber);
+}
+.note {
+  margin-top: 24px;
+  font-size: 15px;
+  color: var(--l-text-2);
+}
+
+/* ---------- Celular con el reporte ---------- */
+.phoneWrap {
+  display: flex;
+  justify-content: center;
+}
+.phone {
+  width: 280px;
+  height: 570px;
+  border-radius: 50px;
+  background: linear-gradient(140deg, #a1a1aa 0%, #3f3f46 20%, #18181b 50%, #3f3f46 80%, #a1a1aa 100%);
+  padding: 3px;
+  box-shadow: 0 40px 80px rgb(22 22 22 / 0.22);
+  animation: float 6s ease-in-out infinite;
+}
+@keyframes float {
+  50% {
+    transform: translateY(-10px);
+  }
+}
+.screen {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 47px;
+  background: #fff;
+  padding: 50px 18px 18px;
+  color: var(--l-text);
+}
+.island {
+  position: absolute;
+  top: 11px;
+  left: 50%;
+  width: 86px;
+  height: 25px;
+  margin-left: -43px;
+  border-radius: 20px;
+  background: #000;
+}
+
+.company {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--l-border);
+  padding-bottom: 10px;
+  font-size: 14px;
+  font-weight: 700;
+}
+.logo {
+  display: inline-flex;
+  width: 30px;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: var(--l-text);
+  font-size: 11px;
+  color: #fff;
+}
+.done {
+  display: flex;
+  margin-top: 14px;
+  align-items: center;
+  gap: 8px;
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.doneIcon {
+  display: inline-flex;
+  width: 28px;
+  height: 28px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--ok);
+  color: #fff;
+}
+.meta {
+  margin-top: 4px;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--l-text-2);
+}
+.photos {
+  display: grid;
+  margin-top: 12px;
+  gap: 8px;
+  grid-template-columns: 1fr 1fr;
+}
+.photos span {
+  display: flex;
+  height: 86px;
+  align-items: flex-end;
+  border-radius: 10px;
+  background:
+    radial-gradient(circle at 50% 45%, #52525b 0 28%, transparent 29%),
+    #3f3f46;
+  padding: 6px;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 10px;
+  color: #fafafa;
+}
+.signature {
+  display: flex;
+  margin-top: 10px;
+  flex-direction: column;
+  align-items: center;
+  border: 1px dashed #a8a29e;
+  border-radius: 10px;
+  padding: 6px;
+  font-size: 11px;
+  color: var(--l-text-2);
+}
+.signature svg {
+  color: var(--l-text);
+}
+
+.rateTitle {
+  margin-top: 12px;
+  font-size: 13px;
+  font-weight: 700;
+}
+/* Las estrellas se encienden una tras otra y vuelven a empezar. */
+.stars {
+  display: flex;
+  margin-top: 4px;
+  gap: 4px;
+  color: var(--amber);
+}
+.stars svg {
+  animation: star 4s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 0.18s);
+}
+@keyframes star {
+  0%,
+  8% {
+    opacity: 0.25;
+    transform: scale(0.85);
+  }
+  16%,
+  85% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0.25;
+    transform: scale(0.85);
+  }
+}
+
+.buttons {
+  display: grid;
+  margin-top: 14px;
+  gap: 8px;
+}
+.buttons span {
+  border-radius: 999px;
+  padding: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+}
+.pdf {
+  border: 1.5px solid var(--l-text);
+}
+.pay {
+  background: var(--l-text);
+  color: #fff;
+}
+
+/* En pantallas angostas el texto va primero y el celular debajo. */
+@media (max-width: 799px) {
+  .phoneWrap {
+    order: 2;
+  }
+}

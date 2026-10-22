@@ -1,6 +1,6 @@
 import { createHmac } from "node:crypto";
 import { NextResponse, type NextRequest } from "next/server";
-import { CONSENT_TEXT, PROPERTY_COUNTS, PROPERTY_TYPES, validateLead, type LeadInput } from "@/components/landing/lead";
+import { COMPANY_TYPES, CONSENT_TEXT, SOURCE, TECHNICIAN_COUNTS, validateLead, type LeadInput } from "@/components/landing/lead";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 // Máximo de solicitudes por IP en la ventana de tiempo (frena envíos repetidos o bots simples).
@@ -29,8 +29,8 @@ export async function POST(req: NextRequest) {
   const input: LeadInput = {
     name: str(body.name),
     contact: str(body.contact),
-    propertyType: str(body.propertyType),
-    properties: str(body.properties),
+    companyType: str(body.companyType),
+    technicians: str(body.technicians),
     consent: body.consent === true,
   };
   const errors = validateLead(input);
@@ -52,8 +52,9 @@ export async function POST(req: NextRequest) {
   const lead = {
     name: input.name.trim(),
     contact: input.contact.trim(),
-    property_type: input.propertyType,
-    properties: input.properties,
+    company_type: input.companyType,
+    technicians: input.technicians,
+    source: SOURCE.test(str(body.source)) ? str(body.source) : null,
     consent: true,
     consent_text: CONSENT_TEXT,
     ip_hash: hash,
@@ -68,21 +69,21 @@ export async function POST(req: NextRequest) {
 
 // Aviso por correo con cada interesado nuevo (Resend). Sin RESEND_API_KEY o LEAD_NOTIFY_EMAIL no se envía:
 // el interesado queda igual guardado en la tabla leads.
-async function notify(lead: { name: string; contact: string; property_type: string; properties: string }) {
+async function notify(lead: { name: string; contact: string; company_type: string; technicians: string; source: string | null }) {
   const key = process.env.RESEND_API_KEY;
   const to = process.env.LEAD_NOTIFY_EMAIL;
   if (!key || !to) return;
 
-  const type = PROPERTY_TYPES.find((t) => t.value === lead.property_type)?.label ?? lead.property_type;
-  const count = PROPERTY_COUNTS.find((c) => c.value === lead.properties)?.label ?? lead.properties;
+  const type = COMPANY_TYPES.find((t) => t.value === lead.company_type)?.label ?? lead.company_type;
+  const count = TECHNICIAN_COUNTS.find((c) => c.value === lead.technicians)?.label ?? lead.technicians;
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
     body: JSON.stringify({
-      from: process.env.LEAD_FROM_EMAIL ?? "Reportes <onboarding@resend.dev>",
+      from: process.env.LEAD_FROM_EMAIL ?? "Tecnio <onboarding@resend.dev>",
       to,
       subject: `Nueva solicitud de demo: ${lead.name}`,
-      text: `Nombre: ${lead.name}\nContacto: ${lead.contact}\nTipo de propiedad: ${type}\nPropiedades: ${count}`,
+      text: `Nombre: ${lead.name}\nContacto: ${lead.contact}\nTipo de empresa: ${type}\nTécnicos: ${count}\nPágina: ${lead.source ?? "—"}`,
     }),
   });
   if (!res.ok) throw new Error(`Resend respondió ${res.status}`);

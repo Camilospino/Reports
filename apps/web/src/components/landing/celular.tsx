@@ -6,17 +6,18 @@ import { usePrefersReducedMotion } from "@/hooks/use-scroll-progress";
 import ui from "./landing.module.css";
 import styles from "./celular.module.css";
 
-const TICK_MS = 2400;
+const TICK_MS = 2000;
 
-// Actividad de ejemplo. Cada 2,4 s entra una nueva arriba y la última sale.
-const EVENTS = [
-  { title: "Terminado", detail: "Daño en la fibra · 10:12", tone: "ok" },
-  { title: "Nuevo reporte con foto", detail: "[Ubicación] · 09:58", tone: "alert" },
-  { title: "Técnico inició", detail: "Bocagrande · 09:40", tone: "progress" },
-  { title: "Sin tomar hace 1 h", detail: "[Ubicación] · 09:05", tone: "pending" },
+const CHECKLIST = ["Revisión inicial", "[Paso 2 del trabajo]", "[Paso 3 del trabajo]", "Prueba final"];
+
+// Estado de la conexión que va mostrando la app: guarda sin señal y envía cuando vuelve.
+const SYNC = [
+  { label: "Sin señal · cambios guardados en el celular", tone: "pending" },
+  { label: "Volvió la señal · enviando…", tone: "progress" },
+  { label: "Todo enviado", tone: "ok" },
 ] as const;
 
-const POINTS = ["Lo de hoy en una pantalla", "Lo que necesita tu atención, primero", "La foto de cada arreglo, a un toque"];
+const POINTS = ["Sus órdenes del día, con dirección y hora", "Fotos, lista de chequeo y materiales en cada orden", "La firma del cliente en la pantalla"];
 
 export function Celular() {
   const ref = useRef<HTMLElement>(null);
@@ -30,22 +31,21 @@ export function Celular() {
     return () => clearInterval(id);
   }, [inView, reduced]);
 
-  // Las tres más recientes: la del tick actual arriba.
-  const visible = [0, 1, 2].map((i) => {
-    const n = tick - i;
-    return { key: n, ...EVENTS[((n % EVENTS.length) + EVENTS.length) % EVENTS.length] };
-  });
+  // La lista se va marcando paso a paso; al completarse vuelve a empezar.
+  const done = reduced ? CHECKLIST.length : tick % (CHECKLIST.length + 2);
+  const sync = SYNC[reduced ? 2 : Math.min(2, Math.floor((tick % 9) / 3))];
 
   return (
-    <section ref={ref} id="celular" aria-labelledby="celular-titulo" className={`${ui.section} ${inView ? "" : ui.paused}`}>
+    <section ref={ref} id="app-tecnico" aria-labelledby="app-tecnico-titulo" className={`${ui.section} ${inView ? "" : ui.paused}`}>
       <div className={`${ui.container} ${styles.layout}`}>
         <div>
-          <p className={ui.eyebrow}>También en tu celular</p>
-          <h2 id="celular-titulo" className={`${ui.h2} ${styles.title}`}>
-            Revisa tu propiedad mientras esperas un café.
+          <p className={ui.eyebrow}>La app del técnico</p>
+          <h2 id="app-tecnico-titulo" className={`${ui.h2} ${styles.title}`}>
+            Funciona hasta en un sótano sin señal.
           </h2>
           <p className={`${ui.lead} ${styles.lead}`}>
-            El mismo panel, adaptado a la pantalla del celular. Sin instalar nada. [confirmar]
+            El técnico ve sus órdenes del día, marca cada paso y cierra con fotos y firma. Si no hay internet, todo se guarda y se envía
+            solo cuando vuelve la señal.
           </p>
           <ul className={styles.points}>
             {POINTS.map((p) => (
@@ -66,32 +66,46 @@ export function Celular() {
             <div className={styles.screen}>
               <div className={styles.island} />
               <p className={styles.hello}>Hola, [Nombre]</p>
-              <p className={styles.place}>Apartamento · hoy</p>
-              <p className={styles.sample}>Datos de ejemplo</p>
+              <p className={styles.place}>3 órdenes hoy</p>
+              <p key={sync.label} className={`${styles.sync} ${styles[sync.tone]}`}>
+                <span className={styles.dot} />
+                {sync.label}
+              </p>
 
-              <div className={styles.kpis}>
-                <div className={styles.kpi}>
-                  <span>Abiertos</span>
-                  <strong>4</strong>
+              <div className={styles.order}>
+                <div className={styles.orderHead}>
+                  <strong>[Tipo de trabajo]</strong>
+                  <span className={styles.orderTime}>08:47</span>
                 </div>
-                <div className={`${styles.kpi} ${styles.kpiOk}`}>
-                  <span>Terminados</span>
-                  <strong>12</strong>
+                <p className={styles.orderMeta}>[Cliente] · [Barrio]</p>
+                <ul className={styles.checklist}>
+                  {CHECKLIST.map((c, i) => (
+                    <li key={c} className={i < done ? styles.checked : undefined}>
+                      <span className={styles.box}>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M5 12.5l4.5 4.5L19 7.5" />
+                        </svg>
+                      </span>
+                      {c}
+                    </li>
+                  ))}
+                </ul>
+                <div className={styles.actions}>
+                  <span>Tomar foto</span>
+                  <span>Firma del cliente</span>
                 </div>
               </div>
 
-              <p className={styles.feedTitle}>Actividad reciente</p>
-              {/* La lista se vuelve a montar en cada cambio: la nueva entra desde arriba y las demás bajan. */}
-              <ul key={tick} className={styles.feed}>
-                {visible.map((e, i) => (
-                  <li key={e.key} className={`${styles.event} ${styles[e.tone]} ${i === 0 ? styles.eventFirst : ""}`}>
-                    <span className={styles.dot} />
-                    <span className={styles.eventText}>
-                      <strong>{e.title}</strong>
-                      <span>{e.detail}</span>
-                    </span>
-                  </li>
-                ))}
+              <p className={styles.feedTitle}>Después</p>
+              <ul className={styles.next}>
+                <li>
+                  <span>[Tipo de trabajo] · [Cliente]</span>
+                  <span className={styles.orderTime}>11:00</span>
+                </li>
+                <li>
+                  <span>[Tipo de trabajo] · [Cliente]</span>
+                  <span className={styles.orderTime}>14:30</span>
+                </li>
               </ul>
             </div>
           </div>

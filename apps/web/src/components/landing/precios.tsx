@@ -1,29 +1,31 @@
 "use client";
 
-import { DEMO_HREF } from "./config";
+import { DEMO_HREF, SIGNUP_HREF } from "./config";
 import { track } from "./analytics";
 import { WhatsappLink } from "./whatsapp";
 import ui from "./landing.module.css";
 import styles from "./precios.module.css";
 
+// Nombres de plan que ya usa la app (companies.plan). Qué funciones van en cada uno está por decidir.
 const PLANS = [
   {
-    name: "Una propiedad",
+    name: "Arranque",
     price: "[$ precio]",
-    features: ["Panel del dueño", "Hasta [N] técnicos", "Historial con fotos"],
-    cta: "Empezar",
+    features: ["Hasta [N] técnicos", "Panel y app del técnico", "Reporte al cliente con fotos y firma"],
+    cta: "Probar 14 días gratis",
+    signup: true,
   },
   {
-    name: "Varias propiedades",
+    name: "Equipo",
     price: "[$ precio]",
-    features: ["Todas tus propiedades", "Comparación entre propiedades", "Tiempos por técnico"],
+    features: ["Hasta [N] técnicos", "Agenda con técnico sugerido", "Inventario y cotizaciones", "Reportes del mes"],
     cta: "Agendar demo",
     featured: true,
   },
   {
-    name: "Administradoras",
+    name: "Empresa",
     price: "A medida",
-    features: ["Muchas propiedades", "Acompañamiento"],
+    features: ["Más de [N] técnicos", "Acompañamiento en la puesta en marcha"],
     cta: "Hablemos",
     whatsapp: true,
   },
@@ -34,7 +36,7 @@ export function Precios() {
     <section id="precios" aria-labelledby="precios-titulo" className={`${ui.section} ${ui.light}`}>
       <div className={ui.container}>
         <h2 id="precios-titulo" className={ui.h2}>
-          Planes para dueños
+          Precios por técnico. Sin sorpresas.
         </h2>
 
         <ul className={styles.grid}>
@@ -43,6 +45,7 @@ export function Precios() {
               {p.featured && <p className={styles.badge}>Recomendado [confirmar]</p>}
               <h3 className={styles.name}>{p.name}</h3>
               <p className={styles.price}>{p.price}</p>
+              {p.price !== "A medida" && <p className={styles.per}>por técnico al mes</p>}
               <ul className={styles.features}>
                 {p.features.map((f) => (
                   <li key={f}>
@@ -58,6 +61,14 @@ export function Precios() {
                 <WhatsappLink className={`${ui.btn} ${ui.btnOutline} ${styles.cta}`} lugar={`plan ${p.name}`}>
                   {p.cta}
                 </WhatsappLink>
+              ) : p.signup ? (
+                <a
+                  href={SIGNUP_HREF}
+                  onClick={() => track("clic probar gratis", { lugar: `plan ${p.name}` })}
+                  className={`${ui.btn} ${ui.btnOutline} ${styles.cta}`}
+                >
+                  {p.cta}
+                </a>
               ) : (
                 <a
                   href={DEMO_HREF}

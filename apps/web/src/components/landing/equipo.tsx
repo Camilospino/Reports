@@ -13,21 +13,24 @@ export function Equipo() {
     <section ref={ref} id="equipo" aria-labelledby="equipo-titulo" className={`${ui.section} ${inView ? "" : ui.paused}`}>
       <div className={ui.container}>
         <h2 id="equipo-titulo" className={`${ui.h2} ${styles.title}`}>
-          Tu equipo alimenta tu panel. Tú no haces nada.
+          Cada uno hace su parte. Tú lo ves todo.
         </h2>
-        <p className={`${ui.lead} ${styles.sub}`}>Una foto. Tres personas. Un solo registro.</p>
+        <p className={`${ui.lead} ${styles.sub}`}>Tres roles, un solo registro.</p>
 
         <ul className={styles.grid}>
           <li className={`${ui.card} ${styles.card}`}>
             <div className={styles.art} aria-hidden="true">
-              <div className={styles.miniPhone}>
-                <span className={styles.lens} />
-                <span className={styles.flash} />
+              {/* Mini agenda: una orden se arrastra hasta su espacio. */}
+              <div className={styles.calendar}>
+                {Array.from({ length: 9 }, (_, i) => (
+                  <span key={i} className={styles.slot} />
+                ))}
+                <span className={styles.dragged} />
               </div>
             </div>
-            <p className={styles.tag}>01 · Quien reporta</p>
-            <h3 className={styles.cardTitle}>Toma la foto y listo.</h3>
-            <p className={styles.cardText}>Residentes, empleados o personal, desde el celular.</p>
+            <p className={styles.tag}>01 · Despachador</p>
+            <h3 className={styles.cardTitle}>Crea y asigna en segundos.</h3>
+            <p className={styles.cardText}>Recibe el pedido, lo agenda y lo asigna al técnico indicado.</p>
           </li>
 
           <li className={`${ui.card} ${styles.card}`}>
@@ -38,7 +41,7 @@ export function Equipo() {
             </div>
             <p className={styles.tag}>02 · Técnico</p>
             <h3 className={styles.cardTitle}>Un toque por paso.</h3>
-            <p className={styles.cardText}>Toma, inicia y termina. Cada toque guarda la hora.</p>
+            <p className={styles.cardText}>En camino, en proceso, terminado. Cada toque guarda la hora y la ubicación.</p>
           </li>
 
           <li className={`${ui.card} ${styles.card} ${styles.owner}`}>
@@ -51,7 +54,7 @@ export function Equipo() {
             </div>
             <p className={styles.tag}>03 · Tú, el dueño</p>
             <h3 className={styles.cardTitle}>Lo ves todo en tu panel.</h3>
-            <p className={styles.cardText}>Qué, dónde, quién y cuánto tardó.</p>
+            <p className={styles.cardText}>Qué se hizo, quién lo hizo, cuánto tardó y cuánto se facturó.</p>
           </li>
         </ul>
       </div>

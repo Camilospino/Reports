@@ -11,10 +11,10 @@ const CHIP_MS = 2000;
 
 // Cada nota lleva la pantalla del portátil a una parada (desplazamiento vertical en px).
 const NOTES = [
-  { tag: "1 · Resumen", title: "Lo de hoy, en una mirada.", text: "Abiertos, terminados y lo que necesita tu atención.", stop: 0 },
-  { tag: "2 · Ubicaciones", title: "Dónde se repiten los daños.", text: "Para decidir dónde invertir en mantenimiento.", stop: 250 },
-  { tag: "3 · Técnicos", title: "Cómo responde tu equipo.", text: "Terminados y tiempos de cada uno.", stop: 420 },
-  { tag: "4 · Detalle", title: "La prueba de cada arreglo.", text: "Foto, responsable y cada hora.", stop: 640 },
+  { tag: "1 · Resumen", title: "Lo de hoy, en una mirada.", text: "Órdenes, técnicos en campo y lo que va atrasado.", stop: 0 },
+  { tag: "2 · Agenda", title: "Arrastra y asigna.", text: "La agenda sugiere el técnico según su carga y su especialidad.", stop: 250 },
+  { tag: "3 · Inventario", title: "Materiales que se descuentan solos.", text: "Cada orden cerrada descuenta lo que se usó.", stop: 420 },
+  { tag: "4 · Detalle", title: "La prueba de cada trabajo.", text: "Fotos, firma del cliente, materiales y la hora de cada paso.", stop: 640 },
 ];
 
 const WEEK = [
@@ -27,18 +27,26 @@ const WEEK = [
   { day: "D", h: 0.3 },
 ];
 
-const PLACES = [
-  { name: "Parqueadero", n: 18 },
-  { name: "Torre A", n: 14 },
-  { name: "Torre B", n: 9 },
-  { name: "Piscina", n: 6 },
-  { name: "Lobby", n: 5 },
+// Agenda del día: inicio y duración en horas desde las 7:00 (el día va de 7:00 a 17:00).
+const AGENDA = [
+  { tech: 1, blocks: [{ start: 0.5, len: 2 }, { start: 3, len: 1.5 }, { start: 6, len: 2.5, suggested: true }] },
+  { tech: 2, blocks: [{ start: 1, len: 3 }, { start: 5, len: 2 }] },
+  { tech: 3, blocks: [{ start: 0, len: 1.5 }, { start: 2.5, len: 2 }, { start: 7, len: 2 }] },
+];
+const DAY_HOURS = 10;
+
+const STOCK = [
+  { name: "[Material 1]", n: 42, max: 60 },
+  { name: "[Material 2]", n: 120, max: 200 },
+  { name: "[Material 3]", n: 3, max: 30, low: true },
+  { name: "[Material 4]", n: 18, max: 40 },
+  { name: "[Material 5]", n: 25, max: 50 },
 ];
 
 const CHIPS = [
   { label: "Disponible", tone: "ok" },
-  { label: "En un trabajo", tone: "progress" },
-  { label: "Terminó uno", tone: "pending" },
+  { label: "En camino", tone: "pending" },
+  { label: "En proceso", tone: "progress" },
 ] as const;
 
 export function Recorrido() {
@@ -99,7 +107,7 @@ export function Recorrido() {
       <div className={ui.container}>
         <p className={ui.eyebrow}>Tu panel, paso a paso</p>
         <h2 id="recorrido-titulo" className={`${ui.h2} ${styles.title}`}>
-          Esto es lo que ves como dueño.
+          Esto es lo que ves desde la oficina.
         </h2>
 
         <div className={styles.layout}>
@@ -115,9 +123,9 @@ export function Recorrido() {
                   {NOTES[active].title} {NOTES[active].text}
                 </p>
                 <aside className={styles.side} aria-hidden="true">
-                  <p className={styles.sideBrand}>Reportes</p>
+                  <p className={styles.sideBrand}>Tecnio</p>
                   <ul>
-                    {["Resumen", "Ubicaciones", "Técnicos", "Detalle"].map((s, i) => (
+                    {["Resumen", "Agenda", "Inventario", "Detalle"].map((s, i) => (
                       <li key={s} className={i === active ? styles.sideActive : undefined}>
                         {s}
                       </li>
@@ -128,13 +136,13 @@ export function Recorrido() {
                   <div className={styles.content} style={{ transform: `translateY(-${NOTES[active].stop}px)` }}>
                     <Zone index={0} active={active}>
                       <div className={styles.kpis}>
-                        <Kpi label="Abiertos" value="4" />
-                        <Kpi label="Terminados" value="12" />
-                        <Kpi label="Promedio" value="[h:mm]" />
-                        <Kpi label="Atención" value="2" warn />
+                        <Kpi label="Hoy" value="14" />
+                        <Kpi label="Completadas" value="9" />
+                        <Kpi label="En campo" value="6" />
+                        <Kpi label="Atrasadas" value="1" warn />
                       </div>
                       <p className={styles.zoneTitle}>
-                        Reportes de la semana <span className={styles.sample}>· datos de ejemplo</span>
+                        Órdenes de la semana <span className={styles.sample}>· datos de ejemplo</span>
                       </p>
                       <div className={styles.chart}>
                         {WEEK.map((d, i) => (
@@ -151,69 +159,105 @@ export function Recorrido() {
 
                     <Zone index={1} active={active}>
                       <p className={styles.zoneTitle}>
-                        Reportes por ubicación <span className={styles.sample}>· datos de ejemplo</span>
+                        Agenda de hoy <span className={styles.sample}>· datos de ejemplo</span>
                       </p>
-                      <ul className={styles.places}>
-                        {PLACES.map((p) => (
-                          <li key={p.name}>
-                            <span className={styles.placeName}>{p.name}</span>
-                            <span className={styles.placeTrack}>
-                              <span className={styles.placeBar} style={{ "--w": p.n / PLACES[0].n } as React.CSSProperties} />
-                            </span>
-                            <span className={styles.placeN}>{p.n}</span>
-                          </li>
-                        ))}
-                      </ul>
+                      <div className={styles.agenda}>
+                        <div className={styles.hours}>
+                          <span>7:00</span>
+                          <span>12:00</span>
+                          <span>17:00</span>
+                        </div>
+                        {AGENDA.map((row, i) => {
+                          const chip = CHIPS[(tick + i) % CHIPS.length];
+                          return (
+                            <div key={row.tech} className={styles.agendaRow}>
+                              <span className={styles.agendaName}>
+                                [Técnico {row.tech}]
+                                <span key={chip.label} className={`${styles.chip} ${styles[chip.tone]}`}>
+                                  {chip.label}
+                                </span>
+                              </span>
+                              <span className={styles.track}>
+                                {row.blocks.map((b) => (
+                                  <span
+                                    key={b.start}
+                                    className={`${styles.block} ${"suggested" in b ? styles.blockSuggested : ""}`}
+                                    style={{ left: `${(b.start / DAY_HOURS) * 100}%`, width: `${(b.len / DAY_HOURS) * 100}%` }}
+                                  >
+                                    [Cliente]
+                                  </span>
+                                ))}
+                              </span>
+                            </div>
+                          );
+                        })}
+                        <p className={styles.legend}>
+                          <span />
+                          Técnico sugerido por su carga y su especialidad
+                        </p>
+                      </div>
                     </Zone>
 
                     <Zone index={2} active={active}>
-                      <p className={styles.zoneTitle}>Técnicos</p>
-                      <ul className={styles.techs}>
-                        {[1, 2, 3].map((n, i) => {
-                          const chip = CHIPS[(tick + i) % CHIPS.length];
-                          return (
-                            <li key={n} className={styles.tech}>
-                              <span className={styles.avatar}>T{n}</span>
-                              <strong>[Técnico {n}]</strong>
-                              <span key={chip.label} className={`${styles.chip} ${styles[chip.tone]}`}>
-                                {chip.label}
-                              </span>
-                              <span className={styles.techStats}>Terminados [#] · Prom. [h:mm]</span>
-                            </li>
-                          );
-                        })}
+                      <p className={styles.zoneTitle}>
+                        Inventario <span className={styles.sample}>· datos de ejemplo</span>
+                      </p>
+                      <ul className={styles.stock}>
+                        {STOCK.map((m) => (
+                          <li key={m.name} className={m.low ? styles.stockLow : undefined}>
+                            <span className={styles.stockName}>{m.low ? `${m.name} · quedan pocos` : m.name}</span>
+                            <span className={styles.stockTrack}>
+                              <span className={styles.stockBar} style={{ "--w": m.n / m.max } as React.CSSProperties} />
+                            </span>
+                            <span className={styles.stockN}>{m.n}</span>
+                          </li>
+                        ))}
                       </ul>
+                      <p className={styles.movement}>
+                        <strong>−2 [Material 1]</strong> · se descontó al cerrar la orden OT-[0000]
+                      </p>
                     </Zone>
 
                     <Zone index={3} active={active}>
                       <div className={styles.detail}>
-                        <div className={styles.photo}>
-                          <span className={styles.flash} />
-                          <span className={styles.photoTag}>[Foto real]</span>
+                        <div className={styles.photos}>
+                          <div className={styles.photo}>
+                            <span className={styles.flash} />
+                            <span className={styles.photoTag}>Antes</span>
+                          </div>
+                          <div className={styles.photo}>
+                            <span className={styles.photoTag}>Después</span>
+                          </div>
+                          <div className={styles.signature}>
+                            <svg width="90" height="36" viewBox="0 0 90 36" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                              <path d="M4 26c8-14 12-18 14-12s-2 12 4 8 8-16 12-14-2 14 4 12 10-10 14-8 4 8 10 6 10-6 20-8" />
+                            </svg>
+                          </div>
                         </div>
                         <div className={styles.detailText}>
-                          <p className={styles.detailTitle}>Reporte #[0000] · No hay servicio de internet, daño en la fibra</p>
-                          <p>Calle 34 #15-04</p>
+                          <p className={styles.detailTitle}>OT-[0000] · [Tipo de trabajo]</p>
+                          <p>[Cliente] · [Barrio]</p>
                           <dl className={styles.times}>
                             <div>
-                              <dt>Reportado</dt>
-                              <dd>07:58</dd>
+                              <dt>Asignada</dt>
+                              <dd>07:40</dd>
                             </div>
                             <div>
-                              <dt>Tomado</dt>
+                              <dt>En camino</dt>
                               <dd>08:20</dd>
                             </div>
                             <div>
-                              <dt>Iniciado</dt>
+                              <dt>Inicio</dt>
                               <dd>08:47</dd>
                             </div>
                             <div>
-                              <dt>Terminado</dt>
+                              <dt>Terminada</dt>
                               <dd>10:12</dd>
                             </div>
                           </dl>
+                          <p>Materiales: [Material 1] × 2</p>
                           <p>
-                            Técnico: <strong>Bocagrande</strong>
+                            Técnico: <strong>[Nombre]</strong> · Firmó: <strong>[Nombre del cliente]</strong>
                           </p>
                         </div>
                       </div>

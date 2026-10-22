@@ -9,19 +9,19 @@ type Bubble = { text?: string; mine?: boolean; typing?: boolean; shake?: boolean
 
 const CARDS: { chat: Bubble[]; title: string; text: string }[] = [
   {
-    chat: [{ text: "¿Alguien ya fue a ver?", shake: true }, { typing: true }],
-    title: "Nadie sabe quién lo tomó",
-    text: "Van dos técnicos al mismo daño, o no va ninguno.",
+    chat: [{ text: "¿Quién va donde el cliente de las 10?", shake: true }, { typing: true }],
+    title: "Nadie sabe quién va",
+    text: "Dos técnicos llegan al mismo cliente, o el cliente se queda esperando.",
   },
   {
-    chat: [{ text: "Mandé foto arriba", mine: true }, { text: "No me carga la foto", shake: true }],
+    chat: [{ text: "¿Ya llegaste?", mine: true }, { text: "Voy en camino…", shake: true }],
+    title: "No sabes dónde están",
+    text: "Llamas a cada técnico para saber si llegó o si terminó.",
+  },
+  {
+    chat: [{ text: "Mándame la foto del trabajo", mine: true }, { text: "Se me olvidó tomarla", shake: true }],
     title: "La evidencia se pierde",
-    text: "La foto queda en el celular de alguien o en un chat viejo.",
-  },
-  {
-    chat: [{ text: "¿Cuándo lo arreglaron?", mine: true }, { text: "Creo que ayer…", shake: true }],
-    title: "No hay tiempos reales",
-    text: "No sabes cuánto tarda un arreglo ni dónde se atasca.",
+    text: "Sin foto ni firma, un reclamo del cliente es tu palabra contra la suya.",
   },
 ];
 
@@ -36,10 +36,10 @@ export function Problema() {
           <div>
             <p className={ui.eyebrow}>El problema</p>
             <h2 id="problema-titulo" className={`${ui.h2} ${styles.title}`}>
-              Sin foto, sin hora y sin responsable, un daño es solo un rumor.
+              Si todo pasa por el chat del grupo, nadie sabe qué pasó de verdad.
             </h2>
           </div>
-          <p className={ui.lead}>Así se enteran hoy la mayoría de dueños de lo que pasa en su propiedad.</p>
+          <p className={ui.lead}>Así se coordinan hoy muchas empresas con técnicos en la calle.</p>
         </div>
 
         <ul className={styles.grid}>

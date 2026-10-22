@@ -1,41 +1,25 @@
 import { ImageResponse } from "next/og";
+import { ogFonts } from "@/components/landing/og-fonts";
 
 // Vista previa del enlace (WhatsApp, LinkedIn, redes): el título y la escena del celular y el portátil.
-export const alt = "Reportes: todo empieza con una foto y termina en tu panel";
+export const alt = "Tecnio: cada trabajo de tus técnicos, con foto, hora y firma";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 const AMBER = "#FBBF24";
 const ROWS = [
-  { label: "Terminado", bg: "#DCFCE7", fg: "#15803D", highlight: true },
-  { label: "En curso", bg: "#DBEAFE", fg: "#1E3A8A" },
-  { label: "Pendiente", bg: "#FEF3C7", fg: "#78350F" },
+  { label: "Completada", bg: "#DCFCE7", fg: "#15803D", highlight: true },
+  { label: "En proceso", bg: "#DBEAFE", fg: "#1E3A8A" },
+  { label: "En camino", bg: "#FEF3C7", fg: "#78350F" },
 ];
-
-// Onest en negrilla para el título (la fuente por defecto de la imagen no tiene negrilla).
-// Si la descarga falla, la imagen sale con la fuente por defecto.
-async function onest(weight: number, text: string) {
-  try {
-    const css = await (await fetch(`https://fonts.googleapis.com/css2?family=Onest:wght@${weight}&text=${encodeURIComponent(text)}`)).text();
-    const url = css.match(/src: url\((.+?)\) format\('(?:opentype|truetype)'\)/)?.[1];
-    if (!url) return null;
-    return await (await fetch(url)).arrayBuffer();
-  } catch {
-    return null;
-  }
-}
 
 // Todas las letras que aparecen en la imagen (solo esas se descargan).
 const TEXT =
-  "Reportes para dueños Todo empieza con una foto. Y termina en tu panel. Daños, técnicos y tiempos de tu propiedad, en vivo. " +
-  "Hoy en tu propiedad Terminado En curso Pendiente Foto del daño · 07:58";
+  "Tecnio para empresas de servicio técnico Cada trabajo, con foto, hora y firma. Y tú lo ves todo. Agenda, técnicos y evidencia, en vivo. " +
+  "Hoy en tu empresa Completada En proceso En camino Foto del trabajo · 10:12";
 
 export default async function Image() {
-  const [regular, bold] = await Promise.all([onest(500, TEXT), onest(800, TEXT)]);
-  const fonts = [
-    ...(regular ? [{ name: "Onest", data: regular, weight: 500 as const, style: "normal" as const }] : []),
-    ...(bold ? [{ name: "Onest", data: bold, weight: 800 as const, style: "normal" as const }] : []),
-  ];
+  const fonts = await ogFonts(TEXT);
 
   return new ImageResponse(
     (
@@ -53,14 +37,14 @@ export default async function Image() {
       >
         <div style={{ display: "flex", flexDirection: "column", width: 520 }}>
           <div style={{ display: "flex", alignItems: "baseline", gap: 12 }}>
-            <div style={{ fontSize: 34, fontWeight: 800 }}>Reportes</div>
-            <div style={{ fontSize: 22, color: "#A1A1AA" }}>para dueños</div>
+            <div style={{ fontSize: 34, fontWeight: 800 }}>Tecnio</div>
+            <div style={{ fontSize: 22, color: "#A1A1AA" }}>para empresas de servicio técnico</div>
           </div>
           <div style={{ display: "flex", flexDirection: "column", marginTop: 72, fontSize: 64, fontWeight: 800, lineHeight: 1.02, letterSpacing: -2.5 }}>
-            <div>Todo empieza con una foto.</div>
-            <div style={{ color: AMBER, marginTop: 8 }}>Y termina en tu panel.</div>
+            <div>Cada trabajo, con foto, hora y firma.</div>
+            <div style={{ color: AMBER, marginTop: 8 }}>Y tú lo ves todo.</div>
           </div>
-          <div style={{ marginTop: "auto", fontSize: 24, color: "#A1A1AA" }}>Daños, técnicos y tiempos de tu propiedad, en vivo.</div>
+          <div style={{ marginTop: "auto", fontSize: 24, color: "#A1A1AA" }}>Agenda, técnicos y evidencia, en vivo.</div>
         </div>
 
         {/* Escena: celular con la foto y portátil con el panel */}
@@ -69,7 +53,7 @@ export default async function Image() {
             <div style={{ display: "flex", borderRadius: "14px 14px 0 0", background: "#27272A", padding: 9 }}>
               <div style={{ display: "flex", flexDirection: "column", flex: 1, borderRadius: 6, background: "#FFFFFF", color: "#161616", padding: 14 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", fontSize: 15, fontWeight: 800 }}>
-                  <div>Hoy en tu propiedad</div>
+                  <div>Hoy en tu empresa</div>
                   <div style={{ display: "flex", alignItems: "center", gap: 6, color: "#15803D", fontSize: 13 }}>
                     <div style={{ width: 8, height: 8, borderRadius: 4, background: "#15803D" }} />
                     en vivo
@@ -129,7 +113,7 @@ export default async function Image() {
               }}
             >
               <div style={{ display: "flex", borderRadius: 999, background: "rgba(9,9,11,0.8)", padding: "5px 12px", fontSize: 14 }}>
-                Foto del daño · 07:58
+                Foto del trabajo · 10:12
               </div>
             </div>
           </div>

@@ -1,18 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { FAQ, type FaqItem } from "./faq";
 import ui from "./landing.module.css";
 import styles from "./preguntas.module.css";
 
-const FAQ = [
-  { q: "¿Tengo que estar en la propiedad?", a: "No. Ves el panel desde tu celular o computador." },
-  { q: "¿Mi equipo tiene que instalar algo?", a: "No. Todo funciona desde el navegador. [confirmar]" },
-  { q: "¿Las fotos quedan guardadas?", a: "Sí. Cada reporte conserva su foto como evidencia." },
-  { q: "¿Puedo ver varias propiedades?", a: "[Pendiente: confirmar si se ofrece]." },
-  { q: "¿Cuánto cuesta?", a: "[Pendiente: precio por propiedad o cotización]." },
-];
 
-export function Preguntas() {
+
+// En las páginas de sector llegan sus propias preguntas.
+export function Preguntas({ items = FAQ }: { items?: FaqItem[] }) {
   // La primera viene abierta; se pueden abrir varias a la vez.
   const [open, setOpen] = useState<Set<number>>(() => new Set([0]));
 
@@ -28,11 +24,11 @@ export function Preguntas() {
     <section aria-labelledby="preguntas-titulo" className={ui.section}>
       <div className={`${ui.container} ${styles.layout}`}>
         <h2 id="preguntas-titulo" className={ui.h2}>
-          Preguntas de dueños
+          Preguntas frecuentes
         </h2>
 
         <div className={styles.list}>
-          {FAQ.map((item, i) => {
+          {items.map((item, i) => {
             const isOpen = open.has(i);
             return (
               <div key={item.q} className={styles.item}>

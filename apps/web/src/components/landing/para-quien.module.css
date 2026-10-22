@@ -1,0 +1,152 @@
+.section {
+  background: var(--bg-alt);
+}
+.title {
+  margin-top: 16px;
+  max-width: 18ch;
+}
+.lead {
+  margin-top: 16px;
+}
+
+/* ---------- Pestañas ---------- */
+.tabs {
+  display: flex;
+  margin-top: 40px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.tab {
+  min-height: 44px;
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-2);
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+.tab:hover {
+  border-color: var(--text-3);
+  color: var(--text);
+}
+.tabOn,
+.tabOn:hover {
+  border-color: var(--amber);
+  background: var(--amber);
+  color: #161616;
+}
+
+/* ---------- Panel ---------- */
+.panel {
+  display: grid;
+  margin-top: 28px;
+  align-items: center;
+  gap: 40px;
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  background: var(--card);
+  padding: clamp(24px, 4vw, 44px);
+  grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr));
+  animation: enter 0.45s var(--ease) both;
+}
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+.panelTitle {
+  font-size: clamp(24px, 3vw, 32px);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+.panelText {
+  margin-top: 14px;
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--text-2);
+}
+.cta {
+  margin-top: 28px;
+  white-space: normal;
+  text-align: left;
+}
+
+/* ---------- Orden de ejemplo ---------- */
+.order {
+  border-radius: 18px;
+  background: #fff;
+  padding: 20px 22px;
+  color: var(--l-text);
+  font-size: 14px;
+  box-shadow: 0 30px 60px rgb(0 0 0 / 0.4);
+}
+.orderHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.orderName {
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+.orderChip {
+  flex-shrink: 0;
+  border-radius: 999px;
+  background: #dcfce7;
+  padding: 3px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ok);
+}
+.orderMeta {
+  margin-top: 4px;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 12px;
+  color: var(--l-text-2);
+}
+.orderLabel {
+  margin-top: 14px;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--amber-ink);
+}
+.checklist {
+  display: grid;
+  margin-top: 6px;
+  gap: 5px;
+}
+.checklist li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.checklist svg {
+  flex-shrink: 0;
+  color: var(--ok);
+}
+.orderLine {
+  margin-top: 4px;
+  color: var(--l-text-2);
+}
+.orderTimes {
+  margin-top: 16px;
+  border-top: 1px solid var(--l-border);
+  padding-top: 12px;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 12px;
+  color: var(--l-text-2);
+}

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { BRAND, DEMO_HREF, NAV_LINKS } from "./config";
+import { BRAND, BRAND_TAG, DEMO_HREF, LOGIN_HREF, NAV_LINKS } from "./config";
 import { track } from "./analytics";
 import ui from "./landing.module.css";
 import styles from "./navbar.module.css";
@@ -28,7 +28,7 @@ export function Navbar() {
       <nav aria-label="Principal" className={`${ui.container} ${styles.inner}`}>
         <Link href="/" className={styles.brand}>
           <span className={styles.brandName}>{BRAND}</span>
-          <span className={styles.brandTag}>para dueños</span>
+          <span className={styles.brandTag}>{BRAND_TAG}</span>
         </Link>
 
         <ul className={styles.links}>
@@ -40,6 +40,10 @@ export function Navbar() {
             </li>
           ))}
         </ul>
+
+        <Link href={LOGIN_HREF} className={`${styles.link} ${styles.login}`}>
+          Entrar
+        </Link>
 
         <a href={DEMO_HREF} onClick={onDemo} className={`${ui.btn} ${ui.btnAmber} ${ui.pulse} ${styles.demo}`}>
           Agendar demo
@@ -68,6 +72,11 @@ export function Navbar() {
               </a>
             </li>
           ))}
+          <li>
+            <Link href={LOGIN_HREF} className={styles.link}>
+              Entrar
+            </Link>
+          </li>
           <li>
             <a href={DEMO_HREF} onClick={onDemo} className={`${ui.btn} ${ui.btnAmber} ${styles.menuDemo}`}>
               Agendar demo

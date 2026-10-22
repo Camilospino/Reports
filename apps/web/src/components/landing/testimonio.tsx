@@ -4,8 +4,8 @@ import styles from "./testimonio.module.css";
 // Solo se muestra cuando haya un testimonio real de un cliente. Mientras tanto, la sección no existe.
 const SHOW_TESTIMONIAL = false;
 const TESTIMONIAL = {
-  quote: "[Testimonio real de un dueño o administrador que use Reportes.]",
-  author: "[Nombre] · [Propiedad]",
+  quote: "[Testimonio real del dueño de una empresa que use Tecnio.]",
+  author: "[Nombre] · [Empresa]",
 };
 
 export function Testimonio() {

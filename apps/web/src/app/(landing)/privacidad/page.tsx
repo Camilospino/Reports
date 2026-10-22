@@ -3,8 +3,8 @@ import { CONTACT_EMAIL } from "@/components/landing/config";
 import { LegalPage } from "@/components/landing/legal-page";
 
 export const metadata: Metadata = {
-  title: "Política de privacidad · Reportes",
-  description: "Cómo Reportes recoge, usa y protege los datos personales, y cómo ejercer tus derechos (Ley 1581 de 2012).",
+  title: "Política de privacidad · Tecnio",
+  description: "Cómo Tecnio recoge, usa y protege los datos personales, y cómo ejercer tus derechos (Ley 1581 de 2012).",
   alternates: { canonical: "/privacidad" },
 };
 
@@ -23,14 +23,14 @@ export default function PrivacyPage() {
       <h2>2. Datos que recogemos</h2>
       <ul>
         <li>
-          <strong>Formulario de demo:</strong> nombre, correo o número de WhatsApp, tipo de propiedad y número de propiedades.
+          <strong>Formulario de demo:</strong> nombre, correo o número de WhatsApp, tipo de empresa y número de técnicos.
         </li>
         <li>
-          <strong>Usuarios del servicio</strong> (dueños, administradores, técnicos y quienes reportan): nombre, correo, teléfono y rol.
+          <strong>Usuarios del servicio</strong> (dueños, despachadores y técnicos): nombre, correo, teléfono y rol.
         </li>
         <li>
-          <strong>Reportes:</strong> fotos del daño, fecha, hora, ubicación dentro de la propiedad y la hora de cada paso del arreglo. Si el
-          técnico lo autoriza en su celular, también la ubicación del dispositivo al marcar cada paso. [confirmar]
+          <strong>Órdenes de trabajo:</strong> fotos del trabajo, firma de quien recibe, materiales usados y la hora de cada paso. Si el
+          técnico da permiso en su celular, también la ubicación del dispositivo al marcar cada paso.
         </li>
         <li>
           <strong>Datos técnicos:</strong> tipo de navegador y una huella cifrada de la dirección IP, que solo se usa para evitar envíos
@@ -41,17 +41,22 @@ export default function PrivacyPage() {
       <h2>3. Para qué los usamos</h2>
       <ul>
         <li>Responder tu solicitud de demo y contactarte por el medio que elegiste.</li>
-        <li>Prestar el servicio: registrar los reportes, mostrarlos en el panel y guardar la evidencia de cada arreglo.</li>
+        <li>Prestar el servicio: registrar las órdenes, mostrarlas en el panel y guardar la evidencia de cada trabajo.</li>
         <li>Dar soporte, avisarte de cambios en el servicio y cumplir obligaciones legales.</li>
         <li>Proteger el servicio contra fraude y abuso.</li>
         <li>Medir el uso de la página con estadísticas agregadas, sin identificar a nadie.</li>
       </ul>
       <p>No vendemos ni alquilamos datos personales.</p>
 
-      <h2>4. Fotos y datos sensibles</h2>
+      <h2>4. Datos de los clientes de cada empresa</h2>
       <p>
-        Las fotos deben mostrar el daño, no a las personas. Si una foto incluye a alguien, se trata como dato personal y puede pedirse su
-        eliminación. Nadie está obligado a autorizar el tratamiento de datos sensibles.
+        Las empresas que usan Tecnio registran datos de sus propios clientes: nombre, teléfono, dirección y la firma de quien recibe el
+        trabajo. De esos datos la empresa es la responsable y Tecnio los trata solo por encargo suyo, para prestarle el servicio. Quien
+        quiera ejercer sus derechos sobre ellos puede acudir a la empresa que lo atendió o escribirnos.
+      </p>
+      <p>
+        Las fotos deben mostrar el trabajo, no a las personas. Si una foto incluye a alguien, se trata como dato personal y puede pedirse
+        su eliminación. Nadie está obligado a autorizar el tratamiento de datos sensibles.
       </p>
 
       <h2>5. Tus derechos</h2>

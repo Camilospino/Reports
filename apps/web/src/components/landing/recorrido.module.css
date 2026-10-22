@@ -220,30 +220,104 @@
   color: var(--l-text-2);
 }
 
-/* Ubicaciones */
-.places {
+/* Agenda: una fila por técnico con sus órdenes del día */
+.agenda {
   display: grid;
   margin-top: 8px;
-  gap: 4px;
-  font-size: 12px;
-  line-height: 18px;
+  gap: 6px;
 }
-.places li {
+.hours {
+  display: flex;
+  justify-content: space-between;
+  margin-left: 108px;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 10px;
+  color: var(--l-text-2);
+}
+.agendaRow {
+  display: grid;
+  align-items: center;
+  gap: 8px;
+  grid-template-columns: 100px minmax(0, 1fr);
+}
+.agendaName {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.agendaName .chip {
+  align-self: flex-start;
+  margin-top: 2px;
+  font-size: 10px;
+  padding: 1px 7px;
+}
+.track {
+  position: relative;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--l-bg);
+}
+.block {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: var(--l-text);
+  padding: 0 6px;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 22px;
+  color: #fff;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.blockSuggested {
+  background: var(--amber);
+  color: #161616;
+}
+.legend {
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--l-text-2);
+}
+.legend span {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 6px;
+  border-radius: 3px;
+  background: var(--amber);
+  vertical-align: -1px;
+}
+
+/* Inventario */
+.stock {
+  display: grid;
+  margin-top: 8px;
+  gap: 6px;
+}
+.stock li {
   display: grid;
   align-items: center;
   gap: 10px;
-  grid-template-columns: 96px minmax(0, 1fr) 24px;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) 56px;
 }
-.placeName {
+.stockName {
+  overflow: hidden;
   color: var(--l-text-2);
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
-.placeTrack {
+.stockTrack {
   height: 10px;
   overflow: hidden;
   border-radius: 999px;
   background: var(--l-border);
 }
-.placeBar {
+.stockBar {
   display: block;
   height: 100%;
   border-radius: inherit;
@@ -251,63 +325,37 @@
   transform: scaleX(var(--w));
   transform-origin: left;
 }
-.places li:first-child .placeBar {
+.stockLow .stockBar {
   background: var(--amber);
 }
-.placeN {
+.stockN {
   font-family: var(--font-geist-mono), ui-monospace, monospace;
   font-weight: 700;
   text-align: right;
 }
-
-/* Técnicos */
-.techs {
-  display: grid;
-  margin-top: 8px;
-  gap: 6px;
-}
-.tech {
-  display: grid;
-  align-items: center;
-  column-gap: 10px;
-  border: 1px solid var(--l-border);
-  border-radius: 10px;
-  background: #fff;
-  padding: 6px 10px;
-  grid-template-columns: 32px minmax(0, 1fr) auto;
-  grid-template-areas:
-    "avatar name chip"
-    "avatar stats chip";
-}
-.avatar {
-  display: inline-flex;
-  width: 32px;
-  height: 32px;
-  align-items: center;
-  justify-content: center;
-  border-radius: 999px;
-  background: var(--l-text);
-  color: #fff;
-  font-size: 11px;
+.stockLow .stockName {
   font-weight: 700;
-  grid-area: avatar;
+  color: var(--pending);
 }
-.tech strong {
-  grid-area: name;
-}
-.techStats {
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 11px;
+.movement {
+  margin-top: 10px;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid var(--l-border);
+  padding: 7px 10px;
+  font-size: 12px;
   color: var(--l-text-2);
-  grid-area: stats;
 }
+.movement strong {
+  color: var(--l-text);
+}
+
 .chip {
   border-radius: 999px;
   padding: 3px 9px;
   font-size: 12px;
   font-weight: 700;
   white-space: nowrap;
-  grid-area: chip;
   animation: chip-in 0.4s var(--ease) both;
 }
 @keyframes chip-in {
@@ -336,12 +384,17 @@
   gap: 16px;
   grid-template-columns: 150px minmax(0, 1fr);
 }
+.photos {
+  display: grid;
+  gap: 8px;
+  grid-template-rows: 1fr 1fr 64px;
+}
 .photo {
   position: relative;
   overflow: hidden;
   border-radius: 10px;
   background:
-    linear-gradient(105deg, transparent 47%, #18181b 48%, #18181b 49.5%, transparent 50.5%),
+    radial-gradient(circle at 50% 50%, #52525b 0 30%, transparent 31%),
     #3f3f46;
 }
 .flash {
@@ -363,14 +416,23 @@
 }
 .photoTag {
   position: absolute;
-  bottom: 8px;
-  left: 8px;
+  bottom: 6px;
+  left: 6px;
   border-radius: 999px;
   background: rgb(9 9 11 / 0.8);
-  padding: 3px 8px;
+  padding: 2px 8px;
   font-family: var(--font-geist-mono), ui-monospace, monospace;
   font-size: 10px;
   color: #fafafa;
+}
+.signature {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed #a8a29e;
+  border-radius: 10px;
+  background: #fff;
+  color: var(--l-text);
 }
 .detailText {
   display: flex;
@@ -504,8 +566,14 @@
     height: 74px;
     margin-top: 4px;
   }
-  .places li {
-    grid-template-columns: 82px minmax(0, 1fr) 20px;
+  .agendaRow {
+    grid-template-columns: 78px minmax(0, 1fr);
+  }
+  .hours {
+    margin-left: 86px;
+  }
+  .stock li {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) 48px;
   }
   .detail {
     grid-template-columns: 96px minmax(0, 1fr);
@@ -522,25 +590,7 @@
   .noteOn:hover {
     transform: none;
   }
-  /* Los números van debajo, a todo el ancho, para que cada técnico ocupe un solo renglón. */
-  .tech {
-    grid-template-areas:
-      "avatar name chip"
-      "avatar stats stats";
-  }
-  .techStats {
-    font-size: 10px;
-    line-height: 14px;
-    white-space: nowrap;
-  }
-  .tech strong {
-    line-height: 16px;
-  }
-  .tech {
-    padding: 5px 8px;
-  }
-  .chip {
-    font-size: 11px;
-    padding: 2px 8px;
+  .photos {
+    grid-template-rows: 1fr 1fr 52px;
   }
 }

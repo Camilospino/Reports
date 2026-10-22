@@ -1,19 +1,20 @@
 // Formulario de demo: opciones y validación. La usan el navegador (errores al instante) y
 // /api/lead (que nunca confía en lo que llega).
 
-export const PROPERTY_TYPES = [
-  { value: "conjunto", label: "Conjunto residencial" },
-  { value: "oficinas", label: "Edificio de oficinas" },
-  { value: "hotel", label: "Hotel" },
-  { value: "colegio", label: "Colegio" },
-  { value: "bodega", label: "Bodega o local" },
+export const COMPANY_TYPES = [
+  { value: "aire", label: "Aire acondicionado y refrigeración" },
+  { value: "seguridad", label: "Seguridad electrónica" },
+  { value: "internet", label: "Internet y telecomunicaciones" },
+  { value: "electricidad", label: "Electricidad y plomería" },
+  { value: "mantenimiento", label: "Mantenimiento de equipos" },
   { value: "otra", label: "Otra" },
 ] as const;
 
-export const PROPERTY_COUNTS = [
-  { value: "1", label: "1" },
-  { value: "2-5", label: "2 a 5" },
-  { value: "6+", label: "Más de 5" },
+export const TECHNICIAN_COUNTS = [
+  { value: "1-3", label: "1 a 3" },
+  { value: "4-10", label: "4 a 10" },
+  { value: "11-30", label: "11 a 30" },
+  { value: "30+", label: "Más de 30" },
 ] as const;
 
 export const CONSENT_TEXT =
@@ -22,14 +23,16 @@ export const CONSENT_TEXT =
 export type LeadInput = {
   name: string;
   contact: string;
-  propertyType: string;
-  properties: string;
+  companyType: string;
+  technicians: string;
   consent: boolean;
 };
 export type LeadField = keyof LeadInput;
 export type LeadErrors = Partial<Record<LeadField, string>>;
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+// Página desde la que llegó la solicitud: "/" o "/para/<sector>".
+export const SOURCE = /^\/[a-z0-9/-]{0,60}$/;
 
 // Correo, o un número de WhatsApp de 7 a 15 dígitos (se permiten espacios, guiones y +57).
 export function isContact(value: string) {
@@ -49,8 +52,8 @@ export function validateLead(input: LeadInput): LeadErrors {
   else if (input.contact.trim().length > 160 || !isContact(input.contact))
     errors.contact = "Revisa el dato: debe ser un correo o un número de WhatsApp.";
 
-  if (!PROPERTY_TYPES.some((t) => t.value === input.propertyType)) errors.propertyType = "Elige el tipo de propiedad.";
-  if (!PROPERTY_COUNTS.some((c) => c.value === input.properties)) errors.properties = "Elige cuántas propiedades tienes.";
+  if (!COMPANY_TYPES.some((t) => t.value === input.companyType)) errors.companyType = "Elige el tipo de empresa.";
+  if (!TECHNICIAN_COUNTS.some((c) => c.value === input.technicians)) errors.technicians = "Elige cuántos técnicos tienes.";
   if (input.consent !== true) errors.consent = "Necesitamos tu autorización para escribirte.";
   return errors;
 }

@@ -53,6 +53,15 @@
   line-height: 1.1;
 }
 
+.per {
+  margin-top: 4px;
+  font-size: 14px;
+  color: var(--l-text-2);
+}
+.featured .per {
+  color: var(--text-2);
+}
+
 .features {
   display: grid;
   margin-top: 24px;

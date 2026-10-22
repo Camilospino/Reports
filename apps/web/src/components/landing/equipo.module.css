@@ -51,41 +51,52 @@
   color: var(--text-2);
 }
 
-/* 1. Celular con flash de cámara */
-.miniPhone {
+/* 1. Agenda: una orden (ámbar) se arrastra hasta su espacio */
+.calendar {
   position: relative;
-  width: 64px;
-  height: 120px;
-  overflow: hidden;
-  border: 3px solid #3f3f46;
-  border-radius: 16px;
-  background: #27272a;
+  display: grid;
+  gap: 6px;
+  grid-template-columns: repeat(3, 40px);
+  grid-template-rows: repeat(3, 26px);
 }
-.lens {
+.slot {
+  border: 1.5px solid #3f3f46;
+  border-radius: 6px;
+}
+.slot:nth-child(2),
+.slot:nth-child(7) {
+  border-color: #52525b;
+  background: #3f3f46;
+}
+.dragged {
   position: absolute;
-  top: 10px;
-  left: 10px;
-  width: 12px;
-  height: 12px;
-  border-radius: 999px;
-  background: #52525b;
-  box-shadow: 0 0 0 3px #18181b;
+  top: 32px; /* fila 2 */
+  left: 92px; /* columna 3 */
+  width: 40px;
+  height: 26px;
+  border-radius: 6px;
+  background: var(--amber);
+  box-shadow: 0 8px 18px rgb(0 0 0 / 0.45);
+  animation: drag 3.2s var(--ease) infinite;
 }
-.flash {
-  position: absolute;
-  inset: 0;
-  background: #fff;
-  opacity: 0;
-  animation: flash 2.6s ease-out infinite;
-}
-@keyframes flash {
+@keyframes drag {
   0%,
-  70%,
+  15% {
+    opacity: 0;
+    transform: translate(46px, -40px) rotate(6deg);
+  }
+  25% {
+    opacity: 1;
+    transform: translate(46px, -40px) rotate(6deg);
+  }
+  60%,
+  90% {
+    opacity: 1;
+    transform: none;
+  }
   100% {
     opacity: 0;
-  }
-  73% {
-    opacity: 0.95;
+    transform: none;
   }
 }
 

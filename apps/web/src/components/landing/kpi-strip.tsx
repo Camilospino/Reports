@@ -7,11 +7,11 @@ import ui from "./landing.module.css";
 import styles from "./kpi-strip.module.css";
 
 // Valores de ejemplo que van rotando para dar sensación de "en vivo".
-const OPEN = [4, 5, 4, 3];
-const DONE = [12, 12, 13, 14];
+const TODAY = [14, 15, 15, 16];
+const DONE = [9, 9, 10, 11];
 const TICK_MS = 2400;
 
-const AUDIENCE = ["Conjuntos residenciales", "Edificios de oficinas", "Hoteles", "Colegios", "Bodegas y locales"];
+const AUDIENCE = ["Aire acondicionado", "Seguridad electrónica", "Internet y telecomunicaciones", "Electricidad y plomería", "Mantenimiento de equipos"];
 
 export function KpiStrip() {
   const ref = useRef<HTMLElement>(null);
@@ -26,16 +26,16 @@ export function KpiStrip() {
     return () => clearInterval(id);
   }, [inView, reduced]);
 
-  const open = OPEN[tick % OPEN.length];
+  const today = TODAY[tick % TODAY.length];
   const done = DONE[tick % DONE.length];
 
   return (
     <section ref={ref} aria-label="Cifras de ejemplo del panel" className={`${styles.strip} ${inView ? "" : ui.paused}`}>
       <dl className={`${ui.container} ${styles.grid}`}>
-        <Kpi label="Reportes abiertos" value={open} note="datos de ejemplo" />
-        <Kpi label="Terminados hoy" value={done} note="con foto y hora" tone={styles.ok} />
-        <Kpi label="Tiempo promedio" value="[h:mm]" note="del reporte al cierre" />
-        <Kpi label="Necesitan atención" value={2} note="sin tomar hace 1 h" tone={styles.warn} />
+        <Kpi label="Órdenes de hoy" value={today} note="datos de ejemplo" />
+        <Kpi label="Completadas hoy" value={done} note="con foto y firma" tone={styles.ok} />
+        <Kpi label="Técnicos en campo" value={6} note="reportando desde su celular" />
+        <Kpi label="Atrasadas" value={1} note="no arrancaron a tiempo" tone={styles.warn} />
       </dl>
 
       <div className={styles.marquee}>
@@ -67,7 +67,7 @@ function Kpi({ label, value, note, tone }: { label: string; value: number | stri
 function AudienceList({ hidden = false }: { hidden?: boolean }) {
   return (
     <ul className={styles.list} aria-hidden={hidden || undefined}>
-      <li className={styles.lead}>Para dueños de</li>
+      <li className={styles.lead}>Para empresas de</li>
       {AUDIENCE.map((a) => (
         <li key={a} className={styles.item}>
           <span className={styles.dot} aria-hidden="true" />

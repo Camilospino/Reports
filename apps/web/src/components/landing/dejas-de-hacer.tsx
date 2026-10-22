@@ -6,11 +6,11 @@ import ui from "./landing.module.css";
 import styles from "./dejas-de-hacer.module.css";
 
 const ITEMS = [
-  "Llamar para preguntar si ya arreglaron",
+  "Llamar al técnico para saber si llegó",
   "Buscar fotos en el chat del grupo",
-  "Ir hasta la propiedad a revisar",
-  "Adivinar cuánto se demoró el técnico",
-  "Llegar a la junta sin datos",
+  "Guardar firmas en papel",
+  "Contar a mano los materiales del mes",
+  "Discutir un reclamo sin pruebas",
 ];
 
 export function DejasDeHacer() {
