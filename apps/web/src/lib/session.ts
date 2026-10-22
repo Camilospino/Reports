@@ -10,10 +10,10 @@ export const COMPANY_COOKIE = "tecnio_empresa";
 // Usuario actual con su membership y empresa activas.
 export const getSession = cache(async () => {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
+  // getClaims verifica el token en el propio servidor (llaves asimétricas): sin ir a Supabase Auth en cada página.
+  const { data } = await supabase.auth.getClaims();
+  if (!data) redirect("/login");
+  const user = { id: data.claims.sub };
 
   const { data: memberships } = await supabase
     .from("memberships")

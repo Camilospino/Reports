@@ -30,9 +30,9 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // getClaims refresca el token si venció y lo verifica sin ir a Supabase Auth (con llaves asimétricas).
+  const { data } = await supabase.auth.getClaims();
+  const user = data ? { id: data.claims.sub } : null;
 
   const path = request.nextUrl.pathname;
   const redirectTo = (pathname: string) => {
@@ -48,7 +48,8 @@ export async function updateSession(request: NextRequest) {
     return startsWith(path, PRIVATE) ? redirectTo("/login") : response;
   }
 
-  if (startsWith(path, ["/app", ...AUTH_PAGES]) || path === "/onboarding") {
+  // En /app no se consulta: getSession() ya manda a /onboarding si no hay empresa.
+  if (startsWith(path, AUTH_PAGES) || path === "/onboarding") {
     const { count } = await supabase
       .from("memberships")
       .select("id", { count: "exact", head: true })
@@ -57,7 +58,6 @@ export async function updateSession(request: NextRequest) {
     const hasCompany = (count ?? 0) > 0;
 
     if (startsWith(path, AUTH_PAGES)) return redirectTo(hasCompany ? "/app" : "/onboarding");
-    if (startsWith(path, ["/app"]) && !hasCompany) return redirectTo("/onboarding");
     if (path === "/onboarding" && hasCompany) return redirectTo("/app");
   }
   return response;

@@ -21,7 +21,8 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
   const fecha = /^\d{4}-\d{2}-\d{2}$/.test(params.fecha ?? "") ? params.fecha : undefined;
   const tecnico = params.tecnico === "sin" || UUID.test(params.tecnico ?? "") ? params.tecnico : undefined;
 
-  const { data: technicians } = await supabase
+  // Se lanza ya y se espera junto con las órdenes.
+  const techniciansQuery = supabase
     .from("memberships")
     .select("id, full_name")
     .eq("company_id", company.id)
@@ -61,7 +62,7 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
     }
   }
 
-  const { data: orders, error } = await query;
+  const [{ data: orders, error }, { data: technicians }] = await Promise.all([query, techniciansQuery]);
   if (error) throw new Error(error.message);
   const filtering = Boolean(q || estado || tecnico || fecha);
 
