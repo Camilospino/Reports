@@ -1,0 +1,709 @@
+/* Portada animada con el scroll.
+   Las clases .r1 ... .r10 se ponen en .stage a medida que se alcanza cada fase, y cada elemento
+   cambia de estado con transiciones que solo usan transform y opacity.
+   Escena de diseño: 1200 × 800 en escritorio y 400 × 860 en celular; se escala con --s. */
+
+.section {
+  position: relative;
+  height: 260vh;
+  background: var(--bg);
+}
+
+.stage {
+  position: sticky;
+  top: var(--nav-h);
+  height: calc(100vh - var(--nav-h));
+  height: calc(100svh - var(--nav-h));
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.scene {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1200px;
+  height: 800px;
+  transform: translate(-50%, -50%) scale(var(--s, 1));
+}
+
+/* Todo lo que cambia con la fase usa la misma curva. */
+.intro,
+.phone,
+.frame,
+.photoDim,
+.tag,
+.laptop,
+.lid,
+.row,
+.caption,
+.hint {
+  transition:
+    transform 0.7s var(--ease),
+    opacity 0.5s ease;
+}
+
+/* ---------- Brillo de fondo ---------- */
+.glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1000px;
+  height: 1000px;
+  margin: -500px 0 0 -500px;
+  background: radial-gradient(closest-side, rgb(251 191 36 / 0.3), rgb(251 191 36 / 0.08) 55%, transparent);
+  opacity: 0.35;
+  animation: breathe 3s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+@keyframes breathe {
+  to {
+    opacity: 0.8;
+  }
+}
+
+/* ---------- Texto inicial ---------- */
+.intro {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  z-index: 5;
+  padding-inline: 24px;
+  text-align: center;
+  transform: translateY(-50%);
+}
+.r1 .intro {
+  opacity: 0;
+  transform: translateY(calc(-50% - 40px));
+}
+
+.live {
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgb(24 24 27 / 0.8);
+  padding: 4px 14px;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.liveDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--amber);
+  animation: blink 1.2s steps(2, jump-none) infinite;
+}
+@keyframes blink {
+  50% {
+    opacity: 0.2;
+  }
+}
+
+.h1 {
+  margin-top: 24px;
+  font-size: 80px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  text-wrap: balance;
+}
+.h1Accent {
+  display: block;
+  color: var(--amber);
+}
+
+/* ---------- Celular ---------- */
+.phone {
+  position: absolute;
+  top: 90px;
+  left: 450px;
+  width: 300px;
+  height: 620px;
+  transform: scale(3.4);
+}
+.r1 .phone {
+  transform: scale(1);
+}
+.r5 .phone {
+  transform: translateX(-340px) scale(0.62);
+}
+
+.frame {
+  position: absolute;
+  inset: 0;
+  border-radius: 54px;
+  background: linear-gradient(140deg, #a1a1aa 0%, #3f3f46 20%, #18181b 50%, #3f3f46 80%, #a1a1aa 100%);
+  box-shadow: 0 40px 80px rgb(0 0 0 / 0.55);
+  opacity: 0;
+}
+.r1 .frame {
+  opacity: 1;
+}
+
+.screen {
+  position: absolute;
+  inset: 3px;
+  overflow: hidden;
+  border-radius: 51px;
+  background: #000;
+}
+.photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+/* Oscurece la foto mientras el título está encima. */
+.photoDim {
+  position: absolute;
+  inset: 0;
+  background: rgb(9 9 11 / 0.62);
+}
+.r1 .photoDim {
+  opacity: 0;
+}
+
+.scanner {
+  position: absolute;
+  inset: 0;
+  animation: scan 3s linear infinite;
+}
+.scanner span {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 2px;
+  background: var(--amber);
+  box-shadow: 0 0 18px 5px rgb(251 191 36 / 0.55);
+}
+@keyframes scan {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
+
+.island {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  width: 92px;
+  height: 27px;
+  margin-left: -46px;
+  border-radius: 20px;
+  background: #000;
+}
+
+.photoTag {
+  position: absolute;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: rgb(9 9 11 / 0.8);
+  padding: 6px 12px;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+/* ---------- Etiquetas flotantes ---------- */
+.tag {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border-radius: 16px;
+  background: #fff;
+  padding: 12px 16px;
+  color: var(--l-text);
+  box-shadow: 0 18px 40px rgb(0 0 0 / 0.45);
+  opacity: 0;
+  transform: translateY(14px) scale(0.9);
+}
+.tagLabel {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--l-text-2);
+}
+.tagValue {
+  font-size: 15px;
+  font-weight: 700;
+}
+.tagLoc {
+  top: 220px;
+  left: 190px;
+}
+.tagTech {
+  top: 320px;
+  left: 790px;
+}
+.tagDone {
+  top: 470px;
+  left: 220px;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  background: var(--amber);
+  color: #161616;
+}
+
+.r2 .tagLoc,
+.r3 .tagTech,
+.r4 .tagDone {
+  opacity: 1;
+  transform: none;
+}
+.r5 .tagLoc,
+.r5 .tagTech,
+.r5 .tagDone {
+  opacity: 0;
+  transform: translateY(14px) scale(0.9);
+}
+
+/* ---------- Portátil ---------- */
+.laptop {
+  position: absolute;
+  top: 217px;
+  left: 400px;
+  width: 600px;
+  opacity: 0;
+  transform: translateX(220px);
+}
+.r5 .laptop {
+  opacity: 1;
+  transform: none;
+}
+
+.lid {
+  width: 560px;
+  height: 350px;
+  margin-inline: auto;
+  border-radius: 16px 16px 0 0;
+  background: #27272a;
+  padding: 10px;
+  transform-origin: bottom;
+  transform: perspective(1600px) rotateX(-88deg);
+}
+.r6 .lid {
+  transform: perspective(1600px) rotateX(0deg);
+}
+
+.base {
+  position: relative;
+  height: 16px;
+  border-radius: 0 0 12px 12px;
+  background: linear-gradient(#a1a1aa, #71717a);
+}
+.notch {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 96px;
+  height: 6px;
+  margin-left: -48px;
+  border-radius: 0 0 8px 8px;
+  background: #52525b;
+}
+
+/* Pantalla del panel (fondo claro) */
+.panel {
+  display: grid;
+  height: 100%;
+  grid-template-columns: 110px 1fr;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--l-text);
+  font-size: 11px;
+}
+.side {
+  border-right: 1px solid var(--l-border);
+  background: var(--l-bg);
+  padding: 12px 8px;
+}
+.sideBrand {
+  margin: 0 0 10px 6px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.side li {
+  border-radius: 6px;
+  padding: 6px;
+  color: var(--l-text-2);
+}
+.side .sideActive {
+  background: #fef3c7;
+  font-weight: 700;
+  color: var(--l-text);
+}
+
+.main {
+  padding: 12px 14px;
+}
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.headTitle {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.headLive {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 700;
+  color: var(--ok);
+}
+.headDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--ok);
+  animation: blink 1.2s steps(2, jump-none) infinite;
+}
+.sample {
+  margin-top: 2px;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 10px;
+  color: var(--l-text-2);
+}
+
+.kpis {
+  display: grid;
+  margin-top: 10px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.kpi {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--l-border);
+  border-radius: 10px;
+  padding: 8px 10px;
+  color: var(--l-text-2);
+}
+.kpi strong {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--l-text);
+}
+.kpiWarn {
+  border-color: var(--amber);
+}
+
+.rows {
+  display: grid;
+  margin-top: 10px;
+  gap: 6px;
+}
+.row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--l-border);
+  border-radius: 10px;
+  padding: 6px 8px;
+  opacity: 0;
+  transform: translateX(40px);
+}
+.rowHighlight {
+  border-color: var(--amber);
+  background: #fffbeb;
+}
+/* Halo de la fila resaltada: capa aparte que solo cambia su opacidad. */
+.rowHighlight::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  box-shadow:
+    0 0 0 4px rgb(251 191 36 / 0.35),
+    0 0 26px rgb(251 191 36 / 0.55);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.r7 .row1,
+.r8 .row2,
+.r8 .row3 {
+  opacity: 1;
+  transform: none;
+}
+.r8 .row3 {
+  transition-delay: 0.12s;
+}
+.r9 .rowHighlight::after {
+  opacity: 1;
+}
+
+.thumb {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  background:
+    linear-gradient(115deg, transparent 46%, #18181b 47%, #18181b 50%, transparent 51%),
+    #3f3f46;
+}
+.rowText {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  color: var(--l-text-2);
+}
+.rowText strong {
+  color: var(--l-text);
+}
+.chip {
+  border-radius: 999px;
+  padding: 3px 8px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.ok {
+  background: #dcfce7;
+  color: var(--ok);
+}
+.progress {
+  background: #dbeafe;
+  color: var(--progress);
+}
+.pending {
+  background: #fef3c7;
+  color: var(--pending);
+}
+
+/* ---------- Línea celular → portátil ---------- */
+.line {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.line path {
+  fill: none;
+  stroke: var(--amber);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 400;
+  stroke-dashoffset: 400;
+  filter: drop-shadow(0 0 6px rgb(251 191 36 / 0.7));
+  transition: stroke-dashoffset 0.9s var(--ease);
+}
+.line circle {
+  fill: var(--amber);
+  opacity: 0;
+  transition: opacity 0.3s ease 0.7s;
+}
+.r8 .line path {
+  stroke-dashoffset: 0;
+}
+.r8 .line circle {
+  opacity: 1;
+}
+.lineMobile {
+  display: none;
+}
+
+/* ---------- Texto de cada fase ---------- */
+.captions {
+  position: absolute;
+  top: 724px;
+  right: 0;
+  left: 0;
+  height: 70px;
+}
+.caption {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-inline: 24px;
+  font-size: 22px;
+  font-weight: 600;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(14px);
+}
+.captionFinal {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--amber);
+}
+.captionOn {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- Pista de scroll ---------- */
+.hint {
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  z-index: 6;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--card);
+  padding: 8px 16px;
+  font-size: 13px;
+  color: var(--text-2);
+  opacity: 0;
+  transform: translateY(-6px);
+}
+.hintOn {
+  opacity: 1;
+  transform: none;
+}
+.wheel {
+  animation: wheel 1.6s ease-in-out infinite;
+}
+@keyframes wheel {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  80%,
+  100% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+/* ---------- Celular (menos de 768px): todo en columna ---------- */
+@media (max-width: 767px) {
+  .section {
+    height: 320vh;
+    height: 320svh;
+  }
+  .scene {
+    width: 400px;
+    height: 860px;
+  }
+  .h1 {
+    font-size: 44px;
+  }
+
+  .phone {
+    top: 100px;
+    left: 50px;
+  }
+  .r5 .phone {
+    transform: translateY(-235px) scale(0.5);
+  }
+
+  .tagLoc {
+    top: 40px;
+    left: 12px;
+  }
+  .tagTech {
+    top: 650px;
+    left: 150px;
+  }
+  .tagDone {
+    top: 120px;
+    left: 190px;
+  }
+
+  .laptop {
+    top: 357px;
+    left: -100px;
+    transform: translateY(120px) scale(0.62);
+  }
+  .r5 .laptop {
+    transform: scale(0.62);
+  }
+
+  .lineDesktop {
+    display: none;
+  }
+  .lineMobile {
+    display: block;
+  }
+
+  .captions {
+    top: 772px;
+    height: 80px;
+  }
+  /* Margen a los lados para que el botón flotante de WhatsApp no tape el texto. */
+  .caption {
+    padding-inline: 84px;
+    font-size: 19px;
+    line-height: 1.25;
+  }
+  .captionFinal {
+    font-size: 25px;
+  }
+
+  .hint {
+    top: 12px;
+    right: 12px;
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}
+
+/* ---------- Menos movimiento: una sola pantalla con la escena final y el título ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .section {
+    height: auto;
+  }
+  .stage {
+    position: relative;
+    top: 0;
+  }
+}
+.reduced .intro {
+  top: 8px;
+  opacity: 1;
+  transform: none;
+}
+.reduced .live {
+  display: none;
+}
+.reduced .h1 {
+  margin-top: 0;
+  font-size: 56px;
+}
+@media (max-width: 767px) {
+  .reduced .h1 {
+    font-size: 34px;
+  }
+  /* En celular el título ocupa el sitio del celular pequeño; el celular baja un poco. */
+  .reduced .phone {
+    transform: translateY(-120px) scale(0.4);
+  }
+  .reduced .lineMobile {
+    display: none;
+  }
+}

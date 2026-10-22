@@ -1,0 +1,137 @@
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 24px 64px;
+}
+.head > div {
+  flex: 2 1 560px;
+}
+.head > p {
+  flex: 1 1 280px;
+  max-width: 380px;
+}
+
+.title {
+  margin-top: 16px;
+  max-width: 16ch;
+}
+
+.grid {
+  display: grid;
+  margin-top: 56px;
+  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+}
+
+.card {
+  padding: 16px 16px 28px;
+}
+
+/* Simulación del chat de grupo */
+.chat {
+  display: flex;
+  min-height: 168px;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  border-radius: 14px;
+  background: #efeae2;
+  padding: 20px 16px;
+  color: #161616;
+}
+.bubble {
+  max-width: 82%;
+  border-radius: 12px;
+  padding: 9px 13px;
+  font-size: 15px;
+  line-height: 1.35;
+  box-shadow: 0 1px 1px rgb(0 0 0 / 0.08);
+}
+.theirs {
+  align-self: flex-start;
+  border-top-left-radius: 4px;
+  background: #fff;
+}
+.mine {
+  align-self: flex-end;
+  border-top-right-radius: 4px;
+  background: #d9fdd3;
+}
+
+/* Una burbuja por tarjeta tiembla suave, con pausas largas entre temblores. */
+.shake {
+  animation: shake 3.2s ease-in-out infinite;
+}
+.card:nth-child(2) .shake {
+  animation-delay: 0.9s;
+}
+.card:nth-child(3) .shake {
+  animation-delay: 1.8s;
+}
+@keyframes shake {
+  0%,
+  70%,
+  100% {
+    transform: translateX(0) rotate(0);
+  }
+  74% {
+    transform: translateX(-3px) rotate(-1deg);
+  }
+  78% {
+    transform: translateX(3px) rotate(1deg);
+  }
+  82% {
+    transform: translateX(-2px) rotate(-0.5deg);
+  }
+  86% {
+    transform: translateX(2px) rotate(0.5deg);
+  }
+}
+
+/* Tres puntos de "escribiendo" */
+.typing {
+  display: inline-flex;
+  height: 19px;
+  align-items: center;
+  gap: 4px;
+}
+.typing span {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #71717a;
+  animation: typing 1.2s ease-in-out infinite;
+}
+.typing span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.typing span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+@keyframes typing {
+  0%,
+  60%,
+  100% {
+    opacity: 0.35;
+    transform: translateY(0);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-4px);
+  }
+}
+
+.cardTitle {
+  margin-top: 24px;
+  padding-inline: 8px;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.cardText {
+  margin-top: 8px;
+  padding-inline: 8px;
+  line-height: 1.55;
+  color: var(--text-2);
+}

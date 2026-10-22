@@ -1,0 +1,126 @@
+.strip {
+  border-block: 1px solid var(--border);
+  background: var(--bg-alt);
+  padding-top: 48px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 32px 24px;
+}
+
+.kpi {
+  display: flex;
+  flex-direction: column;
+  border-left: 2px solid var(--border);
+  padding-left: 20px;
+}
+.label {
+  order: 1;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-2);
+}
+.value {
+  order: 2;
+  min-height: 58px;
+  margin-top: 6px;
+  overflow: hidden;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+}
+.note {
+  order: 3;
+  margin-top: 2px;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 13px;
+  color: var(--text-2);
+}
+/* En celular, 2 × 2 en lugar de una columna larga. */
+@media (max-width: 519px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px 16px;
+  }
+  .kpi {
+    padding-left: 14px;
+  }
+  .value {
+    min-height: 44px;
+    font-size: 36px;
+  }
+}
+
+.ok {
+  color: var(--ok-d);
+}
+.warn {
+  color: var(--amber);
+}
+
+.number {
+  display: inline-block;
+  animation: enter 0.5s var(--ease) both;
+}
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+/* ---------- Marquesina ---------- */
+.marquee {
+  margin-top: 48px;
+  overflow: hidden;
+  border-top: 1px solid var(--border);
+  padding-block: 18px;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.track {
+  display: flex;
+  width: max-content;
+  animation: slide 30s linear infinite;
+}
+.marquee:hover .track {
+  animation-play-state: paused;
+}
+@keyframes slide {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.list {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding-right: 28px;
+  font-size: 18px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.lead {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+.item {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--amber);
+}

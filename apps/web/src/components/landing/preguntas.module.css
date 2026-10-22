@@ -1,0 +1,53 @@
+.layout {
+  display: grid;
+  align-items: start;
+  gap: 32px 64px;
+  grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr));
+}
+
+.list {
+  border-top: 1px solid var(--border);
+}
+.item {
+  border-bottom: 1px solid var(--border);
+}
+
+.question {
+  display: flex;
+  width: 100%;
+  min-height: 64px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-block: 18px;
+  font-size: 19px;
+  font-weight: 600;
+  text-align: left;
+  color: var(--text);
+  cursor: pointer;
+}
+.plus {
+  flex-shrink: 0;
+  color: var(--amber);
+  transition: transform 0.35s var(--ease);
+}
+.question[aria-expanded="true"] .plus {
+  transform: rotate(45deg);
+}
+
+/* La respuesta entra deslizándose (solo transform y opacity). */
+.answer:not([hidden]) {
+  animation: reveal 0.4s var(--ease) both;
+}
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+.answer p {
+  max-width: 60ch;
+  padding-bottom: 22px;
+  line-height: 1.6;
+  color: var(--text-2);
+}

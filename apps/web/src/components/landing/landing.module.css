@@ -1,0 +1,213 @@
+/* Sistema de diseño de la página pública. Vive aparte del panel: nada de esto llega a /app.
+   Contraste revisado (AA): el gris terciario #71717A sobre #09090B da 4.1:1, así que solo se usa
+   en texto grande; los colores de estado del prompt solo pasan sobre fondo claro y tienen su
+   variante para fondo oscuro. */
+.root {
+  --bg: #09090b;
+  --bg-alt: #0f0f12;
+  --card: #18181b;
+  --border: #27272a;
+  --text: #fafafa;
+  --text-2: #a1a1aa;
+  --text-3: #71717a;
+
+  --l-bg: #f7f6f3;
+  --l-text: #161616;
+  --l-text-2: #57534e;
+  --l-border: #e7e5e4;
+
+  --amber: #fbbf24;
+  --amber-hover: #fde68a;
+  --amber-ink: #92400e;
+
+  /* Estados: el primero para fondo claro, el segundo (-d) para fondo oscuro. */
+  --ok: #15803d;
+  --ok-d: #86efac;
+  --progress: #1e3a8a;
+  --progress-d: #93c5fd;
+  --pending: #78350f;
+  --pending-d: #fcd34d;
+  --alert: #dc2626;
+  --alert-d: #f87171;
+
+  --nav-h: 68px;
+  --ease: cubic-bezier(0.65, 0, 0.25, 1);
+
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-onest), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Que el fondo al "rebotar" el scroll sea oscuro, y que los anclajes no queden bajo el menú. */
+:global(html):has(.root) {
+  scroll-padding-top: calc(var(--nav-h, 68px) + 8px);
+  background: #09090b;
+}
+@media (prefers-reduced-motion: no-preference) {
+  :global(html):has(.root) {
+    scroll-behavior: smooth;
+  }
+}
+
+.root :focus-visible {
+  outline: 3px solid var(--amber);
+  outline-offset: 2px;
+}
+/* En secciones claras el ámbar casi no se ve (1.6:1); ahí el foco va en ámbar oscuro. */
+.light :focus-visible {
+  outline-color: var(--amber-ink);
+}
+
+.container {
+  width: 100%;
+  max-width: 1248px; /* 1200 de contenido + 24 de padding a cada lado */
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+
+.light {
+  background: var(--l-bg);
+  color: var(--l-text);
+}
+
+.mono {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+.eyebrow {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+.light .eyebrow {
+  color: var(--amber-ink);
+}
+
+.h2 {
+  font-size: clamp(34px, 5vw, 54px);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.02;
+}
+
+/* Botones píldora, mínimo 44px de alto para el dedo. */
+.btn {
+  position: relative;
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 999px;
+  padding: 10px 20px;
+  font-size: 15px;
+  font-weight: 700;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.btnAmber {
+  background: var(--amber);
+  color: #161616;
+}
+.btnAmber:hover {
+  background: var(--amber-hover);
+}
+.btnOutline {
+  border: 1.5px solid currentColor;
+}
+
+/* Pulso suave: un anillo aparte que solo cambia escala y opacidad (no anima la sombra). */
+.pulse::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 0 6px rgb(251 191 36 / 0.5);
+  opacity: 0;
+  pointer-events: none;
+  animation: pulse 2.4s ease-out infinite;
+}
+@keyframes pulse {
+  0% {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(1.12, 1.35);
+  }
+}
+
+.section {
+  padding-block: clamp(72px, 10vw, 120px);
+}
+
+.lead {
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--text-2);
+}
+.light .lead {
+  color: var(--l-text-2);
+}
+
+/* Tarjeta oscura: sube al pasar el mouse, el borde se vuelve ámbar y aparece la sombra
+   (la sombra es una capa aparte que solo cambia de opacidad). */
+.card {
+  position: relative;
+  isolation: isolate; /* la sombra (z-index -1) queda detrás de la tarjeta, no del fondo de la sección */
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  background: var(--card);
+  transition:
+    transform 0.35s var(--ease),
+    border-color 0.35s ease;
+}
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  box-shadow: 0 24px 60px rgb(0 0 0 / 0.5), 0 0 0 1px rgb(251 191 36 / 0.15);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+.card:hover {
+  border-color: var(--amber);
+  transform: translateY(-6px);
+}
+.card:hover::after {
+  opacity: 1;
+}
+
+/* Las animaciones en bucle se detienen cuando su sección sale de la pantalla. */
+.paused,
+.paused * {
+  animation-play-state: paused !important;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root *,
+  .root *::before,
+  .root *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

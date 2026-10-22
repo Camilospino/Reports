@@ -1,0 +1,52 @@
+.page {
+  padding-block: 72px 96px;
+}
+.body {
+  max-width: 808px; /* 760 de texto + padding */
+}
+.title {
+  font-size: clamp(36px, 6vw, 56px);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.02;
+}
+.updated {
+  margin-top: 12px;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 14px;
+  color: var(--l-text-2);
+}
+.body h2 {
+  margin-top: 40px;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.body p {
+  margin-top: 12px;
+  line-height: 1.65;
+  color: var(--l-text-2);
+}
+.body .draft {
+  margin-top: 16px;
+  border-left: 4px solid var(--amber);
+  background: #fffbeb;
+  padding: 10px 14px;
+  font-weight: 600;
+  color: var(--l-text);
+}
+.body ul {
+  margin-top: 12px;
+  padding-left: 22px;
+  list-style: disc;
+  line-height: 1.65;
+  color: var(--l-text-2);
+}
+.body li + li {
+  margin-top: 6px;
+}
+.body a {
+  color: var(--amber-ink);
+  font-weight: 600;
+  text-decoration: underline;
+}

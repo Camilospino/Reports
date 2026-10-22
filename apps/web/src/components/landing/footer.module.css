@@ -1,0 +1,56 @@
+.footer {
+  border-top: 1px solid var(--border);
+  background: var(--bg);
+  padding-block: 64px 32px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+  gap: 40px 32px;
+}
+
+.brandName {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+.tagline {
+  margin-top: 8px;
+  color: var(--text-2);
+}
+
+.title {
+  margin-bottom: 8px;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+
+.link {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  color: var(--text);
+  text-decoration: none;
+}
+.link:hover {
+  color: var(--amber);
+}
+.plain {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  color: var(--text-2);
+}
+
+.bottom {
+  margin-top: 48px;
+  border-top: 1px solid var(--border);
+  padding-top: 24px;
+  font-size: 14px;
+  color: var(--text-2);
+}

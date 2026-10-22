@@ -1,0 +1,89 @@
+.grid {
+  display: grid;
+  margin-top: 48px;
+  align-items: stretch;
+  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+}
+
+.plan {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--l-border);
+  border-radius: 22px;
+  background: #fff;
+  padding: 32px 28px 28px;
+}
+
+/* Plan destacado: tarjeta oscura */
+.featured {
+  border-color: var(--card);
+  background: var(--card);
+  color: var(--text);
+}
+.plan.featured :focus-visible {
+  outline-color: var(--amber);
+}
+
+.badge {
+  position: absolute;
+  top: -14px;
+  left: 28px;
+  border-radius: 999px;
+  background: var(--amber);
+  padding: 4px 12px;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #161616;
+}
+
+.name {
+  font-size: 20px;
+  font-weight: 700;
+}
+.price {
+  margin-top: 12px;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.features {
+  display: grid;
+  margin-top: 24px;
+  margin-bottom: 32px;
+  gap: 12px;
+  color: var(--l-text-2);
+}
+.features li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.features svg {
+  flex-shrink: 0;
+  color: var(--amber-ink);
+}
+.featured .features {
+  color: var(--text-2);
+}
+.featured .features svg {
+  color: var(--amber);
+}
+
+.cta {
+  width: 100%;
+  margin-top: auto;
+}
+
+.note {
+  margin-top: 24px;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 14px;
+  color: var(--l-text-2);
+}

@@ -155,6 +155,20 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"leads": {
+                  Row: {
+                    "consent": boolean,"consent_text": string,"contact": string,"created_at": string,"id": string,"ip_hash": string | null,"name": string,"properties": string,"property_type": string,"user_agent": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "consent": boolean,"consent_text": string,"contact": string,"created_at"?: string,"id"?: string,"ip_hash"?: string | null,"name": string,"properties": string,"property_type": string,"user_agent"?: string | null
+                  }
+                  Update: {
+                    "consent"?: boolean,"consent_text"?: string,"contact"?: string,"created_at"?: string,"id"?: string,"ip_hash"?: string | null,"name"?: string,"properties"?: string,"property_type"?: string,"user_agent"?: string | null
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"materials": {
                   Row: {
                     "active": boolean,"company_id": string,"created_at": string,"id": string,"min_stock": number,"name": string,"sku": string | null,"stock": number,"track_stock": boolean,"unit": string,"unit_price": number
