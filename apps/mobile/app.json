@@ -19,11 +19,14 @@
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
       "permissions": [
-        "CAMERA",
-        "ACCESS_FINE_LOCATION",
-        "ACCESS_COARSE_LOCATION"
+        "android.permission.CAMERA",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION"
       ],
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "blockedPermissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "plugins": [
       "expo-router",
@@ -47,10 +50,18 @@
         "expo-image-picker",
         {
           "cameraPermission": "Tecnio usa la cámara para las fotos del antes y el después del servicio.",
-          "photosPermission": "Tecnio usa tus fotos para adjuntarlas a la orden."
+          "photosPermission": "Tecnio usa tus fotos para adjuntarlas a la orden.",
+          "microphonePermission": false
         }
       ],
       "@sentry/react-native"
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "e685d186-bc70-4a71-8b26-d0d47967d534"
+      }
+    },
+    "owner": "candrex"
   }
 }
