@@ -1,10 +1,17 @@
 # Netlify: en la interfaz, "Package directory" = apps/web y "Base directory" vacío (raíz del repo),
 # para que se instalen las dependencias de todo el monorepo (npm workspaces).
-# Netlify detecta Next.js solo (adaptador OpenNext): no hace falta plugin ni "publish".
+# Las rutas de este archivo son relativas a la raíz del repo, y lo que dice aquí manda sobre la interfaz.
 [build]
   command = "npm run build -w web"
+  publish = "apps/web/.next"
 
 [build.environment]
   NODE_VERSION = "22"
   # Telemetría de Next.js apagada en los builds.
   NEXT_TELEMETRY_DISABLED = "1"
+
+# Adaptador de Next.js declarado a mano: en este monorepo Netlify no lo detectó solo ("Detected 0
+# framework(s)") y publicó la carpeta del código como archivos sueltos. Con el adaptador, las páginas
+# del servidor, el middleware y las rutas de API se convierten en funciones de Netlify.
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
