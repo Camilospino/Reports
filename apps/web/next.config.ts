@@ -7,6 +7,11 @@ const nextConfig: NextConfig = {
   outputFileTracingRoot: path.join(__dirname, "../.."),
   // @react-pdf/renderer genera los PDF en el servidor; se carga tal cual, sin empaquetar.
   serverExternalPackages: ["@react-pdf/renderer"],
+  // pdfkit (lo usa @react-pdf) carga sus fuentes con "#standard-fonts/...", un camino que el rastreo
+  // de archivos no sigue. Sin esto, en Netlify faltan esas fuentes y el servidor se cae al azar.
+  outputFileTracingIncludes: {
+    "/**/*": ["../../node_modules/pdfkit/js/standard-fonts/**/*"],
+  },
 };
 
 // Sentry: los source maps solo se suben si hay SENTRY_AUTH_TOKEN (en el build de producción).
