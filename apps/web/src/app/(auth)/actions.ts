@@ -19,6 +19,9 @@ export async function signIn(_: FormState, fd: FormData): Promise<FormState> {
 
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword(parsed.data);
+  // Si Supabase exige confirmar el correo, decirlo: "contraseña incorrecta" haría que la persona la cambie sin motivo.
+  if (error?.code === "email_not_confirmed")
+    return { error: "Tu correo aún no está confirmado. Abre el enlace que te enviamos al registrarte." };
   if (error) return { error: "Correo o contraseña incorrectos." };
   redirect("/app");
 }
