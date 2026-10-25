@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, View } from "react-native";
+import { KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Wrench } from "lucide-react-native";
+import { Eye, EyeOff, Wrench } from "lucide-react-native";
 import { supabase } from "@/lib/supabase";
 import { clearAll, getMeta, setMeta, type Profile } from "@/lib/db";
 import { reload } from "@/lib/store";
@@ -11,6 +11,7 @@ import { colors, fonts } from "@/theme";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -60,7 +61,9 @@ export default function Login() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg }}>
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+      {/* "padding" también en Android: con la pantalla de borde a borde (Android 15+) el teclado ya no
+          encoge la ventana, y sin esto tapaba el campo de la contraseña. */}
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
         <ScrollView contentContainerStyle={s.wrap} keyboardShouldPersistTaps="handled">
           <View style={s.brand}>
             <View style={s.logo}>
@@ -84,17 +87,30 @@ export default function Login() {
               accessibilityLabel="Correo"
             />
             <T style={s.label}>Contraseña</T>
-            <TextInput
-              style={s.input}
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry
-              autoComplete="password"
-              placeholder="Tu contraseña"
-              placeholderTextColor={colors.muted}
-              accessibilityLabel="Contraseña"
-              onSubmitEditing={submit}
-            />
+            <View>
+              <TextInput
+                style={[s.input, s.passwordInput]}
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry={!showPassword}
+                autoCapitalize="none"
+                autoComplete="password"
+                placeholder="Tu contraseña"
+                placeholderTextColor={colors.muted}
+                accessibilityLabel="Contraseña"
+                onSubmitEditing={submit}
+              />
+              {/* Ojito para ver lo que se escribe (en la calle es fácil equivocarse con el teclado). */}
+              <Pressable
+                onPress={() => setShowPassword((v) => !v)}
+                style={s.eye}
+                hitSlop={8}
+                accessibilityRole="button"
+                accessibilityLabel={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+              >
+                {showPassword ? <EyeOff size={20} color={colors.muted} /> : <Eye size={20} color={colors.muted} />}
+              </Pressable>
+            </View>
             {error && (
               <T style={s.error} accessibilityRole="alert">
                 {error}
@@ -128,5 +144,7 @@ const s = StyleSheet.create({
     color: colors.ink,
     backgroundColor: colors.surface,
   },
+  passwordInput: { paddingRight: 52 },
+  eye: { position: "absolute", right: 0, top: 0, width: 48, height: 48, alignItems: "center", justifyContent: "center" },
   error: { color: colors.danger, marginTop: 12 },
 });

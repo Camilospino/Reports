@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Alert, FlatList, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from "react-native";
+import { Alert, FlatList, KeyboardAvoidingView, Modal, Pressable, ScrollView, StyleSheet, TextInput, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
 import SignatureScreen, { type SignatureViewRef } from "react-native-signature-canvas";
@@ -73,7 +73,9 @@ export default function CloseOrder() {
   }
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1, backgroundColor: colors.bg }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+    // "padding" también en Android: con la pantalla de borde a borde el teclado ya no encoge la ventana
+    // y tapaba la firma, la cédula y las observaciones.
+    <KeyboardAvoidingView style={{ flex: 1, backgroundColor: colors.bg }} behavior="padding">
       <OrderHeader title="Cerrar orden" subtitle={`${orderCode(o.number)} · ${o.customer.name}`} step="Paso 2 de 2" />
       <ScrollView scrollEnabled={scroll} contentContainerStyle={{ padding: 20, paddingBottom: 24 }} keyboardShouldPersistTaps="handled">
         <SectionLabel>Fotos del después</SectionLabel>
