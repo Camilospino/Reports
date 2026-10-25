@@ -50,7 +50,8 @@ jobs:
             postgresql://*|postgres://*) ;;
             *) echo "El secreto SUPABASE_DB_URL debe empezar por postgresql://"; exit 1 ;;
           esac
-          docker run --rm -e PGSSLMODE -v "$PWD:/out" postgres:17-alpine \
+          # --user: el archivo queda del usuario del runner (no de root), para poder borrarlo con shred.
+          docker run --rm --user "$(id -u):$(id -g)" -e PGSSLMODE -v "$PWD:/out" postgres:17-alpine \
             pg_dump "$URL" --data-only --schema=public --schema=auth \
             --format=custom --file=/out/tecnio.dump
           ls -l tecnio.dump
