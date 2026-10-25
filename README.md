@@ -49,3 +49,17 @@ Materiales y tipos de servicio se archivan en vez de borrarse, para no romper ó
 Sin DSN no se envía nada. Solo se envían errores (sin trazas de rendimiento, para cuidar la cuota),
 sin IP, cookies ni formularios, y los tokens de `/r/…` y `/c/…` se borran antes de salir.
 Los errores del navegador pasan por `/monitoreo` en el propio dominio para que no los bloqueen.
+
+## Copias de seguridad (producción)
+
+`.github/workflows/respaldo-base-de-datos.yml` hace cada domingo una copia de los datos (esquemas
+`public` y `auth`), cifrada con AES-256, y la guarda 90 días en **Actions → Respaldo de la base de
+datos → (una ejecución) → Artifacts**. Cada 3 días hace una consulta mínima para que Supabase (plan
+gratis) no pause el proyecto. Secretos necesarios: `SUPABASE_DB_URL` y `BACKUP_PASSPHRASE`.
+Las fotos y firmas (Storage) no van en esta copia.
+
+Para restaurar:
+
+1. Descarga el artifact y descífralo: `gpg -d tecnio-AAAA-MM-DD.dump.gpg > tecnio.dump` (pide `BACKUP_PASSPHRASE`).
+2. En un proyecto de Supabase **vacío**, crea la estructura: `npx supabase db push --db-url "<url del proyecto>"`.
+3. Carga los datos: `pg_restore --data-only --disable-triggers --no-owner -d "<url del proyecto>" tecnio.dump`.

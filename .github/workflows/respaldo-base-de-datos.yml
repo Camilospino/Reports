@@ -1,0 +1,62 @@
+# Respaldo cifrado de la base de datos de producción (Supabase) y "keepalive".
+# - Domingos: copia de los datos (esquemas public y auth), cifrada con AES-256 (gpg) usando
+#   BACKUP_PASSPHRASE, guardada 90 días como artifact. Sin la contraseña la copia no se puede leer.
+# - Cada 3 días: una consulta mínima para que el plan gratis de Supabase no pause el proyecto
+#   (se pausa tras 7 días sin actividad).
+# Secretos del repositorio (Settings → Secrets and variables → Actions):
+#   SUPABASE_DB_URL     postgresql://postgres.<ref>:<contraseña>@aws-0-us-east-1.pooler.supabase.com:5432/postgres
+#   BACKUP_PASSPHRASE   contraseña para cifrar las copias (guárdala también fuera de GitHub)
+# Cómo restaurar una copia: ver README, sección "Copias de seguridad".
+name: Respaldo de la base de datos
+
+on:
+  schedule:
+    - cron: "0 8 * * 0" # domingos 08:00 UTC = 3:00 a. m. en Colombia → respaldo
+    - cron: "0 13 */3 * *" # cada 3 días → mantener activo
+  workflow_dispatch: # botón "Run workflow" para hacer una copia cuando quieras
+
+permissions:
+  contents: read
+
+jobs:
+  mantener-activo:
+    if: github.event.schedule == '0 13 */3 * *'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Consulta mínima a la base
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: docker run --rm postgres:17-alpine psql "${SUPABASE_DB_URL}?sslmode=require" -tAc "select 1"
+
+  respaldo:
+    if: github.event.schedule != '0 13 */3 * *'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Copia de los datos (pg_dump)
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        # Solo datos: la estructura (tablas, RLS, funciones) ya está en supabase/migrations.
+        run: |
+          docker run --rm -v "$PWD:/out" postgres:17-alpine \
+            pg_dump "${SUPABASE_DB_URL}?sslmode=require" --data-only --schema=public --schema=auth \
+            --format=custom --file=/out/tecnio.dump
+          ls -l tecnio.dump
+
+      - name: Cifrar con AES-256
+        env:
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          test -n "$BACKUP_PASSPHRASE" || { echo "Falta el secreto BACKUP_PASSPHRASE"; exit 1; }
+          NAME="tecnio-$(date -u +%Y-%m-%d).dump.gpg"
+          gpg --batch --yes --pinentry-mode loopback --passphrase "$BACKUP_PASSPHRASE" \
+            --symmetric --cipher-algo AES256 --output "$NAME" tecnio.dump
+          shred -u tecnio.dump
+          echo "NAME=$NAME" >> "$GITHUB_ENV"
+
+      - name: Guardar la copia cifrada (90 días)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.NAME }}
+          path: ${{ env.NAME }}
+          retention-days: 90
+          if-no-files-found: error

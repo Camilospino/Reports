@@ -30,7 +30,12 @@
     },
     "plugins": [
       "expo-router",
-      "expo-sqlite",
+      [
+        "expo-sqlite",
+        {
+          "useSQLCipher": true
+        }
+      ],
       "expo-font",
       [
         "expo-splash-screen",
@@ -54,7 +59,8 @@
           "microphonePermission": false
         }
       ],
-      "@sentry/react-native"
+      "@sentry/react-native",
+      "expo-secure-store"
     ],
     "extra": {
       "router": {},
