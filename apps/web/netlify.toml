@@ -10,6 +10,9 @@
 
 [build.environment]
   NODE_VERSION = "22"
+  # npm 10 falla ("The from argument must be of type string") al actualizar dependencias sobre la
+  # caché de node_modules que guarda Netlify entre builds; npm 11 lo hace bien.
+  NPM_VERSION = "11"
   # Telemetría de Next.js apagada en los builds.
   NEXT_TELEMETRY_DISABLED = "1"
 
