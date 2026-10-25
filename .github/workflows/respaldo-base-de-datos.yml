@@ -18,6 +18,10 @@ on:
 permissions:
   contents: read
 
+env:
+  # Conexión cifrada obligatoria con la base de datos.
+  PGSSLMODE: require
+
 jobs:
   mantener-activo:
     if: github.event.schedule == '0 13 */3 * *'
@@ -26,7 +30,10 @@ jobs:
       - name: Consulta mínima a la base
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
-        run: docker run --rm postgres:17-alpine psql "${SUPABASE_DB_URL}?sslmode=require" -tAc "select 1"
+        run: |
+          # Limpia lo que se cuela al pegar el secreto: espacios, saltos de línea, comillas o "NOMBRE=".
+          URL=$(printf '%s' "$SUPABASE_DB_URL" | tr -d '[:space:]"'"'" | sed -E 's/^SUPABASE_DB_URL=//')
+          docker run --rm -e PGSSLMODE postgres:17-alpine psql "$URL" -tAc "select 1"
 
   respaldo:
     if: github.event.schedule != '0 13 */3 * *'
@@ -37,8 +44,14 @@ jobs:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
         # Solo datos: la estructura (tablas, RLS, funciones) ya está en supabase/migrations.
         run: |
-          docker run --rm -v "$PWD:/out" postgres:17-alpine \
-            pg_dump "${SUPABASE_DB_URL}?sslmode=require" --data-only --schema=public --schema=auth \
+          # Limpia lo que se cuela al pegar el secreto: espacios, saltos de línea, comillas o "NOMBRE=".
+          URL=$(printf '%s' "$SUPABASE_DB_URL" | tr -d '[:space:]"'"'" | sed -E 's/^SUPABASE_DB_URL=//')
+          case "$URL" in
+            postgresql://*|postgres://*) ;;
+            *) echo "El secreto SUPABASE_DB_URL debe empezar por postgresql://"; exit 1 ;;
+          esac
+          docker run --rm -e PGSSLMODE -v "$PWD:/out" postgres:17-alpine \
+            pg_dump "$URL" --data-only --schema=public --schema=auth \
             --format=custom --file=/out/tecnio.dump
           ls -l tecnio.dump
 
@@ -46,9 +59,11 @@ jobs:
         env:
           BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
         run: |
-          test -n "$BACKUP_PASSPHRASE" || { echo "Falta el secreto BACKUP_PASSPHRASE"; exit 1; }
+          # Misma limpieza que la URL: la contraseña generada no tiene espacios ni comillas.
+          PASS=$(printf '%s' "$BACKUP_PASSPHRASE" | tr -d '[:space:]"'"'" | sed -E 's/^BACKUP_PASSPHRASE=//')
+          test -n "$PASS" || { echo "Falta el secreto BACKUP_PASSPHRASE"; exit 1; }
           NAME="tecnio-$(date -u +%Y-%m-%d).dump.gpg"
-          gpg --batch --yes --pinentry-mode loopback --passphrase "$BACKUP_PASSPHRASE" \
+          gpg --batch --yes --pinentry-mode loopback --passphrase "$PASS" \
             --symmetric --cipher-algo AES256 --output "$NAME" tecnio.dump
           shred -u tecnio.dump
           echo "NAME=$NAME" >> "$GITHUB_ENV"
