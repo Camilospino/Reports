@@ -25,6 +25,7 @@ export const ROLE_LABELS: Record<MemberRole, string> = {
 
 export const orderCode = (n: number) => `OT-${n}`;
 export const quoteCode = (n: number) => `COT-${n}`;
+export const installationCode = (n: number) => `INS-${n}`;
 
 // $3.284.000 (punto de miles, sin decimales)
 export function cop(value: number | string | null | undefined): string {
@@ -55,6 +56,18 @@ export function shortDate(date: Date | string): string {
     .format(new Date(date))
     .replace(".", "")
     .replace(" de ", " ");
+}
+
+// Fechas sin hora de la base ("2026-11-12"): se leen a mediodía en Bogotá para que no
+// se corran un día al formatearlas.
+const fromDateKey = (key: string) => new Date(`${key}T12:00:00-05:00`);
+
+// "12 nov"
+export const dayLabel = (key: string) => shortDate(fromDateKey(key));
+
+// "12 nov 2026"
+export function dayLabelWithYear(key: string): string {
+  return `${dayLabel(key)} ${key.slice(0, 4)}`;
 }
 
 // "9:30", "14:30" (24 h)

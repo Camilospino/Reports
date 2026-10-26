@@ -51,14 +51,14 @@ isOneToOne: false
                   ]
                 },"assets": {
                   Row: {
-                    "brand": string | null,"company_id": string,"created_at": string,"id": string,"model": string | null,"serial": string | null,"site_id": string,"type": string
+                    "brand": string | null,"category": string,"company_id": string,"created_at": string,"id": string,"installation_id": string | null,"location": string | null,"model": string | null,"name": string | null,"photo_path": string | null,"serial": string | null,"site_id": string,"status": Database["public"]['Enums']["asset_status"],"type": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "brand"?: string | null,"company_id": string,"created_at"?: string,"id"?: string,"model"?: string | null,"serial"?: string | null,"site_id": string,"type": string
+                    "brand"?: string | null,"category"?: string,"company_id": string,"created_at"?: string,"id"?: string,"installation_id"?: string | null,"location"?: string | null,"model"?: string | null,"name"?: string | null,"photo_path"?: string | null,"serial"?: string | null,"site_id": string,"status"?: Database["public"]['Enums']["asset_status"],"type": string
                   }
                   Update: {
-                    "brand"?: string | null,"company_id"?: string,"created_at"?: string,"id"?: string,"model"?: string | null,"serial"?: string | null,"site_id"?: string,"type"?: string
+                    "brand"?: string | null,"category"?: string,"company_id"?: string,"created_at"?: string,"id"?: string,"installation_id"?: string | null,"location"?: string | null,"model"?: string | null,"name"?: string | null,"photo_path"?: string | null,"serial"?: string | null,"site_id"?: string,"status"?: Database["public"]['Enums']["asset_status"],"type"?: string
                   }
                   Relationships: [
                     {
@@ -67,6 +67,12 @@ isOneToOne: false
 isOneToOne: false
       referencedRelation: "companies"
       referencedColumns: ["id"]
+    },{
+      foreignKeyName: "assets_company_id_installation_id_fkey"
+      columns: ["company_id","installation_id"]
+isOneToOne: false
+      referencedRelation: "installations"
+      referencedColumns: ["company_id","id"]
     },{
       foreignKeyName: "assets_company_id_site_id_fkey"
       columns: ["company_id","site_id"]
@@ -153,6 +159,134 @@ isOneToOne: false
 isOneToOne: false
       referencedRelation: "companies"
       referencedColumns: ["id"]
+    }
+                  ]
+                },"installation_credential_views": {
+                  Row: {
+                    "company_id": string,"credential_id": string,"id": number,"installation_id": string,"user_id": string,"viewed_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "company_id": string,"credential_id": string,"id"?: never,"installation_id": string,"user_id": string,"viewed_at"?: string
+                  }
+                  Update: {
+                    "company_id"?: string,"credential_id"?: string,"id"?: never,"installation_id"?: string,"user_id"?: string,"viewed_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "installation_credential_views_company_id_credential_id_fkey"
+      columns: ["company_id","credential_id"]
+isOneToOne: false
+      referencedRelation: "installation_credentials"
+      referencedColumns: ["company_id","id"]
+    },{
+      foreignKeyName: "installation_credential_views_company_id_fkey"
+      columns: ["company_id"]
+isOneToOne: false
+      referencedRelation: "companies"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "installation_credential_views_company_id_installation_id_fkey"
+      columns: ["company_id","installation_id"]
+isOneToOne: false
+      referencedRelation: "installations"
+      referencedColumns: ["company_id","id"]
+    }
+                  ]
+                },"installation_credentials": {
+                  Row: {
+                    "company_id": string,"created_at": string,"host": string | null,"id": string,"installation_id": string,"label": string,"secret_id": string | null,"username": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "company_id": string,"created_at"?: string,"host"?: string | null,"id"?: string,"installation_id": string,"label"?: string,"secret_id"?: string | null,"username"?: string | null
+                  }
+                  Update: {
+                    "company_id"?: string,"created_at"?: string,"host"?: string | null,"id"?: string,"installation_id"?: string,"label"?: string,"secret_id"?: string | null,"username"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "installation_credentials_company_id_fkey"
+      columns: ["company_id"]
+isOneToOne: false
+      referencedRelation: "companies"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "installation_credentials_company_id_installation_id_fkey"
+      columns: ["company_id","installation_id"]
+isOneToOne: false
+      referencedRelation: "installations"
+      referencedColumns: ["company_id","id"]
+    }
+                  ]
+                },"installation_files": {
+                  Row: {
+                    "company_id": string,"created_at": string,"id": string,"installation_id": string,"kind": string,"storage_path": string,"uploaded_by": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "company_id": string,"created_at"?: string,"id"?: string,"installation_id": string,"kind": string,"storage_path": string,"uploaded_by"?: string | null
+                  }
+                  Update: {
+                    "company_id"?: string,"created_at"?: string,"id"?: string,"installation_id"?: string,"kind"?: string,"storage_path"?: string,"uploaded_by"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "installation_files_company_id_fkey"
+      columns: ["company_id"]
+isOneToOne: false
+      referencedRelation: "companies"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "installation_files_company_id_installation_id_fkey"
+      columns: ["company_id","installation_id"]
+isOneToOne: false
+      referencedRelation: "installations"
+      referencedColumns: ["company_id","id"]
+    }
+                  ]
+                },"installations": {
+                  Row: {
+                    "company_id": string,"created_at": string,"customer_id": string,"id": string,"installed_by": string | null,"installed_on": string,"last_maintenance": string | null,"maintenance_every_months": number | null,"name": string,"next_maintenance": string | null,"notes": string | null,"number": number,"origin_work_order_id": string | null,"site_id": string,"status": Database["public"]['Enums']["installation_status"],"system_type": Database["public"]['Enums']["installation_system"],"warranty_until": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "company_id": string,"created_at"?: string,"customer_id": string,"id"?: string,"installed_by"?: string | null,"installed_on": string,"last_maintenance"?: string | null,"maintenance_every_months"?: number | null,"name": string,"next_maintenance"?: string | null,"notes"?: string | null,"number"?: number,"origin_work_order_id"?: string | null,"site_id": string,"status"?: Database["public"]['Enums']["installation_status"],"system_type": Database["public"]['Enums']["installation_system"],"warranty_until"?: string | null
+                  }
+                  Update: {
+                    "company_id"?: string,"created_at"?: string,"customer_id"?: string,"id"?: string,"installed_by"?: string | null,"installed_on"?: string,"last_maintenance"?: string | null,"maintenance_every_months"?: number | null,"name"?: string,"next_maintenance"?: string | null,"notes"?: string | null,"number"?: number,"origin_work_order_id"?: string | null,"site_id"?: string,"status"?: Database["public"]['Enums']["installation_status"],"system_type"?: Database["public"]['Enums']["installation_system"],"warranty_until"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "installations_company_id_customer_id_fkey"
+      columns: ["company_id","customer_id"]
+isOneToOne: false
+      referencedRelation: "customers"
+      referencedColumns: ["company_id","id"]
+    },{
+      foreignKeyName: "installations_company_id_fkey"
+      columns: ["company_id"]
+isOneToOne: false
+      referencedRelation: "companies"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "installations_company_id_installed_by_fkey"
+      columns: ["company_id","installed_by"]
+isOneToOne: false
+      referencedRelation: "memberships"
+      referencedColumns: ["company_id","id"]
+    },{
+      foreignKeyName: "installations_company_id_origin_work_order_id_fkey"
+      columns: ["company_id","origin_work_order_id"]
+isOneToOne: false
+      referencedRelation: "work_orders"
+      referencedColumns: ["company_id","id"]
+    },{
+      foreignKeyName: "installations_company_id_site_id_fkey"
+      columns: ["company_id","site_id"]
+isOneToOne: false
+      referencedRelation: "sites"
+      referencedColumns: ["company_id","id"]
     }
                   ]
                 },"leads": {
@@ -243,14 +377,14 @@ isOneToOne: false
                   ]
                 },"service_types": {
                   Row: {
-                    "active": boolean,"checklist": NonNullable<Json>,"company_id": string,"created_at": string,"estimated_minutes": number,"id": string,"name": string,"skill": string | null,"warranty_months": number | null
+                    "active": boolean,"checklist": NonNullable<Json>,"company_id": string,"created_at": string,"estimated_minutes": number,"id": string,"is_maintenance": boolean,"name": string,"skill": string | null,"warranty_months": number | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "active"?: boolean,"checklist"?: NonNullable<Json>,"company_id": string,"created_at"?: string,"estimated_minutes"?: number,"id"?: string,"name": string,"skill"?: string | null,"warranty_months"?: number | null
+                    "active"?: boolean,"checklist"?: NonNullable<Json>,"company_id": string,"created_at"?: string,"estimated_minutes"?: number,"id"?: string,"is_maintenance"?: boolean,"name": string,"skill"?: string | null,"warranty_months"?: number | null
                   }
                   Update: {
-                    "active"?: boolean,"checklist"?: NonNullable<Json>,"company_id"?: string,"created_at"?: string,"estimated_minutes"?: number,"id"?: string,"name"?: string,"skill"?: string | null,"warranty_months"?: number | null
+                    "active"?: boolean,"checklist"?: NonNullable<Json>,"company_id"?: string,"created_at"?: string,"estimated_minutes"?: number,"id"?: string,"is_maintenance"?: boolean,"name"?: string,"skill"?: string | null,"warranty_months"?: number | null
                   }
                   Relationships: [
                     {
@@ -405,14 +539,14 @@ isOneToOne: false
                   ]
                 },"work_orders": {
                   Row: {
-                    "asset_id": string | null,"checklist_state": NonNullable<Json>,"company_id": string,"completed_at": string | null,"created_at": string,"customer_id": string,"description": string | null,"id": string,"invoiced_at": string | null,"number": number,"observations": string | null,"priority": Database["public"]['Enums']["work_order_priority"],"public_token": string | null,"scheduled_end": string | null,"scheduled_start": string | null,"service_type_id": string | null,"signer_id_number": string | null,"signer_name": string | null,"site_id": string | null,"status": Database["public"]['Enums']["work_order_status"],"technician_id": string | null,"title": string,"total": number
+                    "asset_id": string | null,"checklist_state": NonNullable<Json>,"company_id": string,"completed_at": string | null,"created_at": string,"customer_id": string,"description": string | null,"id": string,"installation_id": string | null,"invoiced_at": string | null,"number": number,"observations": string | null,"priority": Database["public"]['Enums']["work_order_priority"],"public_token": string | null,"scheduled_end": string | null,"scheduled_start": string | null,"service_type_id": string | null,"signer_id_number": string | null,"signer_name": string | null,"site_id": string | null,"status": Database["public"]['Enums']["work_order_status"],"technician_id": string | null,"title": string,"total": number
                   }
                   ComputedFields: never
                   Insert: {
-                    "asset_id"?: string | null,"checklist_state"?: NonNullable<Json>,"company_id": string,"completed_at"?: string | null,"created_at"?: string,"customer_id": string,"description"?: string | null,"id"?: string,"invoiced_at"?: string | null,"number"?: number,"observations"?: string | null,"priority"?: Database["public"]['Enums']["work_order_priority"],"public_token"?: string | null,"scheduled_end"?: string | null,"scheduled_start"?: string | null,"service_type_id"?: string | null,"signer_id_number"?: string | null,"signer_name"?: string | null,"site_id"?: string | null,"status"?: Database["public"]['Enums']["work_order_status"],"technician_id"?: string | null,"title": string,"total"?: number
+                    "asset_id"?: string | null,"checklist_state"?: NonNullable<Json>,"company_id": string,"completed_at"?: string | null,"created_at"?: string,"customer_id": string,"description"?: string | null,"id"?: string,"installation_id"?: string | null,"invoiced_at"?: string | null,"number"?: number,"observations"?: string | null,"priority"?: Database["public"]['Enums']["work_order_priority"],"public_token"?: string | null,"scheduled_end"?: string | null,"scheduled_start"?: string | null,"service_type_id"?: string | null,"signer_id_number"?: string | null,"signer_name"?: string | null,"site_id"?: string | null,"status"?: Database["public"]['Enums']["work_order_status"],"technician_id"?: string | null,"title": string,"total"?: number
                   }
                   Update: {
-                    "asset_id"?: string | null,"checklist_state"?: NonNullable<Json>,"company_id"?: string,"completed_at"?: string | null,"created_at"?: string,"customer_id"?: string,"description"?: string | null,"id"?: string,"invoiced_at"?: string | null,"number"?: number,"observations"?: string | null,"priority"?: Database["public"]['Enums']["work_order_priority"],"public_token"?: string | null,"scheduled_end"?: string | null,"scheduled_start"?: string | null,"service_type_id"?: string | null,"signer_id_number"?: string | null,"signer_name"?: string | null,"site_id"?: string | null,"status"?: Database["public"]['Enums']["work_order_status"],"technician_id"?: string | null,"title"?: string,"total"?: number
+                    "asset_id"?: string | null,"checklist_state"?: NonNullable<Json>,"company_id"?: string,"completed_at"?: string | null,"created_at"?: string,"customer_id"?: string,"description"?: string | null,"id"?: string,"installation_id"?: string | null,"invoiced_at"?: string | null,"number"?: number,"observations"?: string | null,"priority"?: Database["public"]['Enums']["work_order_priority"],"public_token"?: string | null,"scheduled_end"?: string | null,"scheduled_start"?: string | null,"service_type_id"?: string | null,"signer_id_number"?: string | null,"signer_name"?: string | null,"site_id"?: string | null,"status"?: Database["public"]['Enums']["work_order_status"],"technician_id"?: string | null,"title"?: string,"total"?: number
                   }
                   Relationships: [
                     {
@@ -433,6 +567,12 @@ isOneToOne: false
 isOneToOne: false
       referencedRelation: "companies"
       referencedColumns: ["id"]
+    },{
+      foreignKeyName: "work_orders_company_id_installation_id_fkey"
+      columns: ["company_id","installation_id"]
+isOneToOne: false
+      referencedRelation: "installations"
+      referencedColumns: ["company_id","id"]
     },{
       foreignKeyName: "work_orders_company_id_service_type_id_fkey"
       columns: ["company_id","service_type_id"]
@@ -458,7 +598,7 @@ isOneToOne: false
           Views: {
             "customer_stats": {
                   Row: {
-                    "billed": number | null,"company_id": string | null,"customer_id": string | null,"last_service": string | null,"open_orders": number | null,"orders": number | null
+                    "billed": number | null,"company_id": string,"customer_id": string,"last_service": string | null,"open_orders": number | null,"orders": number | null
                   }
                   ComputedFields: never
                   Relationships: [
@@ -488,6 +628,12 @@ isOneToOne: false
 "can_access_evidence":
 { Args: { "p_path": string,"p_write": boolean }; Returns: boolean
                            },
+"can_access_installation_file":
+{ Args: { "p_path": string,"p_write": boolean }; Returns: boolean
+                           },
+"can_see_credentials":
+{ Args: { "p_company": string,"p_installation": string }; Returns: boolean
+                           },
 "comment_report":
 { Args: { "p_comment": string,"p_token": string }; Returns: boolean
                            },
@@ -502,6 +648,9 @@ isOneToOne: false
                            },
 "find_user_id_by_email":
 { Args: { "p_email": string }; Returns: string
+                           },
+"has_open_order_in_installation":
+{ Args: { "p_installation": string }; Returns: boolean
                            },
 "is_member":
 { Args: { "company": string }; Returns: boolean
@@ -543,6 +692,7 @@ isOneToOne: false
 "customer_id": string,
 "description": string | null,
 "id": string,
+"installation_id": string | null,
 "invoiced_at": string | null,
 "number": number,
 "observations": string | null,
@@ -565,6 +715,12 @@ isOneToOne: false
         isOneToOne: true
         isSetofReturn: false
       } },
+"reveal_installation_password":
+{ Args: { "p_credential": string }; Returns: string
+                           },
+"save_installation_credential":
+{ Args: { "p_credential"?: string,"p_host": string,"p_installation": string,"p_label": string,"p_password": string,"p_username": string }; Returns: string
+                           },
 "sync_order_stock":
 { Args: { "p_order": string }; Returns: undefined
                            },
@@ -576,7 +732,7 @@ isOneToOne: false
                            }
           }
           Enums: {
-            "attachment_kind": "foto_antes"|"foto_despues"|"firma","member_role": "owner"|"dispatcher"|"technician","quote_status": "borrador"|"enviada"|"aprobada"|"rechazada","work_order_priority": "baja"|"normal"|"alta","work_order_status": "pendiente"|"asignada"|"en_camino"|"en_proceso"|"completada"|"cancelada"
+            "asset_status": "funcionando"|"con_falla"|"retirado","attachment_kind": "foto_antes"|"foto_despues"|"firma","installation_status": "activa"|"retirada","installation_system": "cctv"|"alarma"|"red"|"acceso"|"aire"|"otro","member_role": "owner"|"dispatcher"|"technician","quote_status": "borrador"|"enviada"|"aprobada"|"rechazada","work_order_priority": "baja"|"normal"|"alta","work_order_status": "pendiente"|"asignada"|"en_camino"|"en_proceso"|"completada"|"cancelada"
           }
           CompositeTypes: {
             [_ in never]: never
@@ -696,7 +852,7 @@ export const Constants = {
           }
         },"public": {
           Enums: {
-            "attachment_kind": ["foto_antes", "foto_despues", "firma"],"member_role": ["owner", "dispatcher", "technician"],"quote_status": ["borrador", "enviada", "aprobada", "rechazada"],"work_order_priority": ["baja", "normal", "alta"],"work_order_status": ["pendiente", "asignada", "en_camino", "en_proceso", "completada", "cancelada"]
+            "asset_status": ["funcionando", "con_falla", "retirado"],"attachment_kind": ["foto_antes", "foto_despues", "firma"],"installation_status": ["activa", "retirada"],"installation_system": ["cctv", "alarma", "red", "acceso", "aire", "otro"],"member_role": ["owner", "dispatcher", "technician"],"quote_status": ["borrador", "enviada", "aprobada", "rechazada"],"work_order_priority": ["baja", "normal", "alta"],"work_order_status": ["pendiente", "asignada", "en_camino", "en_proceso", "completada", "cancelada"]
           }
         }
 } as const

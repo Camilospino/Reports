@@ -4,7 +4,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 set search_path = public, extensions;
 
-select plan(136);
+select plan(164);
 
 -- ---------------------------------------------------------------------------
 -- Contexto (como postgres, antes de cambiar de usuario)
@@ -55,6 +55,17 @@ insert into assets (company_id, site_id, type, brand)
 select company_id, id, 'DVR', 'Hikvision' from sites
 where id in ((select id from sites where company_id = (select co_a from ctx) limit 1),
              (select id from sites where company_id = (select co_b from ctx) limit 1));
+
+-- Una instalación con acceso en B (A tiene INS-1001 en el seed), para probar el aislamiento.
+insert into installations (id, company_id, customer_id, site_id, name, system_type, installed_on)
+select 'e2000000-0000-0000-0000-000000000001', company_id, customer_id, id, 'Aires lobby', 'aire', current_date - 30
+from sites where customer_id = (select cust_b from ctx);
+insert into installation_credentials (id, company_id, installation_id, label, host, username, secret_id)
+values ('e2100000-0000-0000-0000-000000000001', (select co_b from ctx), 'e2000000-0000-0000-0000-000000000001',
+        'Router', '10.0.0.1', 'admin', vault.create_secret('ClaveDeB', 'prueba-b'));
+insert into installation_credential_views (company_id, installation_id, credential_id, user_id)
+values ((select co_b from ctx), 'e2000000-0000-0000-0000-000000000001', 'e2100000-0000-0000-0000-000000000001',
+        'b0000000-0000-0000-0000-000000000001');
 
 -- Pruebas genéricas: recorren TODAS las tablas con company_id, así una tabla nueva
 -- queda cubierta sin escribir pruebas a mano. Devuelven las tablas que fallan.
@@ -134,7 +145,7 @@ select is((select count(*)::int from customers), 8, 'A ve sus 8 clientes');
 select is(pg_temp.leaks((select co_b from ctx), 'select'), '{}'::text[], 'dueño A: ninguna tabla deja leer filas de B');
 select is(pg_temp.leaks((select co_b from ctx), 'update'), '{}'::text[], 'dueño A: ninguna tabla deja editar filas de B');
 select is(pg_temp.leaks((select co_b from ctx), 'delete'), '{}'::text[], 'dueño A: ninguna tabla deja borrar filas de B');
-select is((select count(*)::int from assets), 1, 'A ve solo su equipo (asset)');
+select is((select count(*)::int from assets where company_id <> (select co_a from ctx)), 0, 'A ve solo sus equipos (assets)');
 select throws_ok($$insert into assets (company_id, site_id, type) select co_b, (select id from sites where company_id = co_b limit 1), 'X' from ctx$$, '42501', null, 'A no crea equipos en B');
 select throws_ok($$insert into sites (company_id, customer_id, address) select co_b, cust_b, 'X' from ctx$$, '42501', null, 'A no crea sedes en B');
 select is((select count(*)::int from work_orders), (select n_a from ctx), 'A ve todas sus órdenes');
@@ -319,6 +330,75 @@ reset role;
 select pg_temp.login((select tech_a from ctx));
 select throws_ok($$select adjust_stock((select mat_a from ctx_inv), 'salida', 1)$$, '42501', null, 'el técnico no ajusta stock');
 select is((select count(*)::int from stock_movements), 0, 'el técnico no ve los movimientos');
+
+-- ---------------------------------------------------------------------------
+-- Instalaciones: aislamiento, accesos técnicos y registro de vistas
+-- ---------------------------------------------------------------------------
+reset role;
+create temp table ctx_ins as select
+  'e1000000-0000-0000-0000-000000000001'::uuid as inst_a,
+  'e2000000-0000-0000-0000-000000000001'::uuid as inst_b,
+  (select id from installation_credentials where installation_id = 'e1000000-0000-0000-0000-000000000001') as cred_a,
+  'e2100000-0000-0000-0000-000000000001'::uuid as cred_b,
+  'a0000000-0000-0000-0000-000000000004'::uuid as tech2_a, -- Diana: solo una orden cerrada en la instalación
+  (select id from work_orders where installation_id = 'e1000000-0000-0000-0000-000000000001' and status = 'asignada') as wo_open_ins,
+  (select id from customers where company_id = 'c0000000-0000-0000-0000-00000000000a' and name <> 'Clínica Dental Sonrisas' limit 1) as other_cust_a;
+grant select on ctx_ins to authenticated;
+
+select is((select number from installations where id = (select inst_a from ctx_ins)), 1001, 'seed: la instalación de A es INS-1001');
+select is((select count(*)::int from assets where installation_id = (select inst_a from ctx_ins)), 8, 'seed: 8 equipos en la instalación');
+select is((select count(*)::int from work_orders where installation_id = (select inst_a from ctx_ins)), 4, 'seed: 4 órdenes en el historial');
+select is((select last_maintenance from installations where id = (select inst_a from ctx_ins)),
+          (now() at time zone 'America/Bogota')::date - 165, 'completar un mantenimiento actualiza el último mantenimiento');
+select is((select next_maintenance from installations where id = (select inst_a from ctx_ins)),
+          ((now() at time zone 'America/Bogota')::date - 165 + interval '6 months')::date, 'el próximo mantenimiento sale de la frecuencia');
+
+-- Dueño de A: ve la suya y su contraseña (con registro); nada de B.
+select pg_temp.login((select owner_a from ctx));
+select is((select count(*)::int from installations), 1, 'dueño A: solo ve las instalaciones de A');
+select is((select count(*)::int from installation_credentials), 1, 'dueño A: ve los accesos de A');
+select is(reveal_installation_password((select cred_a from ctx_ins)), 'Sonrisas#2025', 'dueño A: descifra la contraseña');
+select is((select count(*)::int from installation_credential_views where user_id = (select owner_a from ctx)), 1, 'ver la contraseña deja registro');
+select throws_ok($$select reveal_installation_password((select cred_b from ctx_ins))$$, '42501', null, 'dueño A: no descifra contraseñas de B');
+select is((select count(*)::int from installation_credential_views where company_id = (select co_b from ctx)), 0, 'dueño A: no ve el registro de B');
+select throws_ok($$select secret_id from installation_credentials$$, '42501', null, 'el id del secreto no se puede leer');
+select throws_ok($$insert into installation_credential_views (company_id, installation_id, credential_id, user_id)
+                   select company_id, installation_id, id, auth.uid() from installation_credentials$$, '42501', null,
+                 'el registro de vistas no se escribe directo');
+select throws_ok($$insert into work_orders (company_id, customer_id, installation_id, title)
+                   values ((select co_a from ctx), (select other_cust_a from ctx_ins), (select inst_a from ctx_ins), 'X')$$,
+                 '23514', null, 'una orden no se liga a la instalación de otro cliente');
+select throws_ok($$update installations set number = 1 where id = (select inst_a from ctx_ins)$$, '42501', null, 'el número de la instalación no cambia');
+select ok(save_installation_credential((select inst_a from ctx_ins), 'Router', '192.168.1.1', 'admin', 'Nueva#1') is not null,
+          'dueño A: guarda un acceso nuevo');
+
+-- Despachador: ve la instalación, pero no los accesos.
+reset role;
+select pg_temp.login((select disp_a from ctx));
+select is((select count(*)::int from installations), 1, 'despachador A: ve la instalación');
+select is((select count(*)::int from installation_credentials), 0, 'despachador A: no ve los accesos');
+select throws_ok($$select reveal_installation_password((select cred_a from ctx_ins))$$, '42501', null, 'despachador A: no descifra la contraseña');
+select throws_ok($$select save_installation_credential((select inst_a from ctx_ins), 'X', null, null, 'x')$$, '42501', null, 'despachador A: no guarda accesos');
+
+-- Técnico con orden abierta en la instalación: ve los accesos; no ve el registro ni cambia la instalación de su orden.
+reset role;
+select pg_temp.login((select tech_a from ctx));
+select is((select count(*)::int from installation_credentials where installation_id = (select inst_a from ctx_ins)), 2, 'técnico con orden abierta: ve los accesos');
+select is(reveal_installation_password((select cred_a from ctx_ins)), 'Sonrisas#2025', 'técnico con orden abierta: descifra la contraseña');
+select is((select count(*)::int from installation_credential_views), 0, 'el técnico no ve el registro de vistas');
+select throws_ok($$update work_orders set installation_id = null where id = (select wo_open_ins from ctx_ins)$$, '42501', null,
+                 'el técnico no cambia la instalación de su orden');
+select is((select count(*)::int from installations where company_id = (select co_b from ctx)), 0, 'técnico A: no ve instalaciones de B');
+
+-- Técnico que solo tiene órdenes cerradas en la instalación: no ve los accesos.
+reset role;
+select pg_temp.login((select tech2_a from ctx_ins));
+select is((select count(*)::int from installation_credentials), 0, 'técnico sin orden abierta: no ve los accesos');
+select throws_ok($$select reveal_installation_password((select cred_a from ctx_ins))$$, '42501', null, 'técnico sin orden abierta: no descifra la contraseña');
+
+reset role;
+select is((select count(*)::int from installation_credential_views where installation_id = (select inst_a from ctx_ins)), 2,
+          'quedaron registradas las dos vistas (dueño y técnico)');
 
 -- ---------------------------------------------------------------------------
 -- Verificaciones finales como postgres

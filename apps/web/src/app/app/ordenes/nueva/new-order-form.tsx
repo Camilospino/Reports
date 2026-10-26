@@ -15,22 +15,47 @@ type Props = {
   assets: { id: string; site_id: string; type: string; brand: string | null; model: string | null }[];
   serviceTypes: { id: string; name: string; estimated_minutes: number; checklist: string[] }[];
   technicians: { id: string; full_name: string }[];
+  installation?: { id: string; label: string; customer_id: string; site_id: string };
+  initialServiceTypeId?: string;
+  initialDate?: string;
 };
 
-export function NewOrderForm({ today, initialCustomerId, customers, sites, assets, serviceTypes, technicians }: Props) {
+export function NewOrderForm({
+  today,
+  initialCustomerId,
+  customers,
+  sites,
+  assets,
+  serviceTypes,
+  technicians,
+  installation,
+  initialServiceTypeId,
+  initialDate,
+}: Props) {
   const [state, action, pending] = useActionState(createWorkOrder, null);
   const [customerId, setCustomerId] = useState(initialCustomerId ?? (customers.length ? "" : "new"));
-  const [siteId, setSiteId] = useState("");
-  const [title, setTitle] = useState("");
+  const [siteId, setSiteId] = useState(installation?.site_id ?? "");
+  const initialService = serviceTypes.find((s) => s.id === initialServiceTypeId);
+  const [title, setTitle] = useState(initialService?.name ?? "");
   const [newName, setNewName] = useState("");
-  const [serviceId, setServiceId] = useState("");
+  const [serviceId, setServiceId] = useState(initialService?.id ?? "");
   const service = serviceTypes.find((s) => s.id === serviceId);
   const customerSites = sites.filter((s) => s.customer_id === customerId);
   const effectiveSite = customerId === "new" ? "new" : siteId || customerSites[0]?.id || "new";
   const siteAssets = assets.filter((a) => a.site_id === effectiveSite);
+  // La orden queda en el historial de la instalación mientras siga siendo de ese cliente.
+  const linked = installation && customerId === installation.customer_id ? installation : null;
 
   return (
     <form action={action} className="grid max-w-4xl gap-6">
+      {linked && (
+        <>
+          <input type="hidden" name="installation_id" value={linked.id} />
+          <p className="card py-3.5 text-sm">
+            Esta orden queda en el historial de la instalación <strong>{linked.label}</strong>.
+          </p>
+        </>
+      )}
       <fieldset className="card grid gap-4 sm:grid-cols-2">
         <legend className="font-display float-left mb-1 w-full text-lg font-bold">Cliente y lugar</legend>
         <div className="sm:col-span-2">
@@ -197,7 +222,7 @@ export function NewOrderForm({ today, initialCustomerId, customers, sites, asset
         <legend className="font-display float-left mb-1 w-full text-lg font-bold">Programación</legend>
         <div>
           <label className="label" htmlFor="date">Fecha</label>
-          <input id="date" name="date" type="date" defaultValue={today} className="input" />
+          <input id="date" name="date" type="date" defaultValue={initialDate ?? today} className="input" />
         </div>
         <div>
           <label className="label" htmlFor="time">Hora</label>

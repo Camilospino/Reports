@@ -143,6 +143,8 @@ update public.service_types set skill = case name
   when 'Reparación de nevera' then 'Refrigeración' when 'Carga de gas' then 'Aires' end;
 -- Garantía: instalaciones 6 meses, mantenimientos y reparaciones 3.
 update public.service_types set warranty_months = case when name like 'Instalación%' then 6 else 3 end;
+-- Los mantenimientos actualizan el último mantenimiento de la instalación.
+update public.service_types set is_maintenance = true where name like 'Mantenimiento%';
 
 -- Inventario: dos materiales por empresa quedan bajos de stock.
 update public.materials set stock = case when unit in ('m', 'lb') then 120 else 15 end,
@@ -386,3 +388,81 @@ update public.materials set track_stock = false where name = 'Mano de obra técn
 insert into public.stock_movements (company_id, material_id, delta, stock_after, reason, created_at)
 select company_id, id, stock, stock, 'Inventario inicial', now() - interval '30 days'
 from public.materials where track_stock and stock <> 0;
+
+-- ---------------------------------------------------------------------------
+-- Instalación INS-1001: CCTV de la Clínica Dental Sonrisas (Chapinero). La garantía vence
+-- en 18 días, la cámara del parqueadero tiene falla y Mateo tiene la orden abierta para
+-- revisarla (él ve los accesos; Diana y Andrés, que ya cerraron las suyas, no).
+-- ---------------------------------------------------------------------------
+do $$
+declare
+  co uuid := 'c0000000-0000-0000-0000-00000000000a';
+  inst uuid := 'e1000000-0000-0000-0000-000000000001';
+  mateo uuid := 'a1000000-0000-0000-0000-000000000003';
+  diana uuid := 'a1000000-0000-0000-0000-000000000004';
+  andres uuid := 'a1000000-0000-0000-0000-000000000005';
+  today date := (now() at time zone 'America/Bogota')::date;
+  cust uuid;
+  site uuid;
+  origin uuid;
+  cred uuid;
+  ts timestamptz;
+begin
+  select c.id, s.id into cust, site
+  from public.customers c join public.sites s on s.customer_id = c.id
+  where c.company_id = co and c.name = 'Clínica Dental Sonrisas';
+
+  ts := (today - 347 + time '08:00') at time zone 'America/Bogota';
+  insert into public.work_orders (company_id, customer_id, site_id, service_type_id, title, description, technician_id,
+                                  scheduled_start, status, completed_at, signer_name, invoiced_at, created_at)
+  values (co, cust, site, (select id from public.service_types where company_id = co and name = 'Instalación de cámaras'),
+          'Instalación de cámaras', '5 cámaras, DVR de 8 canales y disco de 2 TB', mateo,
+          ts, 'completada', ts + interval '6 hours', 'Marcela Ruiz', ts + interval '6 hours', ts - interval '3 days')
+  returning id into origin;
+
+  insert into public.installations (id, company_id, customer_id, site_id, origin_work_order_id, name, system_type,
+                                    installed_on, warranty_until, maintenance_every_months, installed_by, notes)
+  values (inst, co, cust, site, origin, 'CCTV sede principal', 'cctv', today - 347, today + 18, 6, mateo,
+          'El DVR está en el cuarto técnico, detrás de recepción. Pedir la llave en portería.');
+  update public.work_orders set installation_id = inst where id = origin;
+
+  insert into public.assets (company_id, site_id, installation_id, name, type, category, brand, model, serial, location, status)
+  values
+    (co, site, inst, 'Cámara 1', 'Domo 2 MP', 'Cámaras', 'Hikvision', 'DS-2CE76D0T-ITPF', 'F21734567', 'Recepción', 'funcionando'),
+    (co, site, inst, 'Cámara 2', 'Domo 2 MP', 'Cámaras', 'Hikvision', 'DS-2CE76D0T-ITPF', 'F21734612', 'Sala de espera', 'funcionando'),
+    (co, site, inst, 'Cámara 3', 'Bala 4 MP', 'Cámaras', 'Hikvision', 'DS-2CE16D8T-IT', 'G10458823', 'Entrada principal', 'funcionando'),
+    (co, site, inst, 'Cámara 4', 'Bala 4 MP', 'Cámaras', 'Hikvision', 'DS-2CE16D8T-IT', 'G10458871', 'Parqueadero', 'con_falla'),
+    (co, site, inst, 'Cámara 5', 'Domo 2 MP', 'Cámaras', 'Hikvision', 'DS-2CE76D0T-ITPF', 'F21734698', 'Pasillo consultorios', 'funcionando'),
+    (co, site, inst, 'DVR', 'Grabador 8 canales', 'Otros', 'Hikvision', 'DS-7208HQHI-K1', 'J33019245', 'Cuarto técnico', 'funcionando'),
+    (co, site, inst, 'Disco duro', 'Almacenamiento 2 TB', 'Otros', 'WD Purple', 'WD22PURZ', 'WX52D81K7H3P', 'Dentro del DVR', 'funcionando'),
+    (co, site, inst, 'Fuente', 'Fuente 12 V 10 A', 'Otros', 'Genérica', 'S-120-12', null, 'Cuarto técnico', 'funcionando');
+
+  -- Mantenimiento de los 6 meses (deja el último mantenimiento en esa fecha).
+  ts := (today - 165 + time '09:00') at time zone 'America/Bogota';
+  insert into public.work_orders (company_id, customer_id, site_id, installation_id, service_type_id, title, description,
+                                  technician_id, scheduled_start, status, completed_at, signer_name, invoiced_at, created_at)
+  values (co, cust, site, inst, (select id from public.service_types where company_id = co and name = 'Mantenimiento CCTV'),
+          'Mantenimiento CCTV', 'Limpieza de lentes y revisión de grabación', diana,
+          ts, 'completada', ts + interval '90 minutes', 'Marcela Ruiz', ts + interval '90 minutes', ts - interval '5 days');
+
+  ts := (today - 60 + time '14:00') at time zone 'America/Bogota';
+  insert into public.work_orders (company_id, customer_id, site_id, installation_id, service_type_id, title, description,
+                                  technician_id, scheduled_start, status, completed_at, signer_name, invoiced_at, created_at)
+  values (co, cust, site, inst, (select id from public.service_types where company_id = co and name = 'Cableado de red'),
+          'Cableado de red', 'Punto de red para ver las cámaras desde recepción', andres,
+          ts, 'completada', ts + interval '2 hours', 'Marcela Ruiz', ts + interval '2 hours', ts - interval '2 days');
+
+  ts := (today + 1 + time '09:00') at time zone 'America/Bogota';
+  insert into public.work_orders (company_id, customer_id, site_id, installation_id, title, description, technician_id,
+                                  scheduled_start, scheduled_end, priority)
+  values (co, cust, site, inst, 'Revisión cámara sin imagen', 'La cámara del parqueadero no muestra imagen desde el lunes',
+          mateo, ts, ts + interval '90 minutes', 'alta');
+
+  insert into public.installation_credentials (company_id, installation_id, label, host, username)
+  values (co, inst, 'DVR', '192.168.1.64', 'admin')
+  returning id into cred;
+  update public.installation_credentials set secret_id = vault.create_secret('Sonrisas#2025', 'installation_credential:' || cred)
+  where id = cred;
+end $$;
+update public.work_order_events e set created_at = w.created_at
+from public.work_orders w where w.id = e.work_order_id and e.type = 'creada' and w.installation_id is not null;

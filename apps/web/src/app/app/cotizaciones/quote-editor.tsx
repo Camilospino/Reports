@@ -27,17 +27,19 @@ type Props = {
   customers: Customer[];
   materials: Material[];
   defaultValidUntil: string;
+  initialCustomerId?: string;
+  initialNotes?: string;
 };
 
 const blank = (): QuoteItem => ({ material_id: null, description: "", quantity: 1, unit_price: 0 });
 
-export function QuoteEditor({ quote, customers, materials, defaultValidUntil }: Props) {
+export function QuoteEditor({ quote, customers, materials, defaultValidUntil, initialCustomerId, initialNotes }: Props) {
   const router = useRouter();
   const editable = !quote || quote.status === "borrador" || quote.status === "enviada";
-  const [customerId, setCustomerId] = useState(quote?.customer_id ?? "");
+  const [customerId, setCustomerId] = useState(quote?.customer_id ?? initialCustomerId ?? "");
   const [items, setItems] = useState<QuoteItem[]>(quote?.items.length ? quote.items : [blank()]);
   const [validUntil, setValidUntil] = useState(quote?.valid_until ?? defaultValidUntil);
-  const [notes, setNotes] = useState(quote?.notes ?? "");
+  const [notes, setNotes] = useState(quote?.notes ?? initialNotes ?? "");
   const [dirty, setDirty] = useState(!quote);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);

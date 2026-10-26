@@ -23,6 +23,7 @@ const schema = z
     city: optional,
     location: optional,
     asset_id: optional,
+    installation_id: optional,
     service_type_id: optional,
     title: z.string().trim().min(3, "Escribe un título para la orden."),
     description: optional,
@@ -93,6 +94,7 @@ export async function createWorkOrder(_: FormState, fd: FormData): Promise<FormS
       customer_id: customerId,
       site_id: siteId,
       asset_id: v.asset_id,
+      installation_id: v.installation_id,
       service_type_id: v.service_type_id,
       title: v.title,
       description: v.description,
@@ -102,7 +104,10 @@ export async function createWorkOrder(_: FormState, fd: FormData): Promise<FormS
     })
     .select("id")
     .single();
-  if (error) return { error: "No se pudo crear la orden. Revisa los datos e intenta de nuevo." };
+  if (error)
+    return {
+      error: error.code === "23514" ? error.message : "No se pudo crear la orden. Revisa los datos e intenta de nuevo.",
+    };
 
   redirect(`/app/ordenes/${order.id}`);
 }

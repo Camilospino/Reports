@@ -6,6 +6,7 @@ import { useState } from "react";
 import {
   BarChart3,
   Calendar,
+  Cctv,
   ClipboardList,
   FileText,
   Home,
@@ -25,6 +26,7 @@ const NAV = [
   { href: "/app/agenda", label: "Agenda", icon: Calendar },
   { href: "/app/ordenes", label: "Órdenes", icon: ClipboardList },
   { href: "/app/clientes", label: "Clientes", icon: User },
+  { href: "/app/instalaciones", label: "Instalaciones", icon: Cctv },
   { href: "/app/tecnicos", label: "Técnicos", icon: Wrench },
   { href: "/app/cotizaciones", label: "Cotizaciones", icon: FileText },
   { href: "/app/inventario", label: "Inventario", icon: Package },

@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { Sidebar } from "@/components/panel/sidebar";
+import { Toaster } from "@/components/ui/toast";
 import { getSession } from "@/lib/session";
 import { shortDate } from "@/lib/format";
 
@@ -40,6 +41,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
         planDetail={planDetail}
       />
       <main id="contenido" tabIndex={-1} className="min-w-0 flex-1 px-4 py-6 outline-none sm:px-8 sm:py-7">{children}</main>
+      <Toaster />
     </div>
   );
 }
