@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Plus } from "lucide-react";
+import { SectionCard } from "@/components/ui/section-card";
 import { ToneChip } from "@/components/ui/tone-chip";
 import { ASSET_STATUS, type AssetStatus } from "@/lib/installations";
 import { EquipmentPanel } from "./equipment-panel";
@@ -60,38 +61,42 @@ export function EquipmentTable({
 
   if (!assets.length)
     return (
-      <div className="py-6 text-center">
-        <p className="text-sm text-muted">Aún no hay equipos registrados.</p>
-        <button type="button" className="btn-outline mt-4" onClick={() => setEditing(null)}>
-          <Plus size={18} aria-hidden />
-          Agregar equipo
-        </button>
-        {panel}
-      </div>
+      <SectionCard title="Equipos instalados">
+        <div className="py-6 text-center">
+          <p className="text-sm text-muted">Aún no hay equipos registrados.</p>
+          <button type="button" className="btn-outline mt-4" onClick={() => setEditing(null)}>
+            <Plus size={18} aria-hidden />
+            Agregar equipo
+          </button>
+          {panel}
+        </div>
+      </SectionCard>
     );
 
-  return (
-    <>
-      <div role="group" aria-label="Filtrar equipos" className="mb-4 flex flex-wrap gap-2">
-        {pills.map((p) => {
-          const active = filter === p.key;
-          return (
-            <button
-              key={p.key ?? "todos"}
-              type="button"
-              aria-pressed={active}
-              onClick={() => setFilter(p.key)}
-              className={`h-9 cursor-pointer rounded-full px-3.5 text-[13px] font-semibold transition-colors ${
-                active ? "bg-ink text-white" : "border border-line bg-surface text-ink hover:bg-bg"
-              }`}
-            >
-              {p.label}
-            </button>
-          );
-        })}
-      </div>
+  const filters = (
+  <div role="group" aria-label="Filtrar equipos" className="flex flex-wrap gap-2">
+    {pills.map((p) => {
+      const active = filter === p.key;
+      return (
+        <button
+          key={p.key ?? "todos"}
+          type="button"
+          aria-pressed={active}
+          onClick={() => setFilter(p.key)}
+          className={`h-9 cursor-pointer rounded-full px-3.5 text-[13px] font-semibold transition-colors ${
+            active ? "bg-ink text-white" : "border border-line bg-surface text-ink hover:bg-bg"
+          }`}
+        >
+          {p.label}
+        </button>
+      );
+    })}
+  </div>
+  );
 
-      <div className="-mx-5 overflow-x-auto">
+  return (
+    <SectionCard title="Equipos instalados" action={filters}>
+      <div className="-mx-5 -mt-1 overflow-x-auto">
         <table className="w-full min-w-[640px] text-sm">
           <thead>
             <tr>
@@ -154,6 +159,6 @@ export function EquipmentTable({
         </button>
       </div>
       {panel}
-    </>
+    </SectionCard>
   );
 }

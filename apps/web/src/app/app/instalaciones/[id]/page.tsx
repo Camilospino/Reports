@@ -15,6 +15,7 @@ import {
   installationCode,
   orderCode,
   shortDate,
+  time,
   type WorkOrderStatus,
 } from "@/lib/format";
 import {
@@ -49,6 +50,31 @@ function orderDate(iso: string, today: string) {
 }
 
 const short = (text: string | null, max = 70) => (text && text.length > max ? `${text.slice(0, max - 1).trimEnd()}…` : text);
+
+// "Paula Méndez" → "P. Méndez"
+function shortName(name: string) {
+  const words = name.trim().split(/\s+/);
+  return words.length > 1 ? `${words[0]![0]}. ${words.at(-1)}` : name;
+}
+
+// Lo que resume cada orden en el historial: hora si está programada; fotos y firma si se cerró.
+function orderDetail(o: {
+  status: WorkOrderStatus;
+  scheduled_start: string | null;
+  description: string | null;
+  signer_name: string | null;
+  attachments: { kind: string }[];
+}) {
+  if (o.status !== "completada" && o.status !== "cancelada")
+    return o.scheduled_start ? `programada ${time(o.scheduled_start)}` : "sin programar";
+  const photos = o.attachments.filter((a) => a.kind !== "firma").length;
+  const parts = [
+    short(o.description, 40),
+    photos ? `${photos} ${photos === 1 ? "foto" : "fotos"}` : null,
+    o.signer_name ? `firmado por ${shortName(o.signer_name)}` : null,
+  ];
+  return parts.filter(Boolean).join(" · ");
+}
 
 export default async function InstallationPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -140,16 +166,14 @@ export default async function InstallationPage({ params }: { params: Promise<{ i
       <div className="flex flex-wrap items-start gap-6">
         {/* Columna izquierda */}
         <div className="flex min-w-0 flex-[1_1_560px] flex-col gap-6">
-          <SectionCard title="Equipos instalados">
-            <EquipmentTable installationId={ins.id} companyId={company.id} assets={assets} />
-          </SectionCard>
+          <EquipmentTable installationId={ins.id} companyId={company.id} assets={assets} />
 
           <SectionCard title="Historial de órdenes">
             {orders.length ? (
               <ul className="divide-y divide-line-soft">
                 {orders.map((o) => {
                   const when = o.completed_at ?? o.scheduled_start ?? o.created_at;
-                  const detail = o.id === ins.origin_work_order_id ? "origen de esta instalación" : short(o.description);
+                  const detail = o.id === ins.origin_work_order_id ? "origen de esta instalación" : orderDetail(o);
                   return (
                     <li key={o.id} className="flex items-start gap-3 py-3.5 first:pt-0 last:pb-0">
                       <span aria-hidden className="mt-[7px] size-2 shrink-0 rounded-full" style={{ background: orderDot(o.status) }} />
@@ -181,8 +205,13 @@ export default async function InstallationPage({ params }: { params: Promise<{ i
             {ins.warranty_until && progress ? (
               <div>
                 <div className="flex justify-between gap-3 text-[13px] text-muted">
-                  <span>Inicio · {dayLabelWithYear(ins.installed_on)}</span>
-                  <span>Fin · {dayLabelWithYear(ins.warranty_until)}</span>
+                  <span>{dayLabelWithYear(ins.installed_on)}</span>
+                  <span
+                    className={progress.tone === "green" ? undefined : "font-semibold"}
+                    style={progress.tone === "green" ? undefined : { color: TONES[progress.tone].fg }}
+                  >
+                    {dayLabelWithYear(ins.warranty_until)}
+                  </span>
                 </div>
                 <div
                   role="progressbar"
@@ -238,8 +267,7 @@ export default async function InstallationPage({ params }: { params: Promise<{ i
                 </Link>
               </Row>
               <Row label="Contacto">
-                {customer.contact_name ?? "—"}
-                {customer.phone_whatsapp && <span className="block text-[13px] text-muted">{formatPhone(customer.phone_whatsapp)}</span>}
+                {[customer.contact_name, customer.phone_whatsapp && formatPhone(customer.phone_whatsapp)].filter(Boolean).join(" · ") || "—"}
               </Row>
               <Row label="Orden de origen">
                 {ins.origin ? (

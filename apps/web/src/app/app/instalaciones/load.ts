@@ -28,7 +28,7 @@ export async function loadInstallation(
       .order("name"),
     supabase
       .from("work_orders")
-      .select("id, number, title, description, status, scheduled_start, completed_at, created_at, service_types(name), memberships(full_name)")
+      .select("id, number, title, description, status, scheduled_start, completed_at, created_at, signer_name, service_types(name), memberships(full_name), attachments(kind)")
       .eq("installation_id", id)
       .eq("company_id", companyId)
       .order("created_at", { ascending: false }),
