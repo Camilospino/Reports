@@ -24,9 +24,6 @@ export function LoginForm() {
       <button className="btn-primary w-full" disabled={pending}>
         {pending ? "Entrando…" : "Entrar"}
       </button>
-      <p className="text-center text-sm text-muted">
-        ¿Tu empresa aún no usa Tecnio? <Link href="/registro" className="link">Créala gratis</Link>
-      </p>
     </form>
   );
 }

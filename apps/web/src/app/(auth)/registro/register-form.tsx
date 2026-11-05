@@ -5,11 +5,11 @@ import { useActionState } from "react";
 import { FormMessage } from "@/components/ui/form-message";
 import { register } from "../actions";
 
-export function RegisterForm() {
+export function RegisterForm({ token, email }: { token: string; email: string }) {
   const [state, action, pending] = useActionState(register, null);
-  if (state?.message) return <FormMessage state={state} />;
   return (
     <form action={action} className="space-y-4">
+      <input type="hidden" name="invitacion" value={token} />
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label className="label" htmlFor="full_name">Tu nombre</label>
@@ -22,7 +22,8 @@ export function RegisterForm() {
       </div>
       <div>
         <label className="label" htmlFor="email">Correo</label>
-        <input id="email" name="email" type="email" autoComplete="email" className="input" required />
+        {/* El correo viene en la invitación y no se puede cambiar. */}
+        <input id="email" type="email" autoComplete="email" className="input" value={email} readOnly aria-readonly />
       </div>
       <div>
         <label className="label" htmlFor="password">Contraseña</label>

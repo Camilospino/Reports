@@ -4,6 +4,8 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { readInvite } from "@/lib/invite";
 import { normalizePhone, type FormState } from "@/lib/format";
 
 const email = z.string().trim().toLowerCase().email("Escribe un correo válido.");
@@ -21,7 +23,7 @@ export async function signIn(_: FormState, fd: FormData): Promise<FormState> {
   const { error } = await supabase.auth.signInWithPassword(parsed.data);
   // Si Supabase exige confirmar el correo, decirlo: "contraseña incorrecta" haría que la persona la cambie sin motivo.
   if (error?.code === "email_not_confirmed")
-    return { error: "Tu correo aún no está confirmado. Abre el enlace que te enviamos al registrarte." };
+    return { error: "Tu correo aún no está confirmado. Abre el enlace que te enviamos por correo." };
   if (error) return { error: "Correo o contraseña incorrectos." };
   redirect("/app");
 }
@@ -36,26 +38,32 @@ const companySchema = z.object({
   nit: z.string().trim().optional(),
 });
 
+// Registro cerrado (enable_signup = false en Supabase): solo con un enlace de invitación.
+// La cuenta la crea el servidor con la llave secreta, para el correo que trae la invitación.
 export async function register(_: FormState, fd: FormData): Promise<FormState> {
-  const parsed = companySchema.extend({ email, password }).safeParse(Object.fromEntries(fd));
+  const invite = readInvite(String(fd.get("invitacion") ?? ""));
+  if (!invite) return { error: "La invitación no es válida o ya venció. Pide un enlace nuevo." };
+  const parsed = companySchema.extend({ password }).safeParse(Object.fromEntries(fd));
   if (!parsed.success) return { error: firstError(parsed.error) };
-  const { email: userEmail, password: userPassword, ...company } = parsed.data;
+  const { password: userPassword, ...company } = parsed.data;
 
-  const supabase = await createClient();
-  const { data, error } = await supabase.auth.signUp({
-    email: userEmail,
+  const admin = createAdminClient();
+  const { error } = await admin.auth.admin.createUser({
+    email: invite.email,
     password: userPassword,
-    // Se guardan en el usuario por si hay que confirmar el correo antes de crear la empresa.
-    options: { data: company },
+    // El correo lo eligió quien envió la invitación, así que no hace falta confirmarlo.
+    email_confirm: true,
+    user_metadata: company,
   });
   if (error) {
-    if (error.code === "user_already_exists") return { error: "Ese correo ya tiene una cuenta. Inicia sesión." };
     if (error.code === "weak_password") return { error: "Esa contraseña es muy débil. Usa una más larga." };
+    if (error.code === "email_exists") return { error: "Ese correo ya tiene una cuenta. Inicia sesión." };
     return { error: "No pudimos crear la cuenta. Intenta de nuevo." };
   }
-  if (!data.session) {
-    return { message: "Te enviamos un correo para confirmar tu cuenta. Ábrelo para continuar." };
-  }
+
+  const supabase = await createClient();
+  const { error: signInError } = await supabase.auth.signInWithPassword({ email: invite.email, password: userPassword });
+  if (signInError) redirect("/login");
 
   const { error: companyError } = await supabase.rpc("create_company", {
     p_company_name: company.company_name,

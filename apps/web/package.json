@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start -p 4000",
     "lint": "eslint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "invitacion": "node --env-file=.env.local scripts/invitacion.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

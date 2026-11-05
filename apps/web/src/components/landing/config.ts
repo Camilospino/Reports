@@ -16,5 +16,6 @@ export const NAV_LINKS = [
 ] as const;
 
 export const DEMO_HREF = "/#demo";
-export const LOGIN_HREF = "/login";
-export const SIGNUP_HREF = "/registro"; // Prueba gratis de 14 días (la crea la app al registrarse).
+// El registro es solo con invitación (ver lib/invite.ts): "Probar gratis" lleva a pedir la demo,
+// y el enlace para crear la cuenta se envía después. /login no se enlaza desde la página pública.
+export const SIGNUP_HREF = DEMO_HREF;

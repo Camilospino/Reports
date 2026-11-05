@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BRAND, CONTACT_EMAIL, DEMO_HREF, LOGIN_HREF, NAV_LINKS } from "./config";
+import { BRAND, CONTACT_EMAIL, DEMO_HREF, NAV_LINKS } from "./config";
 import { SECTORES } from "./sectores";
 import { WhatsappLink } from "./whatsapp";
 import ui from "./landing.module.css";
@@ -23,9 +23,6 @@ export function Footer() {
                   <a href={l.href} className={styles.link}>{l.label}</a>
                 </li>
               ))}
-              <li>
-                <Link href={LOGIN_HREF} className={styles.link}>Entrar</Link>
-              </li>
             </ul>
           </nav>
 

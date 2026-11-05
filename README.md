@@ -20,6 +20,21 @@ supabase/      Migraciones, seed y pruebas de aislamiento (pgTAP)
 Usuarios de prueba (contraseña `Tecnio2026!`): `dueno@seguridadtotal.test`, `despacho@seguridadtotal.test`,
 `tecnico1@seguridadtotal.test`… y lo mismo con `@frioexpress.test` (segunda empresa, para probar el aislamiento).
 
+## Registro solo con invitación
+
+Nadie puede crear una cuenta por su cuenta: la página pública no enlaza a `/login` ni a `/registro`,
+y `/registro` solo muestra el formulario con un enlace de invitación válido. Para invitar a una empresa:
+
+```bash
+npm run invitacion -w web -- correo@empresa.com      # vence en 7 días; agrega un número para cambiarlo
+```
+
+El enlace va atado a ese correo (firmado con `INVITE_SECRET`) y sirve una sola vez. Para enlaces de
+producción, `INVITE_SECRET` y `NEXT_PUBLIC_SITE_URL` de tu `.env.local` deben ser los de Netlify.
+En Supabase (producción) apaga **Authentication → Sign In / Providers → Allow new users to sign up**;
+así tampoco se puede crear una cuenta llamando directo a la API. Las invitaciones del dueño a su
+equipo siguen funcionando porque las hace el servidor.
+
 ## Verificar antes de publicar
 
 `npm run check`: pruebas de aislamiento entre empresas (136 casos; recorren **todas** las tablas con

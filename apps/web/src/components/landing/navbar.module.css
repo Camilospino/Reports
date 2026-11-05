@@ -56,10 +56,6 @@
 .link:hover {
   color: var(--text);
 }
-.login {
-  margin-right: -12px;
-}
-
 .menuButton {
   display: none;
   width: 44px;
@@ -91,8 +87,7 @@
 }
 
 @media (max-width: 959px) {
-  .links,
-  .login {
+  .links {
     display: none;
   }
   .demo {
