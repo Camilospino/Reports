@@ -4,6 +4,7 @@ import { Download } from "lucide-react";
 import { QuoteChip } from "@/components/ui/quote-chip";
 import { createClient } from "@/lib/supabase/server";
 import { cop, formatPhone, initials, longDate, quoteCode } from "@/lib/format";
+import { safeLogoUrl } from "@/lib/logo";
 import { itemTotal, parseItems, type QuoteStatus } from "@/lib/quotes";
 import type { QuotePdfData } from "@/lib/quote-pdf";
 
@@ -24,9 +25,9 @@ export default async function PublicQuotePage({ params }: { params: Promise<{ to
   return (
     <main className="mx-auto min-h-screen max-w-[480px] bg-surface pb-10">
       <header className="flex items-center gap-3 border-b border-line bg-bg px-5 py-4">
-        {q.company.logo_url ? (
+        {safeLogoUrl(q.company.logo_url) ? (
           // eslint-disable-next-line @next/next/no-img-element -- logo externo de la empresa
-          <img src={q.company.logo_url} alt="" className="size-10 rounded-[10px] object-contain" />
+          <img src={safeLogoUrl(q.company.logo_url)!} alt="" className="size-10 rounded-[10px] object-contain" />
         ) : (
           <span aria-hidden className="inline-flex size-10 items-center justify-center rounded-[10px] bg-ink font-display font-bold text-white">
             {initials(q.company.name)}

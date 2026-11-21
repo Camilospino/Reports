@@ -93,7 +93,10 @@ export function Photos({ orderId, companyId, photos }: { orderId: string; compan
             if (file.size > MAX_MB * 1024 * 1024) return setError(`La foto pesa más de ${MAX_MB} MB.`);
             start(async () => {
               setError(null);
-              const ext = (file.name.split(".").pop() ?? "jpg").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
+              // La extensión sale del tipo (el bucket solo acepta estos tres), no del nombre del archivo:
+              // la ruta debe cumplir {uuid}.{ext} con ext de 1 a 5 letras (CHECK en la base).
+              const ext = ({ "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" } as Record<string, string>)[file.type];
+              if (!ext) return setError("La foto debe ser JPG, PNG o WebP.");
               const storagePath = `${companyId}/${orderId}/${crypto.randomUUID()}.${ext}`;
               const { error: upErr } = await createClient().storage.from("evidencias").upload(storagePath, file, { contentType: file.type });
               if (upErr) return setError("No se pudo subir la foto. Intenta de nuevo.");

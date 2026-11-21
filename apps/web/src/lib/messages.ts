@@ -5,6 +5,9 @@ import { time } from "@/lib/format";
 // Dirección pública del panel para armar enlaces que salen por WhatsApp.
 export async function siteUrl(): Promise<string> {
   if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");
+  // En producción no se adivina con Host / X-Forwarded-Host (los manda el cliente): estos enlaces
+  // van en correos de recuperar contraseña e invitaciones. Sin la variable, mejor fallar que filtrar.
+  if (process.env.NODE_ENV === "production") throw new Error("Falta NEXT_PUBLIC_SITE_URL");
   const h = await headers();
   const host = h.get("x-forwarded-host") ?? h.get("host") ?? "localhost:4000";
   const proto = h.get("x-forwarded-proto") ?? (host.startsWith("localhost") || host.startsWith("127.") ? "http" : "https");

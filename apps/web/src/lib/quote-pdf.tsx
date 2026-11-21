@@ -1,6 +1,7 @@
 import "server-only";
 import { Document, Image, Page, StyleSheet, Text, View, renderToBuffer } from "@react-pdf/renderer";
 import { cop, formatPhone, initials, longDate, quoteCode } from "@/lib/format";
+import { safeLogoUrl } from "@/lib/logo";
 import { itemTotal, parseItems } from "@/lib/quotes";
 
 export type QuotePdfData = {
@@ -47,9 +48,9 @@ function QuoteDocument({ q }: { q: QuotePdfData }) {
       <Page size="LETTER" style={s.page}>
         <View style={s.header}>
           <View style={s.brand}>
-            {q.company.logo_url ? (
+            {safeLogoUrl(q.company.logo_url) ? (
               // eslint-disable-next-line jsx-a11y/alt-text -- Image de react-pdf no lleva alt
-              <Image src={q.company.logo_url} style={s.logo} />
+              <Image src={safeLogoUrl(q.company.logo_url)!} style={s.logo} />
             ) : (
               <Text style={s.badge}>{initials(q.company.name)}</Text>
             )}

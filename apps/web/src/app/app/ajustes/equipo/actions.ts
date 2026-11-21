@@ -1,6 +1,6 @@
 "use server";
 
-import { headers } from "next/headers";
+import { siteUrl } from "@/lib/messages";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireOwner } from "@/lib/session";
@@ -36,7 +36,8 @@ export async function inviteMember(_: FormState, fd: FormData): Promise<FormStat
   const v = parsed.data;
 
   const admin = createAdminClient();
-  const origin = (await headers()).get("origin") ?? "";
+  // Nunca la cabecera Origin (la controla quien hace la petición): el enlace del correo llevaría a otro dominio.
+  const origin = await siteUrl();
   let userId: string | null = null;
   let invited = true;
 

@@ -10,9 +10,14 @@ const WINDOW_MS = 10 * 60_000;
 const str = (v: unknown) => (typeof v === "string" ? v : "");
 
 // La IP no se guarda: solo una huella (HMAC con la llave del servidor) para contar envíos.
+// La IP sale de la cabecera que pone Netlify (x-nf-client-connection-ip), que el cliente no puede
+// falsificar. El primer valor de X-Forwarded-For sí lo escribe el cliente: con él se saltaba el límite.
 function ipHash(req: NextRequest) {
-  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || req.headers.get("x-real-ip") || "desconocida";
-  return createHmac("sha256", process.env.SUPABASE_SECRET_KEY ?? "tecnio").update(ip).digest("hex").slice(0, 32);
+  const local = process.env.NODE_ENV !== "production" ? req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() : null;
+  const ip = req.headers.get("x-nf-client-connection-ip") || local || "desconocida";
+  const key = process.env.SUPABASE_SECRET_KEY;
+  if (!key) throw new Error("Falta SUPABASE_SECRET_KEY");
+  return createHmac("sha256", key).update(ip).digest("hex").slice(0, 32);
 }
 
 export async function POST(req: NextRequest) {

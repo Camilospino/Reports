@@ -1,6 +1,6 @@
 "use server";
 
-import { headers } from "next/headers";
+import { siteUrl } from "@/lib/messages";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
@@ -95,7 +95,8 @@ export async function requestPasswordReset(_: FormState, fd: FormData): Promise<
   if (!parsed.success) return { error: firstError(parsed.error) };
 
   const supabase = await createClient();
-  const origin = (await headers()).get("origin") ?? "";
+  // Nunca la cabecera Origin (la controla quien hace la petición): el enlace del correo llevaría a otro dominio.
+  const origin = await siteUrl();
   await supabase.auth.resetPasswordForEmail(parsed.data, { redirectTo: `${origin}/crear-contrasena` });
   // Misma respuesta exista o no la cuenta, para no revelar qué correos están registrados.
   return { message: "Si ese correo tiene cuenta, te llegará un enlace para crear una nueva contraseña." };

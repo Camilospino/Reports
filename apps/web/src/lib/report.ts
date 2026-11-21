@@ -74,7 +74,14 @@ export function warrantyEnd(r: ReportData): Date | null {
 
 // Bytes de un archivo del reporte. Solo se llama con rutas que devolvió public_report()
 // para ese token; la llave secreta se queda en el servidor.
+// La ruta se valida estricta ANTES de usar la llave secreta: storage-js la pega en la URL sin
+// codificar, y una ruta como "co/wo/%2e%2e/%2e%2e/.../rest/v1/companies" salía del bucket y hacía
+// cualquier GET a Supabase con service-role (fuga total entre empresas). Solo se acepta la forma que
+// generan la web y el celular: {company_id}/{work_order_id}/{uuid}.{ext}.
+const ATTACHMENT_PATH = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\/[A-Za-z0-9_-]{1,64}\.[a-z0-9]{1,5}$/;
+
 export async function downloadAttachment(path: string): Promise<Blob | null> {
+  if (!ATTACHMENT_PATH.test(path)) return null;
   const { data } = await createAdminClient().storage.from("evidencias").download(path);
   return data ?? null;
 }

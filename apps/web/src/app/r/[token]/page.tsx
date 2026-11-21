@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Check } from "lucide-react";
 import { cop, initials, orderCode, shortDate, time } from "@/lib/format";
+import { safeLogoUrl } from "@/lib/logo";
 import { siteUrl } from "@/lib/messages";
 import { loadReport, reportPhotos, reportSignature, reportTotals, warrantyEnd } from "@/lib/report";
 import { Gallery, Rating, ReportFooter } from "./report-client";
@@ -43,9 +44,9 @@ export default async function ReportPage({ params }: Props) {
   return (
     <main className="mx-auto min-h-screen max-w-[480px] bg-surface pb-[200px]">
       <header className="flex items-center gap-3 border-b border-line bg-bg px-5 py-4">
-        {r.company.logo_url ? (
+        {safeLogoUrl(r.company.logo_url) ? (
           // eslint-disable-next-line @next/next/no-img-element -- logo externo de la empresa
-          <img src={r.company.logo_url} alt="" className="size-10 rounded-[10px] object-contain" />
+          <img src={safeLogoUrl(r.company.logo_url)!} alt="" className="size-10 rounded-[10px] object-contain" />
         ) : (
           <span aria-hidden className="inline-flex size-10 shrink-0 items-center justify-center rounded-[10px] bg-ink font-display font-bold text-white">
             {initials(r.company.name)}

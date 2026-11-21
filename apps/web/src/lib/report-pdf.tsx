@@ -1,6 +1,7 @@
 import "server-only";
 import { Document, Image, Page, StyleSheet, Text, View, renderToBuffer } from "@react-pdf/renderer";
 import { cop, formatPhone, initials, orderCode, shortDate, time } from "@/lib/format";
+import { safeLogoUrl } from "@/lib/logo";
 import {
   downloadAttachment,
   reportPhotos,
@@ -81,9 +82,9 @@ function ReportDocument({ r, photos, signature }: { r: ReportData; photos: { cap
       <Page size="LETTER" style={s.page}>
         <View style={s.header}>
           <View style={s.brand}>
-            {r.company.logo_url ? (
+            {safeLogoUrl(r.company.logo_url) ? (
               // eslint-disable-next-line jsx-a11y/alt-text -- Image de react-pdf no lleva alt
-              <Image src={r.company.logo_url} style={s.logo} />
+              <Image src={safeLogoUrl(r.company.logo_url)!} style={s.logo} />
             ) : (
               <Text style={s.badge}>{initials(r.company.name)}</Text>
             )}

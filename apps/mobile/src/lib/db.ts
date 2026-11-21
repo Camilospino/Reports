@@ -73,7 +73,11 @@ function openLocalDatabase() {
   // La clave va antes de cualquier otra consulta. Con un binario sin SQLCipher esto no hace nada
   // (y la base quedaría sin cifrar): cipher_version lo detecta.
   d.execSync(`PRAGMA key = '${databaseKey()}'`);
-  if (!d.getFirstSync("PRAGMA cipher_version")) console.warn("SQLCipher no está activo: la base local no queda cifrada.");
+  // Sin cifrado no se escribe nada: la base guarda datos de clientes, direcciones y sesiones.
+  if (!d.getFirstSync("PRAGMA cipher_version")) {
+    d.closeSync();
+    throw new Error("SQLCipher no está activo: no se abre la base local sin cifrar.");
+  }
   createSchema(d);
   migrateLegacy(d);
   return d;
