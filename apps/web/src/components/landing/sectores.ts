@@ -1,6 +1,6 @@
 // Textos de cada sector (aprobados en el documento de la fase 1). Agregar un sector = agregar
 // una entrada aquí: la pestaña de "Para quién es" y su página /para/<slug> salen de estos datos.
-// Lo que va entre corchetes falta por llenar; "[Pendiente: …]" es algo que la app todavía no hace.
+// Los textos de las órdenes de ejemplo son inventados (no son clientes reales).
 
 export type Sector = {
   slug: string;
@@ -73,7 +73,7 @@ export const SECTORES: Sector[] = [
         "App del cliente configurada",
       ],
       photos: "Cada cámara instalada y la pantalla del grabador",
-      materials: ["Cámara [referencia] × 4", "Grabador × 1", "Cable UTP · [metros]"],
+      materials: ["Cámara IP 2 MP × 4", "Grabador × 1", "Cable UTP · 60 m"],
       times: "En camino 08:20 · Inicio 08:47 · Terminado 12:30",
     },
     faq: [
@@ -102,10 +102,10 @@ export const SECTORES: Sector[] = [
       { title: "Instalaciones sin respaldo", text: "Si el cliente reclama, no hay foto de la potencia ni del equipo instalado." },
     ],
     order: {
-      name: "Instalación de fibra hogar · [Plan]",
+      name: "Instalación de fibra hogar · 300 Mbps",
       checklist: ["Tendido de la acometida", "Conectorización", "Medición de potencia", "Configuración del router", "Prueba de velocidad"],
       photos: "Medición de potencia, router instalado y prueba de velocidad",
-      materials: ["Fibra drop · [metros]", "Conector SC/APC × 2", "Equipo ONT × 1"],
+      materials: ["Fibra drop · 80 m", "Conector SC/APC × 2", "Equipo ONT × 1"],
       times: "En camino 08:20 · Inicio 08:47 · Terminado 10:12",
     },
     faq: [

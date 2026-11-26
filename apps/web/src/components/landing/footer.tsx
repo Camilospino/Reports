@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BRAND, CONTACT_EMAIL, DEMO_HREF, NAV_LINKS } from "./config";
+import { BRAND, CONTACT_EMAIL, CONTRATAR_HREF, NAV_LINKS } from "./config";
 import { SECTORES } from "./sectores";
 import { WhatsappLink } from "./whatsapp";
 import ui from "./landing.module.css";
@@ -35,7 +35,7 @@ export function Footer() {
                 </li>
               ))}
               <li>
-                <a href={DEMO_HREF} className={styles.link}>Otros sectores</a>
+                <a href={CONTRATAR_HREF} className={styles.link}>Otros sectores</a>
               </li>
             </ul>
           </nav>
@@ -44,7 +44,7 @@ export function Footer() {
             <h2 id="pie-empresa" className={styles.title}>Empresa</h2>
             <ul>
               <li>
-                <a href={DEMO_HREF} className={styles.link}>Agendar demo</a>
+                <a href={CONTRATAR_HREF} className={styles.link}>Solicitar acceso</a>
               </li>
               <li>
                 <WhatsappLink className={styles.link} lugar="pie">WhatsApp</WhatsappLink>

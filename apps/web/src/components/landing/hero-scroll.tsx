@@ -17,9 +17,9 @@ const CAPTIONS = [
 ];
 
 const ROWS = [
-  { type: "[Tipo de trabajo]", place: "[Cliente]", status: "Completada", tone: "ok", time: "08:00", highlight: true },
-  { type: "[Tipo de trabajo]", place: "[Cliente]", status: "En proceso", tone: "progress", time: "09:30" },
-  { type: "[Tipo de trabajo]", place: "[Cliente]", status: "En camino", tone: "pending", time: "10:45" },
+  { type: "Mantenimiento minisplit", place: "Clínica San Rafael", status: "Completada", tone: "ok", time: "08:00", highlight: true },
+  { type: "Instalación de cámaras", place: "Edificio Torre 93", status: "En proceso", tone: "progress", time: "09:30" },
+  { type: "Revisión de alarma", place: "Panadería La Espiga", status: "En camino", tone: "pending", time: "10:45" },
 ] as const;
 
 /**
@@ -82,17 +82,17 @@ export function HeroScroll() {
                 <span />
               </div>
               <div className={styles.island} />
-              <p className={styles.photoTag}>[Foto real del trabajo] · 10:12</p>
+              <p className={styles.photoTag}>Foto del trabajo · 10:12</p>
             </div>
           </div>
 
           <div className={`${styles.tag} ${styles.tagLoc}`} aria-hidden="true">
             <span className={styles.tagLabel}>Cliente</span>
-            <span className={styles.tagValue}>[Nombre del cliente] · [Barrio]</span>
+            <span className={styles.tagValue}>Clínica San Rafael · Chapinero</span>
           </div>
           <div className={`${styles.tag} ${styles.tagTech}`} aria-hidden="true">
             <span className={styles.tagLabel}>Técnico</span>
-            <span className={styles.tagValue}>[Nombre] · en camino 08:20</span>
+            <span className={styles.tagValue}>Carlos Gómez · en camino 08:20</span>
           </div>
           <div className={`${styles.tag} ${styles.tagDone}`} aria-hidden="true">
             <CheckIcon />
@@ -104,7 +104,7 @@ export function HeroScroll() {
           <div className={styles.intro}>
             <p className={styles.live}>
               <span className={styles.liveDot} aria-hidden="true" />
-              Demo en vivo
+              En vivo
             </p>
             <h1 className={styles.h1}>
               Cada trabajo de tus técnicos, con foto, hora y firma.
@@ -154,7 +154,7 @@ function Laptop() {
           </aside>
           <div className={styles.main}>
             <div className={styles.head}>
-              <p className={styles.headTitle}>Hoy en [Tu empresa]</p>
+              <p className={styles.headTitle}>Hoy en Climatización Andina</p>
               <p className={styles.headLive}>
                 <span className={styles.headDot} />
                 en vivo

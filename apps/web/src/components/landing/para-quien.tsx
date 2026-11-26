@@ -2,7 +2,7 @@
 
 import { useRef, useState, type KeyboardEvent } from "react";
 import Link from "next/link";
-import { DEMO_HREF } from "./config";
+import { CONTRATAR_HREF } from "./config";
 import { SECTORES } from "./sectores";
 import ui from "./landing.module.css";
 import styles from "./para-quien.module.css";
@@ -83,8 +83,8 @@ export function ParaQuien() {
                 Tú creas tus tipos de trabajo y sus listas de chequeo. Si tus técnicos hacen trabajos donde el cliente, Tecnio se adapta a
                 tu forma de trabajar.
               </p>
-              <a href={DEMO_HREF} className={`${ui.btn} ${ui.btnAmber} ${styles.cta}`}>
-                Agendar demo
+              <a href={CONTRATAR_HREF} className={`${ui.btn} ${ui.btnAmber} ${styles.cta}`}>
+                Contratar
                 <Arrow />
               </a>
             </div>
@@ -103,7 +103,7 @@ export function OrderCard({ order }: { order: (typeof SECTORES)[number]["order"]
         <p className={styles.orderName}>{order.name}</p>
         <span className={styles.orderChip}>Completada</span>
       </div>
-      <p className={styles.orderMeta}>[Cliente] · [Barrio] · datos de ejemplo</p>
+      <p className={styles.orderMeta}>María Torres · Chapinero · datos de ejemplo</p>
       <p className={styles.orderLabel}>Lista de chequeo</p>
       <ul className={styles.checklist}>
         {order.checklist.map((c) => (

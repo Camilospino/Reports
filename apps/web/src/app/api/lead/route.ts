@@ -87,7 +87,7 @@ async function notify(lead: { name: string; contact: string; company_type: strin
     body: JSON.stringify({
       from: process.env.LEAD_FROM_EMAIL ?? "Tecnio <onboarding@resend.dev>",
       to,
-      subject: `Nueva solicitud de demo: ${lead.name}`,
+      subject: `Nueva solicitud de acceso: ${lead.name}`,
       text: `Nombre: ${lead.name}\nContacto: ${lead.contact}\nTipo de empresa: ${type}\nTécnicos: ${count}\nPágina: ${lead.source ?? "—"}`,
     }),
   });

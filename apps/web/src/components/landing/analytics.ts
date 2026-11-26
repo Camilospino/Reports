@@ -1,5 +1,5 @@
 // Eventos de analítica (Umami). Si el script no está cargado, no hace nada.
-export type LandingEvent = "clic agendar demo" | "clic probar gratis" | "envío formulario" | "clic WhatsApp";
+export type LandingEvent = "clic contratar" |"envío formulario" | "clic WhatsApp";
 
 declare global {
   interface Window {

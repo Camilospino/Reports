@@ -26,7 +26,7 @@ export function ClienteRecibe() {
               <div className={styles.island} />
               <div className={styles.company}>
                 <span className={styles.logo}>TE</span>
-                <span>[Tu empresa]</span>
+                <span>Climatización Andina</span>
               </div>
               <p className={styles.done}>
                 <span className={styles.doneIcon}>
@@ -36,7 +36,7 @@ export function ClienteRecibe() {
                 </span>
                 Servicio completado
               </p>
-              <p className={styles.meta}>[Tipo de trabajo] · OT-[0000] · hoy 10:12</p>
+              <p className={styles.meta}>Mantenimiento minisplit · OT-1047 · hoy 10:12</p>
               <div className={styles.photos}>
                 <span>Antes</span>
                 <span>Después</span>
@@ -45,7 +45,7 @@ export function ClienteRecibe() {
                 <svg width="110" height="34" viewBox="0 0 90 36" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                   <path d="M4 26c8-14 12-18 14-12s-2 12 4 8 8-16 12-14-2 14 4 12 10-10 14-8 4 8 10 6 10-6 20-8" />
                 </svg>
-                <span>Firmó [Nombre del cliente]</span>
+                <span>Firmó Laura Méndez</span>
               </div>
               <p className={styles.rateTitle}>¿Cómo te atendimos?</p>
               <div className={styles.stars}>

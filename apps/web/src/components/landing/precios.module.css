@@ -45,6 +45,10 @@
   font-weight: 700;
 }
 .price {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 8px;
   margin-top: 12px;
   font-family: var(--font-geist-mono), ui-monospace, monospace;
   font-size: 40px;
@@ -54,8 +58,10 @@
 }
 
 .per {
-  margin-top: 4px;
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
   font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0;
   color: var(--l-text-2);
 }
 .featured .per {
@@ -95,4 +101,10 @@
   font-family: var(--font-geist-mono), ui-monospace, monospace;
   font-size: 14px;
   color: var(--l-text-2);
+}
+.noteLink {
+  font-weight: 700;
+  color: var(--amber-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }

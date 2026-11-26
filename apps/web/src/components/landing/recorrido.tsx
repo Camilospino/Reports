@@ -29,18 +29,18 @@ const WEEK = [
 
 // Agenda del día: inicio y duración en horas desde las 7:00 (el día va de 7:00 a 17:00).
 const AGENDA = [
-  { tech: 1, blocks: [{ start: 0.5, len: 2 }, { start: 3, len: 1.5 }, { start: 6, len: 2.5, suggested: true }] },
-  { tech: 2, blocks: [{ start: 1, len: 3 }, { start: 5, len: 2 }] },
-  { tech: 3, blocks: [{ start: 0, len: 1.5 }, { start: 2.5, len: 2 }, { start: 7, len: 2 }] },
+  { tech: 1, name: "Carlos G.", blocks: [{ start: 0.5, len: 2, client: "Clínica San Rafael" }, { start: 3, len: 1.5, client: "Hotel Andino" }, { start: 6, len: 2.5, client: "Oficinas Calle 72", suggested: true }] },
+  { tech: 2, name: "Andrés R.", blocks: [{ start: 1, len: 3, client: "Edificio Torre 93" }, { start: 5, len: 2, client: "Colegio Santa Ana" }] },
+  { tech: 3, name: "Diana P.", blocks: [{ start: 0, len: 1.5, client: "Panadería La Espiga" }, { start: 2.5, len: 2, client: "Ferretería El Tornillo" }, { start: 7, len: 2, client: "Restaurante La Casona" }] },
 ];
 const DAY_HOURS = 10;
 
 const STOCK = [
-  { name: "[Material 1]", n: 42, max: 60 },
-  { name: "[Material 2]", n: 120, max: 200 },
-  { name: "[Material 3]", n: 3, max: 30, low: true },
-  { name: "[Material 4]", n: 18, max: 40 },
-  { name: "[Material 5]", n: 25, max: 50 },
+  { name: "Filtro minisplit", n: 42, max: 60 },
+  { name: "Tubería de cobre (m)", n: 120, max: 200 },
+  { name: "Capacitor 35 µF", n: 3, max: 30, low: true },
+  { name: "Gas R410A (lb)", n: 18, max: 40 },
+  { name: "Cinta aislante", n: 25, max: 50 },
 ];
 
 const CHIPS = [
@@ -172,7 +172,7 @@ export function Recorrido() {
                           return (
                             <div key={row.tech} className={styles.agendaRow}>
                               <span className={styles.agendaName}>
-                                [Técnico {row.tech}]
+                                {row.name}
                                 <span key={chip.label} className={`${styles.chip} ${styles[chip.tone]}`}>
                                   {chip.label}
                                 </span>
@@ -184,7 +184,7 @@ export function Recorrido() {
                                     className={`${styles.block} ${"suggested" in b ? styles.blockSuggested : ""}`}
                                     style={{ left: `${(b.start / DAY_HOURS) * 100}%`, width: `${(b.len / DAY_HOURS) * 100}%` }}
                                   >
-                                    [Cliente]
+                                    {b.client}
                                   </span>
                                 ))}
                               </span>
@@ -214,7 +214,7 @@ export function Recorrido() {
                         ))}
                       </ul>
                       <p className={styles.movement}>
-                        <strong>−2 [Material 1]</strong> · se descontó al cerrar la orden OT-[0000]
+                        <strong>−2 Filtro minisplit</strong> · se descontó al cerrar la orden OT-1047
                       </p>
                     </Zone>
 
@@ -235,8 +235,8 @@ export function Recorrido() {
                           </div>
                         </div>
                         <div className={styles.detailText}>
-                          <p className={styles.detailTitle}>OT-[0000] · [Tipo de trabajo]</p>
-                          <p>[Cliente] · [Barrio]</p>
+                          <p className={styles.detailTitle}>OT-1047 · Mantenimiento minisplit</p>
+                          <p>Clínica San Rafael · Chapinero</p>
                           <dl className={styles.times}>
                             <div>
                               <dt>Asignada</dt>
@@ -255,9 +255,9 @@ export function Recorrido() {
                               <dd>10:12</dd>
                             </div>
                           </dl>
-                          <p>Materiales: [Material 1] × 2</p>
+                          <p>Materiales: Filtro minisplit × 2</p>
                           <p>
-                            Técnico: <strong>[Nombre]</strong> · Firmó: <strong>[Nombre del cliente]</strong>
+                            Técnico: <strong>Carlos Gómez</strong> · Firmó: <strong>Laura Méndez</strong>
                           </p>
                         </div>
                       </div>

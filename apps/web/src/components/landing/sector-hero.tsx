@@ -1,6 +1,7 @@
 "use client";
 
-import { DEMO_HREF, SIGNUP_HREF } from "./config";
+import Link from "next/link";
+import { CONTRATAR_HREF } from "./config";
 import { track } from "./analytics";
 import { OrderCard } from "./para-quien";
 import type { Sector } from "./sectores";
@@ -21,15 +22,15 @@ export function SectorHero({ sector }: { sector: Sector }) {
           <p className={styles.subtitle}>{sector.subtitle}</p>
           <div className={styles.actions}>
             <a
-              href={DEMO_HREF}
-              onClick={() => track("clic agendar demo", { lugar: "portada sector" })}
+              href={CONTRATAR_HREF}
+              onClick={() => track("clic contratar", { lugar: "portada sector" })}
               className={`${ui.btn} ${ui.btnAmber} ${ui.pulse}`}
             >
-              Agendar demo
+              Contratar
             </a>
-            <a href={SIGNUP_HREF} onClick={() => track("clic probar gratis", { lugar: "portada sector" })} className={`${ui.btn} ${ui.btnOutline}`}>
-              Probar 14 días gratis
-            </a>
+            <Link href="/#precios" className={`${ui.btn} ${ui.btnOutline}`}>
+              Ver precios
+            </Link>
           </div>
         </div>
         <div className={styles.card}>

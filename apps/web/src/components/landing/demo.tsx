@@ -81,15 +81,15 @@ export function Demo({ sector = "" }: { sector?: string }) {
         <div className={styles.block}>
           <div className={styles.intro}>
             <h2 id="demo-titulo" className={`${ui.h2} ${styles.title}`}>
-              Mira tu empresa en Tecnio.
+              Solicita tu acceso.
             </h2>
-            <p className={styles.lead}>Te armamos una demo con tus tipos de trabajo.</p>
+            <p className={styles.lead}>Déjanos tus datos y te enviamos el enlace para crear tu cuenta.</p>
             <ul className={styles.contact}>
               <li>
                 Correo: <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
               </li>
               <li>
-                WhatsApp: <WhatsappLink lugar="bloque demo">{whatsappLabel}</WhatsappLink>
+                WhatsApp: <WhatsappLink lugar="bloque contacto">{whatsappLabel}</WhatsappLink>
               </li>
             </ul>
           </div>
@@ -101,7 +101,7 @@ export function Demo({ sector = "" }: { sector?: string }) {
                 <path d="M7.5 12.5l3 3 6-6.5" />
               </svg>
               <p className={styles.successTitle}>Recibido.</p>
-              <p>Te escribimos en menos de [X] horas.</p>
+              <p>Te contactamos y te enviamos el enlace para crear tu cuenta.</p>
             </div>
           ) : (
             <form ref={formRef} className={styles.form} noValidate onSubmit={onSubmit} aria-describedby={serverError ? "demo-server-error" : undefined}>
@@ -221,7 +221,7 @@ export function Demo({ sector = "" }: { sector?: string }) {
               )}
 
               <button type="submit" className={`${ui.btn} ${styles.submit}`} disabled={status === "sending"}>
-                {status === "sending" ? "Enviando…" : "Quiero ver mi demo"}
+                {status === "sending" ? "Enviando…" : "Solicitar acceso"}
               </button>
             </form>
           )}

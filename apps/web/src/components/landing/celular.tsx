@@ -8,7 +8,7 @@ import styles from "./celular.module.css";
 
 const TICK_MS = 2000;
 
-const CHECKLIST = ["Revisión inicial", "[Paso 2 del trabajo]", "[Paso 3 del trabajo]", "Prueba final"];
+const CHECKLIST = ["Revisión inicial", "Limpieza de filtros", "Medición de presión", "Prueba final"];
 
 // Estado de la conexión que va mostrando la app: guarda sin señal y envía cuando vuelve.
 const SYNC = [
@@ -65,7 +65,7 @@ export function Celular() {
           <div className={styles.phone}>
             <div className={styles.screen}>
               <div className={styles.island} />
-              <p className={styles.hello}>Hola, [Nombre]</p>
+              <p className={styles.hello}>Hola, Carlos</p>
               <p className={styles.place}>3 órdenes hoy</p>
               <p key={sync.label} className={`${styles.sync} ${styles[sync.tone]}`}>
                 <span className={styles.dot} />
@@ -74,10 +74,10 @@ export function Celular() {
 
               <div className={styles.order}>
                 <div className={styles.orderHead}>
-                  <strong>[Tipo de trabajo]</strong>
+                  <strong>Mantenimiento minisplit</strong>
                   <span className={styles.orderTime}>08:47</span>
                 </div>
-                <p className={styles.orderMeta}>[Cliente] · [Barrio]</p>
+                <p className={styles.orderMeta}>Clínica San Rafael · Chapinero</p>
                 <ul className={styles.checklist}>
                   {CHECKLIST.map((c, i) => (
                     <li key={c} className={i < done ? styles.checked : undefined}>
@@ -99,11 +99,11 @@ export function Celular() {
               <p className={styles.feedTitle}>Después</p>
               <ul className={styles.next}>
                 <li>
-                  <span>[Tipo de trabajo] · [Cliente]</span>
+                  <span>Instalación de cámaras · Edificio Torre 93</span>
                   <span className={styles.orderTime}>11:00</span>
                 </li>
                 <li>
-                  <span>[Tipo de trabajo] · [Cliente]</span>
+                  <span>Revisión de alarma · Panadería La Espiga</span>
                   <span className={styles.orderTime}>14:30</span>
                 </li>
               </ul>

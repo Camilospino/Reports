@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { BRAND, BRAND_TAG, DEMO_HREF, NAV_LINKS } from "./config";
+import { BRAND, BRAND_TAG, CONTRATAR_HREF, NAV_LINKS } from "./config";
 import { track } from "./analytics";
 import ui from "./landing.module.css";
 import styles from "./navbar.module.css";
@@ -19,7 +19,7 @@ export function Navbar() {
   }, [open]);
 
   const onDemo = () => {
-    track("clic agendar demo", { lugar: "menú" });
+    track("clic contratar", { lugar: "menú" });
     setOpen(false);
   };
 
@@ -41,8 +41,8 @@ export function Navbar() {
           ))}
         </ul>
 
-        <a href={DEMO_HREF} onClick={onDemo} className={`${ui.btn} ${ui.btnAmber} ${ui.pulse} ${styles.demo}`}>
-          Agendar demo
+        <a href={CONTRATAR_HREF} onClick={onDemo} className={`${ui.btn} ${ui.btnAmber} ${ui.pulse} ${styles.demo}`}>
+          Contratar
         </a>
 
         <button
@@ -69,8 +69,8 @@ export function Navbar() {
             </li>
           ))}
           <li>
-            <a href={DEMO_HREF} onClick={onDemo} className={`${ui.btn} ${ui.btnAmber} ${styles.menuDemo}`}>
-              Agendar demo
+            <a href={CONTRATAR_HREF} onClick={onDemo} className={`${ui.btn} ${ui.btnAmber} ${styles.menuDemo}`}>
+              Contratar
             </a>
           </li>
         </ul>

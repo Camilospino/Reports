@@ -14,10 +14,10 @@ export default async function RegisterPage({ searchParams }: { searchParams: Pro
     return (
       <AuthCard title="Tecnio es solo con invitación" subtitle="Este enlace no es válido o ya venció.">
         <p className="text-sm text-muted">
-          Para usar Tecnio en tu empresa, agenda una demo y te enviamos un enlace para crear tu cuenta.
+          Para usar Tecnio en tu empresa, solicita tu acceso y te enviamos un enlace para crear tu cuenta.
         </p>
         <div className="mt-5 space-y-3">
-          <Link href="/#demo" className="btn-accent w-full">Agendar demo</Link>
+          <Link href="/#demo" className="btn-accent w-full">Solicitar acceso</Link>
           <p className="text-center text-sm text-muted">
             ¿Ya tienes cuenta? <Link href="/login" className="link">Inicia sesión</Link>
           </p>
@@ -27,7 +27,7 @@ export default async function RegisterPage({ searchParams }: { searchParams: Pro
   }
 
   return (
-    <AuthCard title="Crea tu empresa" subtitle="14 días de prueba gratis, sin tarjeta.">
+    <AuthCard title="Crea tu empresa" subtitle="Configura tu empresa y empieza a crear órdenes.">
       <RegisterForm token={invitacion!} email={invite.email} />
     </AuthCard>
   );

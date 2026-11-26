@@ -23,7 +23,7 @@ export default function PrivacyPage() {
       <h2>2. Datos que recogemos</h2>
       <ul>
         <li>
-          <strong>Formulario de demo:</strong> nombre, correo o número de WhatsApp, tipo de empresa y número de técnicos.
+          <strong>Formulario de contacto:</strong> nombre, correo o número de WhatsApp, tipo de empresa y número de técnicos.
         </li>
         <li>
           <strong>Usuarios del servicio</strong> (dueños, despachadores y técnicos): nombre, correo, teléfono y rol.
@@ -40,7 +40,7 @@ export default function PrivacyPage() {
 
       <h2>3. Para qué los usamos</h2>
       <ul>
-        <li>Responder tu solicitud de demo y contactarte por el medio que elegiste.</li>
+        <li>Responder tu solicitud de acceso y contactarte por el medio que elegiste.</li>
         <li>Prestar el servicio: registrar las órdenes, mostrarlas en el panel y guardar la evidencia de cada trabajo.</li>
         <li>Dar soporte, avisarte de cambios en el servicio y cumplir obligaciones legales.</li>
         <li>Proteger el servicio contra fraude y abuso.</li>
