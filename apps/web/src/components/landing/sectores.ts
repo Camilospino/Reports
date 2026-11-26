@@ -45,10 +45,6 @@ export const SECTORES: Sector[] = [
     faq: [
       { q: "¿Puedo llevar el control del gas?", a: "Sí. Lo registras como material del inventario y se descuenta al cerrar cada orden." },
       { q: "¿Sirve para equipos comerciales y cuartos fríos?", a: "Sí. Tú creas tus tipos de trabajo y sus listas de chequeo." },
-      {
-        q: "¿Puedo programar mantenimientos cada 3 o 6 meses?",
-        a: "[Pendiente: hoy cada visita se crea por separado; los mantenimientos programados están en el plan.]",
-      },
       { q: "¿El cliente ve el reporte?", a: "Sí. Le llega por WhatsApp con fotos, firma y PDF." },
     ],
     seoTitle: "Tecnio para aire acondicionado · Mantenimientos con foto y firma",
@@ -85,7 +81,7 @@ export const SECTORES: Sector[] = [
       { q: "¿Funciona en una obra sin señal?", a: "Sí. La app guarda todo y lo envía cuando vuelve la señal." },
       {
         q: "¿Puedo guardar el serial de cada equipo?",
-        a: "[Pendiente: hoy se anota en las observaciones de la orden; el registro de equipos por cliente está en el plan.]",
+        a: "Sí. En cada instalación registras sus equipos con marca, modelo y serial, y quedan guardados en el historial del cliente.",
       },
       { q: "¿El cliente recibe la evidencia?", a: "Sí. Un enlace por WhatsApp con las fotos, la firma y el PDF." },
     ],
@@ -114,12 +110,12 @@ export const SECTORES: Sector[] = [
     },
     faq: [
       { q: "¿Sirve para instalaciones, fallas, traslados y retiros?", a: "Sí. Cada uno es un tipo de trabajo con su propia lista de chequeo." },
-      { q: "¿Qué pasa en una caída masiva?", a: "[Pendiente: hoy cada falla es una orden; agrupar fallas por zona está en el plan.]" },
+      { q: "¿Funciona en zonas rurales sin señal?", a: "Sí. La app guarda todo y lo envía cuando vuelve la señal." },
       {
-        q: "¿El cliente puede reportar la falla solo?",
-        a: "[Pendiente: hoy la orden la crea el despachador; el reporte del cliente está en el plan.]",
+        q: "¿Puedo controlar la fibra y los equipos que gasta cada técnico?",
+        a: "Sí. El técnico registra lo que usó en la orden y se descuenta del inventario al cerrarla.",
       },
-      { q: "¿Se conecta con mi sistema de facturación?", a: "[Pendiente: se confirma con cada empresa.]" },
+      { q: "¿El cliente recibe la evidencia?", a: "Sí. Un enlace por WhatsApp con las fotos, la firma y el PDF." },
     ],
     seoTitle: "Tecnio para internet y telecomunicaciones · Instalaciones y fallas con evidencia",
     seoDescription:
