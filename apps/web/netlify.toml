@@ -22,15 +22,5 @@
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
-# Cabeceras de seguridad en todas las respuestas. Sin CSP de scripts completa (Next mete scripts en
-# línea y hay Umami/Sentry): solo las directivas que no rompen nada y cierran lo importante —
-# nadie puede meter la app en un iframe (clickjacking), ni cambiar <base>, ni cargar plugins.
-[[headers]]
-  for = "/*"
-  [headers.values]
-    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
-    X-Content-Type-Options = "nosniff"
-    X-Frame-Options = "DENY"
-    Referrer-Policy = "strict-origin-when-cross-origin"
-    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
-    Content-Security-Policy = "frame-ancestors 'none'; base-uri 'self'; object-src 'none'; form-action 'self'"
+# Las cabeceras de seguridad están en next.config.ts (headers()): las de aquí no llegaban a las
+# páginas del servidor.

@@ -12,6 +12,29 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/**/*": ["../../node_modules/pdfkit/js/standard-fonts/**/*"],
   },
+  // Cabeceras de seguridad en todas las respuestas. Van aquí y no en netlify.toml: los [[headers]] de
+  // Netlify solo llegan a los archivos estáticos, no a las páginas que genera el servidor de Next.
+  // Sin CSP de scripts completa (Next mete scripts en línea y hay Umami/Sentry): solo las directivas
+  // que no rompen nada y cierran lo importante — nadie puede meter la app en un iframe
+  // (clickjacking), ni cambiar <base>, ni cargar plugins.
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          { key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains" },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=(), usb=()" },
+          {
+            key: "Content-Security-Policy",
+            value: "frame-ancestors 'none'; base-uri 'self'; object-src 'none'; form-action 'self'",
+          },
+        ],
+      },
+    ];
+  },
 };
 
 // Sentry: los source maps solo se suben si hay SENTRY_AUTH_TOKEN (en el build de producción).
