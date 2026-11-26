@@ -6,7 +6,7 @@ export const WHATSAPP_NUMBER = "573002823551"; // Con indicativo (57) y sin sign
 export const WHATSAPP_MESSAGE = "Hola, quiero contratar Tecnio";
 export const WHATSAPP_HREF = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
 
-export const CONTACT_EMAIL = "heynohay@gmail.com";
+export const CONTACT_EMAIL = "tecnioapp@gmail.com";
 
 // Enlaces del menú. Llevan "/" delante para que también funcionen desde /terminos y /privacidad.
 export const NAV_LINKS = [
