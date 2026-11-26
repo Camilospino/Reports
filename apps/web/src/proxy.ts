@@ -1,7 +1,8 @@
 import type { NextRequest } from "next/server";
 import { updateSession } from "@/lib/supabase/middleware";
 
-export function middleware(request: NextRequest) {
+// Next 16: el antiguo "middleware" se llama "proxy". Refresca la sesión de Supabase en cada petición.
+export function proxy(request: NextRequest) {
   return updateSession(request);
 }
 
