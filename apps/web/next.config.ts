@@ -12,8 +12,8 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/**/*": ["../../node_modules/pdfkit/js/standard-fonts/**/*"],
   },
-  // Cabeceras de seguridad en todas las respuestas. Van aquí y no en netlify.toml: los [[headers]] de
-  // Netlify solo llegan a los archivos estáticos, no a las páginas que genera el servidor de Next.
+  // Cabeceras de seguridad de las páginas del servidor. Los [[headers]] de netlify.toml solo llegan
+  // a los archivos estáticos, y estas solo a lo que genera Next: mantener ambas listas iguales.
   // Sin CSP de scripts completa (Next mete scripts en línea y hay Umami/Sentry): solo las directivas
   // que no rompen nada y cierran lo importante — nadie puede meter la app en un iframe
   // (clickjacking), ni cambiar <base>, ni cargar plugins.
