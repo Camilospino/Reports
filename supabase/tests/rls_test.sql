@@ -4,7 +4,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 set search_path = public, extensions;
 
-select plan(164);
+select plan(174);
 
 -- ---------------------------------------------------------------------------
 -- Contexto (como postgres, antes de cambiar de usuario)
@@ -399,6 +399,34 @@ select throws_ok($$select reveal_installation_password((select cred_a from ctx_i
 reset role;
 select is((select count(*)::int from installation_credential_views where installation_id = (select inst_a from ctx_ins)), 2,
           'quedaron registradas las dos vistas (dueño y técnico)');
+
+-- ---------------------------------------------------------------------------
+-- Mantenimientos programados: la base crea la orden; los usuarios solo lo activan
+-- ---------------------------------------------------------------------------
+reset role;
+select pg_temp.login((select owner_a from ctx));
+select lives_ok($$update companies set auto_maintenance_days = 20 where id = (select co_a from ctx)$$, 'dueño A: activa los mantenimientos programados');
+select throws_ok($$select create_scheduled_maintenance_orders()$$, '42501', null, 'un usuario no ejecuta la programación');
+insert into work_orders (company_id, customer_id, title, maintenance_due)
+values ((select co_a from ctx), (select cust_a from ctx), 'Falsa programada', current_date);
+select is((select maintenance_due from work_orders where title = 'Falsa programada'), null::date, 'un usuario no marca una orden como programada');
+
+reset role;
+select pg_temp.login((select disp_a from ctx));
+update companies set auto_maintenance_days = 1 where id = (select co_a from ctx);
+
+reset role;
+select is((select auto_maintenance_days from companies where id = (select co_a from ctx)), 20, 'el despachador no cambia la anticipación');
+select set_config('request.jwt.claims', '', true); -- como la tarea programada: sin usuario
+select is(create_scheduled_maintenance_orders(), 1, 'crea la orden del mantenimiento que vence pronto en A');
+select is(create_scheduled_maintenance_orders(), 0, 'no repite la orden al correr otra vez');
+select is((select status::text from work_orders where company_id = (select co_a from ctx) and maintenance_due is not null),
+          'pendiente', 'la orden programada queda pendiente para asignar');
+update work_orders set status = 'cancelada' where company_id = (select co_a from ctx) and maintenance_due is not null;
+select is(create_scheduled_maintenance_orders(), 0, 'si la cancelan no se vuelve a crear para la misma fecha');
+select is((select count(*)::int from work_orders where company_id = (select co_b from ctx) and maintenance_due is not null), 0,
+          'la empresa con la programación apagada no recibe órdenes');
+select is((select count(*)::int from cron.job where jobname = 'mantenimientos-programados'), 1, 'la tarea diaria está programada');
 
 -- ---------------------------------------------------------------------------
 -- Verificaciones finales como postgres

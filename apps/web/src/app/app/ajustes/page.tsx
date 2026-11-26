@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronRight, Users, Wallet } from "lucide-react";
+import { CalendarClock, ChevronRight, Users, Wallet } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 import { requireStaff } from "@/lib/session";
 
@@ -24,18 +24,32 @@ export default async function SettingsPage() {
           </Link>
         </li>
         {membership.role === "owner" && (
-          <li className="border-t border-line-soft">
-            <Link href="/app/ajustes/pagos" className="flex min-h-16 items-center gap-4 rounded-[14px] px-5 py-4 hover:bg-bg">
-              <span className="inline-flex size-10 items-center justify-center rounded-[10px] bg-primary-soft text-primary">
-                <Wallet size={18} aria-hidden />
-              </span>
-              <span className="flex-1">
-                <span className="block font-semibold">Datos de pago</span>
-                <span className="block text-sm text-muted">Nequi y cuenta bancaria que ve tu cliente al pagar desde el reporte.</span>
-              </span>
-              <ChevronRight size={18} className="text-muted" aria-hidden />
-            </Link>
-          </li>
+          <>
+            <li className="border-t border-line-soft">
+              <Link href="/app/ajustes/pagos" className="flex min-h-16 items-center gap-4 rounded-[14px] px-5 py-4 hover:bg-bg">
+                <span className="inline-flex size-10 items-center justify-center rounded-[10px] bg-primary-soft text-primary">
+                  <Wallet size={18} aria-hidden />
+                </span>
+                <span className="flex-1">
+                  <span className="block font-semibold">Datos de pago</span>
+                  <span className="block text-sm text-muted">Nequi y cuenta bancaria que ve tu cliente al pagar desde el reporte.</span>
+                </span>
+                <ChevronRight size={18} className="text-muted" aria-hidden />
+              </Link>
+            </li>
+            <li className="border-t border-line-soft">
+              <Link href="/app/ajustes/mantenimientos" className="flex min-h-16 items-center gap-4 rounded-[14px] px-5 py-4 hover:bg-bg">
+                <span className="inline-flex size-10 items-center justify-center rounded-[10px] bg-primary-soft text-primary">
+                  <CalendarClock size={18} aria-hidden />
+                </span>
+                <span className="flex-1">
+                  <span className="block font-semibold">Mantenimientos programados</span>
+                  <span className="block text-sm text-muted">Crea solas las órdenes de los mantenimientos que están por vencer.</span>
+                </span>
+                <ChevronRight size={18} className="text-muted" aria-hidden />
+              </Link>
+            </li>
+          </>
         )}
       </ul>
     </>

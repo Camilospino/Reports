@@ -109,14 +109,14 @@ isOneToOne: false
                   ]
                 },"companies": {
                   Row: {
-                    "created_at": string,"id": string,"logo_url": string | null,"name": string,"nit": string | null,"payment_account_holder": string | null,"payment_account_number": string | null,"payment_account_type": string | null,"payment_bank": string | null,"payment_holder_id": string | null,"payment_nequi": string | null,"payment_notes": string | null,"phone": string | null,"plan": string,"subscription_status": string,"trial_ends_at": string | null
+                    "auto_maintenance_days": number | null,"created_at": string,"id": string,"logo_url": string | null,"name": string,"nit": string | null,"payment_account_holder": string | null,"payment_account_number": string | null,"payment_account_type": string | null,"payment_bank": string | null,"payment_holder_id": string | null,"payment_nequi": string | null,"payment_notes": string | null,"phone": string | null,"plan": string,"subscription_status": string,"trial_ends_at": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"id"?: string,"logo_url"?: string | null,"name": string,"nit"?: string | null,"payment_account_holder"?: string | null,"payment_account_number"?: string | null,"payment_account_type"?: string | null,"payment_bank"?: string | null,"payment_holder_id"?: string | null,"payment_nequi"?: string | null,"payment_notes"?: string | null,"phone"?: string | null,"plan"?: string,"subscription_status"?: string,"trial_ends_at"?: string | null
+                    "auto_maintenance_days"?: number | null,"created_at"?: string,"id"?: string,"logo_url"?: string | null,"name": string,"nit"?: string | null,"payment_account_holder"?: string | null,"payment_account_number"?: string | null,"payment_account_type"?: string | null,"payment_bank"?: string | null,"payment_holder_id"?: string | null,"payment_nequi"?: string | null,"payment_notes"?: string | null,"phone"?: string | null,"plan"?: string,"subscription_status"?: string,"trial_ends_at"?: string | null
                   }
                   Update: {
-                    "created_at"?: string,"id"?: string,"logo_url"?: string | null,"name"?: string,"nit"?: string | null,"payment_account_holder"?: string | null,"payment_account_number"?: string | null,"payment_account_type"?: string | null,"payment_bank"?: string | null,"payment_holder_id"?: string | null,"payment_nequi"?: string | null,"payment_notes"?: string | null,"phone"?: string | null,"plan"?: string,"subscription_status"?: string,"trial_ends_at"?: string | null
+                    "auto_maintenance_days"?: number | null,"created_at"?: string,"id"?: string,"logo_url"?: string | null,"name"?: string,"nit"?: string | null,"payment_account_holder"?: string | null,"payment_account_number"?: string | null,"payment_account_type"?: string | null,"payment_bank"?: string | null,"payment_holder_id"?: string | null,"payment_nequi"?: string | null,"payment_notes"?: string | null,"phone"?: string | null,"plan"?: string,"subscription_status"?: string,"trial_ends_at"?: string | null
                   }
                   Relationships: [
                     
@@ -539,14 +539,14 @@ isOneToOne: false
                   ]
                 },"work_orders": {
                   Row: {
-                    "asset_id": string | null,"checklist_state": NonNullable<Json>,"company_id": string,"completed_at": string | null,"created_at": string,"customer_id": string,"description": string | null,"id": string,"installation_id": string | null,"invoiced_at": string | null,"number": number,"observations": string | null,"priority": Database["public"]['Enums']["work_order_priority"],"public_token": string | null,"scheduled_end": string | null,"scheduled_start": string | null,"service_type_id": string | null,"signer_id_number": string | null,"signer_name": string | null,"site_id": string | null,"status": Database["public"]['Enums']["work_order_status"],"technician_id": string | null,"title": string,"total": number
+                    "asset_id": string | null,"checklist_state": NonNullable<Json>,"company_id": string,"completed_at": string | null,"created_at": string,"customer_id": string,"description": string | null,"id": string,"installation_id": string | null,"invoiced_at": string | null,"maintenance_due": string | null,"number": number,"observations": string | null,"priority": Database["public"]['Enums']["work_order_priority"],"public_token": string | null,"scheduled_end": string | null,"scheduled_start": string | null,"service_type_id": string | null,"signer_id_number": string | null,"signer_name": string | null,"site_id": string | null,"status": Database["public"]['Enums']["work_order_status"],"technician_id": string | null,"title": string,"total": number
                   }
                   ComputedFields: never
                   Insert: {
-                    "asset_id"?: string | null,"checklist_state"?: NonNullable<Json>,"company_id": string,"completed_at"?: string | null,"created_at"?: string,"customer_id": string,"description"?: string | null,"id"?: string,"installation_id"?: string | null,"invoiced_at"?: string | null,"number"?: number,"observations"?: string | null,"priority"?: Database["public"]['Enums']["work_order_priority"],"public_token"?: string | null,"scheduled_end"?: string | null,"scheduled_start"?: string | null,"service_type_id"?: string | null,"signer_id_number"?: string | null,"signer_name"?: string | null,"site_id"?: string | null,"status"?: Database["public"]['Enums']["work_order_status"],"technician_id"?: string | null,"title": string,"total"?: number
+                    "asset_id"?: string | null,"checklist_state"?: NonNullable<Json>,"company_id": string,"completed_at"?: string | null,"created_at"?: string,"customer_id": string,"description"?: string | null,"id"?: string,"installation_id"?: string | null,"invoiced_at"?: string | null,"maintenance_due"?: string | null,"number"?: number,"observations"?: string | null,"priority"?: Database["public"]['Enums']["work_order_priority"],"public_token"?: string | null,"scheduled_end"?: string | null,"scheduled_start"?: string | null,"service_type_id"?: string | null,"signer_id_number"?: string | null,"signer_name"?: string | null,"site_id"?: string | null,"status"?: Database["public"]['Enums']["work_order_status"],"technician_id"?: string | null,"title": string,"total"?: number
                   }
                   Update: {
-                    "asset_id"?: string | null,"checklist_state"?: NonNullable<Json>,"company_id"?: string,"completed_at"?: string | null,"created_at"?: string,"customer_id"?: string,"description"?: string | null,"id"?: string,"installation_id"?: string | null,"invoiced_at"?: string | null,"number"?: number,"observations"?: string | null,"priority"?: Database["public"]['Enums']["work_order_priority"],"public_token"?: string | null,"scheduled_end"?: string | null,"scheduled_start"?: string | null,"service_type_id"?: string | null,"signer_id_number"?: string | null,"signer_name"?: string | null,"site_id"?: string | null,"status"?: Database["public"]['Enums']["work_order_status"],"technician_id"?: string | null,"title"?: string,"total"?: number
+                    "asset_id"?: string | null,"checklist_state"?: NonNullable<Json>,"company_id"?: string,"completed_at"?: string | null,"created_at"?: string,"customer_id"?: string,"description"?: string | null,"id"?: string,"installation_id"?: string | null,"invoiced_at"?: string | null,"maintenance_due"?: string | null,"number"?: number,"observations"?: string | null,"priority"?: Database["public"]['Enums']["work_order_priority"],"public_token"?: string | null,"scheduled_end"?: string | null,"scheduled_start"?: string | null,"service_type_id"?: string | null,"signer_id_number"?: string | null,"signer_name"?: string | null,"site_id"?: string | null,"status"?: Database["public"]['Enums']["work_order_status"],"technician_id"?: string | null,"title"?: string,"total"?: number
                   }
                   Relationships: [
                     {
@@ -643,6 +643,9 @@ isOneToOne: false
 "create_company":
 { Args: { "p_company_name": string,"p_full_name": string,"p_nit"?: string,"p_phone"?: string }; Returns: string
                            },
+"create_scheduled_maintenance_orders":
+{ Args: Record<PropertyKey, never>; Returns: number
+                           },
 "dashboard_kpis":
 { Args: { "p_company": string }; Returns: Json
                            },
@@ -694,6 +697,7 @@ isOneToOne: false
 "id": string,
 "installation_id": string | null,
 "invoiced_at": string | null,
+"maintenance_due": string | null,
 "number": number,
 "observations": string | null,
 "priority": Database["public"]['Enums']["work_order_priority"],
