@@ -109,14 +109,14 @@ isOneToOne: false
                   ]
                 },"companies": {
                   Row: {
-                    "created_at": string,"id": string,"logo_url": string | null,"name": string,"nit": string | null,"payment_account_holder": string | null,"payment_account_number": string | null,"payment_account_type": string | null,"payment_bank": string | null,"payment_holder_id": string | null,"payment_nequi": string | null,"payment_notes": string | null,"phone": string | null,"plan": string,"subscription_status": string,"trial_ends_at": string
+                    "created_at": string,"id": string,"logo_url": string | null,"name": string,"nit": string | null,"payment_account_holder": string | null,"payment_account_number": string | null,"payment_account_type": string | null,"payment_bank": string | null,"payment_holder_id": string | null,"payment_nequi": string | null,"payment_notes": string | null,"phone": string | null,"plan": string,"subscription_status": string,"trial_ends_at": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"id"?: string,"logo_url"?: string | null,"name": string,"nit"?: string | null,"payment_account_holder"?: string | null,"payment_account_number"?: string | null,"payment_account_type"?: string | null,"payment_bank"?: string | null,"payment_holder_id"?: string | null,"payment_nequi"?: string | null,"payment_notes"?: string | null,"phone"?: string | null,"plan"?: string,"subscription_status"?: string,"trial_ends_at"?: string
+                    "created_at"?: string,"id"?: string,"logo_url"?: string | null,"name": string,"nit"?: string | null,"payment_account_holder"?: string | null,"payment_account_number"?: string | null,"payment_account_type"?: string | null,"payment_bank"?: string | null,"payment_holder_id"?: string | null,"payment_nequi"?: string | null,"payment_notes"?: string | null,"phone"?: string | null,"plan"?: string,"subscription_status"?: string,"trial_ends_at"?: string | null
                   }
                   Update: {
-                    "created_at"?: string,"id"?: string,"logo_url"?: string | null,"name"?: string,"nit"?: string | null,"payment_account_holder"?: string | null,"payment_account_number"?: string | null,"payment_account_type"?: string | null,"payment_bank"?: string | null,"payment_holder_id"?: string | null,"payment_nequi"?: string | null,"payment_notes"?: string | null,"phone"?: string | null,"plan"?: string,"subscription_status"?: string,"trial_ends_at"?: string
+                    "created_at"?: string,"id"?: string,"logo_url"?: string | null,"name"?: string,"nit"?: string | null,"payment_account_holder"?: string | null,"payment_account_number"?: string | null,"payment_account_type"?: string | null,"payment_bank"?: string | null,"payment_holder_id"?: string | null,"payment_nequi"?: string | null,"payment_notes"?: string | null,"phone"?: string | null,"plan"?: string,"subscription_status"?: string,"trial_ends_at"?: string | null
                   }
                   Relationships: [
                     

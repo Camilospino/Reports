@@ -2,7 +2,6 @@ import { redirect } from "next/navigation";
 import { Sidebar } from "@/components/panel/sidebar";
 import { Toaster } from "@/components/ui/toast";
 import { getSession } from "@/lib/session";
-import { shortDate } from "@/lib/format";
 
 const PLAN_NAMES: Record<string, string> = { arranque: "Arranque", equipo: "Equipo", empresa: "Empresa" };
 
@@ -19,11 +18,12 @@ export default async function PanelLayout({ children }: { children: React.ReactN
 
   const plan = PLAN_NAMES[company.plan] ?? company.plan;
   const n = technicians ?? 0;
+  // No hay prueba gratis: la suscripción está activa, con pago pendiente o cancelada.
   const planDetail =
-    company.subscription_status === "trial"
-      ? `Prueba gratis hasta el ${shortDate(company.trial_ends_at)}`
-      : company.subscription_status === "past_due"
-        ? "Pago pendiente"
+    company.subscription_status === "past_due"
+      ? "Pago pendiente"
+      : company.subscription_status === "canceled"
+        ? "Suscripción cancelada"
         : "Suscripción activa";
 
   return (

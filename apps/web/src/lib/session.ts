@@ -17,7 +17,7 @@ export const getSession = cache(async () => {
 
   const { data: memberships } = await supabase
     .from("memberships")
-    .select("id, role, full_name, company_id, companies(id, name, phone, logo_url, plan, subscription_status, trial_ends_at)")
+    .select("id, role, full_name, company_id, companies(id, name, phone, logo_url, plan, subscription_status)")
     .eq("user_id", user.id)
     .eq("active", true)
     .order("created_at");
