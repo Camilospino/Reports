@@ -14,6 +14,57 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  // Cuenta con contraseña temporal (la puso el dueño): antes de entrar crea la suya.
+  const [pending, setPending] = useState<Profile | null>(null);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+
+  function enter(profile: Profile) {
+    // Mismo técnico que antes: se conservan sus órdenes y los cambios sin subir.
+    if (getMeta<string>("lastUserId") !== profile.userId) clearAll();
+    setMeta("profile", profile);
+    setMeta("lastUserId", profile.userId);
+    reload(); // el layout ve el perfil, abre "Mi día" y arranca la sincronización
+  }
+
+  async function saveNewPassword() {
+    if (!pending) return;
+    setError(null);
+    if (newPassword.length < 8) return setError("La contraseña debe tener al menos 8 caracteres.");
+    if (newPassword !== confirm) return setError("Las contraseñas no coinciden.");
+    setLoading(true);
+    try {
+      const { error: updateError } = await supabase.auth.updateUser({
+        password: newPassword,
+        data: { must_change_password: false },
+      });
+      if (updateError) {
+        return setError(
+          updateError.code === "same_password"
+            ? "Usa una contraseña distinta a la temporal."
+            : updateError.code === "weak_password"
+              ? "Esa contraseña es muy fácil de adivinar. Usa otra."
+              : /network|fetch/i.test(updateError.message)
+                ? "No hay conexión. Intenta de nuevo cuando tengas señal."
+                : "No pudimos guardar la contraseña. Intenta de nuevo.",
+        );
+      }
+      // Renueva el token para que ya no diga "contraseña temporal".
+      await supabase.auth.refreshSession();
+      enter(pending);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function cancelNewPassword() {
+    await supabase.auth.signOut();
+    setPending(null);
+    setPassword("");
+    setNewPassword("");
+    setConfirm("");
+    setError(null);
+  }
 
   async function submit() {
     setError(null);
@@ -49,11 +100,8 @@ export default function Login() {
         companyName: m.companies?.name ?? "",
         fullName: m.full_name,
       };
-      // Mismo técnico que antes: se conservan sus órdenes y los cambios sin subir.
-      if (getMeta<string>("lastUserId") !== profile.userId) clearAll();
-      setMeta("profile", profile);
-      setMeta("lastUserId", profile.userId);
-      reload(); // el layout ve el perfil, abre "Mi día" y arranca la sincronización
+      if (data.user.user_metadata?.must_change_password === true) return setPending(profile);
+      enter(profile);
     } finally {
       setLoading(false);
     }
@@ -71,6 +119,57 @@ export default function Login() {
             </View>
             <T style={s.brandText}>tecnio</T>
           </View>
+          {pending ? (
+            <View style={s.card}>
+              <T style={s.title}>Crea tu contraseña</T>
+              <T style={s.sub}>La que te dio tu empresa es temporal. Escoge una tuya para entrar de ahora en adelante.</T>
+              <T style={s.label}>Contraseña nueva</T>
+              <TextInput
+                style={s.input}
+                value={newPassword}
+                onChangeText={setNewPassword}
+                secureTextEntry={!showPassword}
+                autoCapitalize="none"
+                autoComplete="new-password"
+                placeholder="Mínimo 8 caracteres"
+                placeholderTextColor={colors.muted}
+                accessibilityLabel="Contraseña nueva"
+              />
+              <T style={s.label}>Repite la contraseña</T>
+              <View>
+                <TextInput
+                  style={[s.input, s.passwordInput]}
+                  value={confirm}
+                  onChangeText={setConfirm}
+                  secureTextEntry={!showPassword}
+                  autoCapitalize="none"
+                  autoComplete="new-password"
+                  placeholder="Otra vez la misma"
+                  placeholderTextColor={colors.muted}
+                  accessibilityLabel="Repite la contraseña"
+                  onSubmitEditing={saveNewPassword}
+                />
+                <Pressable
+                  onPress={() => setShowPassword((v) => !v)}
+                  style={s.eye}
+                  hitSlop={8}
+                  accessibilityRole="button"
+                  accessibilityLabel={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                >
+                  {showPassword ? <EyeOff size={20} color={colors.muted} /> : <Eye size={20} color={colors.muted} />}
+                </Pressable>
+              </View>
+              {error && (
+                <T style={s.error} accessibilityRole="alert">
+                  {error}
+                </T>
+              )}
+              <Button label="Guardar y entrar" onPress={saveNewPassword} loading={loading} height={52} style={{ marginTop: 18 }} />
+              <Pressable onPress={cancelNewPassword} style={s.back} accessibilityRole="button">
+                <T style={s.backText}>Volver</T>
+              </Pressable>
+            </View>
+          ) : (
           <View style={s.card}>
             <T style={s.title}>Entra a tu día</T>
             <T style={s.sub}>Usa el correo y la contraseña que te dio tu empresa.</T>
@@ -118,6 +217,7 @@ export default function Login() {
             )}
             <Button label="Entrar" onPress={submit} loading={loading} height={52} style={{ marginTop: 18 }} />
           </View>
+          )}
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -147,4 +247,6 @@ const s = StyleSheet.create({
   passwordInput: { paddingRight: 52 },
   eye: { position: "absolute", right: 0, top: 0, width: 48, height: 48, alignItems: "center", justifyContent: "center" },
   error: { color: colors.danger, marginTop: 12 },
+  back: { alignSelf: "center", marginTop: 14, padding: 6 },
+  backText: { color: colors.muted, fontFamily: fonts.bodyMedium },
 });

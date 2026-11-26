@@ -110,11 +110,17 @@ export async function setPassword(_: FormState, fd: FormData): Promise<FormState
   if (!parsed.success) return { error: firstError(parsed.error) };
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.updateUser({ password: parsed.data.password });
+  const { error } = await supabase.auth.updateUser({
+    password: parsed.data.password,
+    data: { must_change_password: false },
+  });
   if (error) {
     if (error.code === "same_password") return { error: "Usa una contraseña distinta a la anterior." };
+    if (error.code === "weak_password") return { error: "Esa contraseña es muy fácil de adivinar. Usa otra." };
     return { error: "No pudimos guardar la contraseña. Pide un enlace nuevo." };
   }
+  // El token de la sesión todavía dice must_change_password: true; sin renovarlo, /app devolvería aquí.
+  await supabase.auth.refreshSession();
   redirect("/app");
 }
 

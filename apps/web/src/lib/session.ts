@@ -13,6 +13,8 @@ export const getSession = cache(async () => {
   // getClaims verifica el token en el propio servidor (llaves asimétricas): sin ir a Supabase Auth en cada página.
   const { data } = await supabase.auth.getClaims();
   if (!data) redirect("/login");
+  // Cuenta creada (o clave cambiada) por el dueño con una contraseña temporal: primero crea la suya.
+  if (data.claims.user_metadata?.must_change_password === true) redirect("/crear-contrasena");
   const user = { id: data.claims.sub };
 
   const { data: memberships } = await supabase

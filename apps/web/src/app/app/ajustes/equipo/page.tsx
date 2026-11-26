@@ -4,8 +4,11 @@ import { PageHeader } from "@/components/ui/page-header";
 import { SectionCard } from "@/components/ui/section-card";
 import { requireStaff } from "@/lib/session";
 import { ROLE_LABELS, formatPhone } from "@/lib/format";
+import { siteUrl } from "@/lib/messages";
 import { toggleMember } from "./actions";
-import { InviteForm } from "./invite-form";
+import type { AccessLinks } from "./credentials";
+import { MemberForm } from "./member-form";
+import { ResetPassword } from "./reset-password";
 
 export const metadata = { title: "Equipo · Tecnio" };
 
@@ -18,6 +21,12 @@ export default async function TeamPage() {
     .eq("company_id", company.id)
     .order("role")
     .order("full_name");
+  const links: AccessLinks = {
+    company: company.name,
+    loginUrl: `${await siteUrl()}/login`,
+    // Enlace para descargar la app del técnico (Play Store, APK o Expo). Sin él, el mensaje solo dice "la app".
+    appUrl: process.env.NEXT_PUBLIC_APP_DOWNLOAD_URL || null,
+  };
 
   return (
     <>
@@ -28,8 +37,8 @@ export default async function TeamPage() {
 
       <div className="flex flex-col gap-6">
         {isOwner && (
-          <SectionCard title="Invitar a alguien">
-            <InviteForm />
+          <SectionCard title="Agregar a alguien">
+            <MemberForm links={links} />
           </SectionCard>
         )}
 
@@ -59,13 +68,16 @@ export default async function TeamPage() {
                     <td className="td text-muted">{m.skills.join(", ") || "—"}</td>
                     <td className="td">
                       {isOwner && m.id !== membership.id ? (
-                        <form action={toggleMember}>
-                          <input type="hidden" name="id" value={m.id} />
-                          <input type="hidden" name="active" value={String(!m.active)} />
-                          <button className="btn-outline" aria-label={`${m.active ? "Desactivar" : "Activar"} a ${m.full_name}`}>
-                            {m.active ? "Desactivar" : "Activar"}
-                          </button>
-                        </form>
+                        <div className="flex flex-wrap items-start gap-2">
+                          <form action={toggleMember}>
+                            <input type="hidden" name="id" value={m.id} />
+                            <input type="hidden" name="active" value={String(!m.active)} />
+                            <button className="btn-outline" aria-label={`${m.active ? "Desactivar" : "Activar"} a ${m.full_name}`}>
+                              {m.active ? "Desactivar" : "Activar"}
+                            </button>
+                          </form>
+                          {m.active && m.role !== "owner" && <ResetPassword id={m.id} name={m.full_name} links={links} />}
+                        </div>
                       ) : (
                         <span className="text-muted">{m.active ? "Activo" : "Inactivo"}</span>
                       )}
