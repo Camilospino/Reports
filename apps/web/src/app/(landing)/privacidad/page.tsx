@@ -9,15 +9,16 @@ export const metadata: Metadata = {
 };
 
 // Política de tratamiento de datos personales (Ley 1581 de 2012 y Decreto 1377 de 2013,
-// compilado en el Decreto 1074 de 2015). Borrador: lo que va entre corchetes falta por llenar.
+// compilado en el Decreto 1074 de 2015). Borrador: lo que va entre corchetes son datos que faltan.
 export default function PrivacyPage() {
   const email = <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>;
 
   return (
-    <LegalPage title="Política de privacidad">
+    <LegalPage title="Política de privacidad" updated="26 de noviembre de 2026">
       <h2>1. Responsable del tratamiento</h2>
       <p>
-        [Razón social], identificada con NIT [pendiente], con domicilio en [dirección], [ciudad], Colombia. Correo de contacto: {email}.
+        [Nombre completo], persona natural, identificada con NIT [número]-[DV], con domicilio en Dosquebradas, Risaralda, Colombia.
+        Correo de contacto: {email}.
       </p>
 
       <h2>2. Datos que recogemos</h2>
@@ -72,7 +73,7 @@ export default function PrivacyPage() {
 
       <h2>6. Cómo ejercerlos</h2>
       <p>
-        Escribe a {email} indicando tu nombre, tu solicitud y un dato de contacto. El área responsable de atenderla es [nombre o cargo].
+        Escribe a {email} indicando tu nombre, tu solicitud y un dato de contacto. Las solicitudes las atiende directamente el responsable del tratamiento, por ese mismo correo.
       </p>
       <ul>
         <li>
@@ -88,19 +89,21 @@ export default function PrivacyPage() {
 
       <h2>7. Proveedores y transferencias</h2>
       <p>
-        Usamos proveedores de alojamiento y bases de datos que pueden guardar la información fuera de Colombia ([proveedores: confirmar]).
+        Usamos proveedores de alojamiento y bases de datos que pueden guardar la información fuera de Colombia (Supabase para la base de datos y los archivos, Netlify para el alojamiento de la página, Resend
+        para el envío de correos, Sentry para el registro de errores y Umami para las estadísticas de visitas).
         Solo tratan los datos por encargo nuestro, para prestar el servicio, y con medidas de seguridad equivalentes a las de esta política.
       </p>
 
       <h2>8. Seguridad y conservación</h2>
       <p>
         La información viaja cifrada y cada empresa solo puede ver sus propios datos. Conservamos los datos mientras dure la relación y
-        hasta [plazo] después, o el tiempo que exija la ley.
+        hasta 30 días calendario después de cancelada la suscripción (el plazo para pedir una copia), salvo lo que la ley
+        obligue a conservar por más tiempo.
       </p>
 
       <h2>9. Vigencia y cambios</h2>
       <p>
-        Esta política rige desde el [fecha]. Si cambia de forma importante, lo avisaremos en esta página y por correo a los usuarios del
+        Esta política rige desde su publicación en esta página. Si cambia de forma importante, lo avisaremos en esta página y por correo a los usuarios del
         servicio.
       </p>
     </LegalPage>
