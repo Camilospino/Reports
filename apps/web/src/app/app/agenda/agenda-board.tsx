@@ -356,9 +356,14 @@ function UnassignedCard({ order, today, onOpen }: { order: Pending; today: strin
 function useNow() {
   const [now, setNow] = useState<Date | null>(null);
   useEffect(() => {
-    setNow(new Date());
-    const id = setInterval(() => setNow(new Date()), 30_000);
-    return () => clearInterval(id);
+    // La hora se pone después de montar (no en el render del servidor) y luego cada 30 s.
+    const tick = () => setNow(new Date());
+    const first = setTimeout(tick, 0);
+    const id = setInterval(tick, 30_000);
+    return () => {
+      clearTimeout(first);
+      clearInterval(id);
+    };
   }, []);
   return now;
 }
