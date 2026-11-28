@@ -4,7 +4,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 set search_path = public, extensions;
 
-select plan(164);
+select plan(171);
 
 -- ---------------------------------------------------------------------------
 -- Contexto (como postgres, antes de cambiar de usuario)
@@ -399,6 +399,29 @@ select throws_ok($$select reveal_installation_password((select cred_a from ctx_i
 reset role;
 select is((select count(*)::int from installation_credential_views where installation_id = (select inst_a from ctx_ins)), 2,
           'quedaron registradas las dos vistas (dueño y técnico)');
+
+-- ---------------------------------------------------------------------------
+-- Bolsa de órdenes: las pendientes sin técnico las ve y las toma cualquier técnico de la empresa
+-- ---------------------------------------------------------------------------
+reset role;
+insert into work_orders (company_id, customer_id, title) select co_a, cust_a, 'Bolsa 1' from ctx;
+create temp table ctx_bolsa as select id as wo_bolsa from work_orders where title = 'Bolsa 1';
+grant select on ctx_bolsa to authenticated;
+
+select pg_temp.login((select tech_a from ctx));
+select is((select count(*)::int from work_orders where id = (select wo_bolsa from ctx_bolsa)), 1, 'técnico A: ve la orden de la bolsa');
+select is(pg_temp.leaks((select co_b from ctx), 'select'), '{}'::text[], 'técnico A: la bolsa no deja leer órdenes de B');
+select lives_ok($$select take_work_order((select wo_bolsa from ctx_bolsa))$$, 'técnico A: toma la orden de la bolsa');
+select is((select technician_id from work_orders where id = (select wo_bolsa from ctx_bolsa)), (select tech_a_m from ctx), 'la orden tomada queda a su nombre');
+select is((select status::text from work_orders where id = (select wo_bolsa from ctx_bolsa)), 'asignada', 'la orden tomada pasa a asignada');
+
+reset role;
+select pg_temp.login((select disp_a from ctx));
+select throws_ok($$select take_work_order((select wo_bolsa from ctx_bolsa))$$, '42501', null, 'el despachador no toma órdenes de la bolsa');
+
+reset role;
+select pg_temp.login((select tech2_a from ctx_ins));
+select throws_ok($$select take_work_order((select wo_bolsa from ctx_bolsa))$$, 'P0001', null, 'otro técnico no toma una orden ya tomada');
 
 -- ---------------------------------------------------------------------------
 -- Verificaciones finales como postgres

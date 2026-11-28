@@ -1,10 +1,22 @@
 import { useSyncExternalStore } from "react";
-import { allMaterials, allOrders, failedRows, getMeta, pendingRows, type LocalOrder, type Material, type Profile, type QueueRow } from "./db";
+import {
+  allMaterials,
+  allOrders,
+  failedRows,
+  getMeta,
+  pendingRows,
+  type AvailableOrder,
+  type LocalOrder,
+  type Material,
+  type Profile,
+  type QueueRow,
+} from "./db";
 
 // Estado de la app en memoria, leído de SQLite. Las pantallas lo usan con useStore().
 export type State = {
   profile: Profile | null;
   orders: LocalOrder[];
+  available: AvailableOrder[];
   materials: Material[];
   pending: number;
   failed: QueueRow[];
@@ -17,6 +29,7 @@ export type State = {
 let state: State = {
   profile: null,
   orders: [],
+  available: [],
   materials: [],
   pending: 0,
   failed: [],
@@ -41,6 +54,7 @@ export function reload() {
   setState({
     profile: getMeta<Profile>("profile"),
     orders: allOrders(),
+    available: getMeta<AvailableOrder[]>("available") ?? [],
     materials: allMaterials(),
     pending: pendingRows().length,
     failed: failedRows(),

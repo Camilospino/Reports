@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
-import { Pressable, RefreshControl, ScrollView, StyleSheet, View } from "react-native";
+import { Alert, Pressable, RefreshControl, ScrollView, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router } from "expo-router";
-import { ArrowRight, ChevronRight, Navigation, Phone } from "lucide-react-native";
+import { ArrowRight, ChevronRight, Hand, Navigation, Phone } from "lucide-react-native";
 import { useStore } from "@/lib/store";
 import { sync } from "@/lib/sync";
-import { duration, firstName, hours, longDate, orderCode, time } from "@/lib/format";
+import { dateKey, duration, firstName, hours, longDate, orderCode, shortDate, time } from "@/lib/format";
+import { takeOrder } from "@/lib/actions";
 import { call, currentOrder, directions, durationMs, isToday, upcoming, workedMs } from "@/lib/orders";
-import type { LocalOrder } from "@/lib/db";
+import type { AvailableOrder, LocalOrder } from "@/lib/db";
 import { SyncPill } from "@/components/sync-pill";
 import { Button, Card, FirstSyncSkeleton, ProgressBar, SectionLabel, StatusChip, T } from "@/components/ui";
 import { colors, fonts } from "@/theme";
@@ -25,6 +26,7 @@ export default function Today() {
   const insets = useSafeAreaInsets();
   const profile = useStore((s) => s.profile);
   const all = useStore((s) => s.orders);
+  const available = useStore((s) => s.available);
   const syncing = useStore((s) => s.syncing);
   // Nunca sincronizado: todavía no sabemos si tiene órdenes.
   const firstSync = useStore((s) => s.lastSync === null);
@@ -66,6 +68,17 @@ export default function Today() {
           </>
         ) : (
         <>
+        {available.length > 0 && (
+          <>
+            <SectionLabel>Disponibles para tomar</SectionLabel>
+            <View style={{ gap: 10 }}>
+              {available.map((o) => (
+                <AvailableCard key={o.id} order={o} />
+              ))}
+            </View>
+          </>
+        )}
+
         <SectionLabel>Ahora</SectionLabel>
         {current ? (
           <CurrentCard order={current} now={now} />
@@ -150,6 +163,50 @@ function CurrentCard({ order: o, now }: { order: LocalOrder; now: number }) {
   );
 }
 
+function AvailableCard({ order: o }: { order: AvailableOrder }) {
+  const [taking, setTaking] = useState(false);
+  const when = o.scheduled_start
+    ? `${dateKey(o.scheduled_start) === dateKey() ? "Hoy" : shortDate(o.scheduled_start)} · ${time(o.scheduled_start)}`
+    : "Sin fecha";
+
+  async function take() {
+    setTaking(true);
+    try {
+      await takeOrder(o.id);
+      router.push(`/orden/${o.id}`);
+    } catch (e) {
+      Alert.alert("No se pudo tomar la orden", e instanceof Error ? e.message : String(e));
+    } finally {
+      setTaking(false);
+    }
+  }
+
+  return (
+    <View style={s.available}>
+      <View style={s.rowBetween}>
+        <T style={s.number}>{orderCode(o.number)}</T>
+        <T style={{ fontSize: 13, color: colors.muted }}>{when}</T>
+      </View>
+      <T style={{ fontFamily: fonts.bodySemibold, marginTop: 6 }} numberOfLines={2}>
+        {o.service ?? o.title}
+      </T>
+      <T style={{ fontSize: 13, color: colors.muted }} numberOfLines={1}>
+        {o.customer}
+        {o.place ? ` · ${o.place}` : ""}
+      </T>
+      <Button
+        label="Tomar orden"
+        variant="accent"
+        icon={taking ? undefined : <Hand size={18} color="#FFFFFF" />}
+        loading={taking}
+        onPress={() => void take()}
+        accessibilityHint="Te asigna esta orden. Los demás técnicos dejan de verla."
+        style={{ marginTop: 12 }}
+      />
+    </View>
+  );
+}
+
 function NextCard({ order: o }: { order: LocalOrder }) {
   return (
     <Pressable
@@ -199,6 +256,14 @@ const s = StyleSheet.create({
     borderRadius: 14,
     borderWidth: 1,
     borderColor: colors.line,
+    padding: 14,
+  },
+  available: {
+    backgroundColor: colors.surface,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: colors.accent,
+    borderStyle: "dashed",
     padding: 14,
   },
   nextTime: { fontFamily: fonts.display, fontSize: 18 },

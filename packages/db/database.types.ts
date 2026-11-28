@@ -664,6 +664,9 @@ isOneToOne: false
 "is_my_work_order":
 { Args: { "wo": string }; Returns: boolean
                            },
+"is_technician_of":
+{ Args: { "company": string }; Returns: boolean
+                           },
 "is_staff":
 { Args: { "company": string }; Returns: boolean
                            },
@@ -722,6 +725,9 @@ isOneToOne: false
 { Args: { "p_credential"?: string,"p_host": string,"p_installation": string,"p_label": string,"p_password": string,"p_username": string }; Returns: string
                            },
 "sync_order_stock":
+{ Args: { "p_order": string }; Returns: undefined
+                           },
+"take_work_order":
 { Args: { "p_order": string }; Returns: undefined
                            },
 "try_timestamptz":

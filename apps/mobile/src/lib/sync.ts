@@ -12,6 +12,7 @@ import {
   replaceMaterials,
   saveOrder,
   setMeta,
+  type AvailableOrder,
   type LocalOrder,
   type LocalPhoto,
   type PhotoKind,
@@ -191,7 +192,7 @@ async function pull(profile: Profile) {
   const from = dayRange(dateKey(new Date(Date.now() - 7 * 86_400_000))).start;
   const to = dayRange(dateKey(new Date(Date.now() + 7 * 86_400_000))).end;
 
-  const [orders, materials] = await Promise.all([
+  const [orders, materials, available] = await Promise.all([
     supabase
       .from("work_orders")
       .select(ORDER_FIELDS)
@@ -199,9 +200,20 @@ async function pull(profile: Profile) {
       .or(`and(scheduled_start.gte.${from},scheduled_start.lt.${to}),status.in.(asignada,en_camino,en_proceso)`)
       .order("scheduled_start"),
     supabase.from("materials").select("id, name, unit, unit_price, stock").eq("company_id", profile.companyId).eq("active", true).order("name"),
+    // La bolsa: pendientes sin técnico de la empresa (la RLS solo deja ver estas).
+    supabase
+      .from("work_orders")
+      .select("id, number, title, scheduled_start, customers(name), sites(address, neighborhood), service_types(name)")
+      .eq("company_id", profile.companyId)
+      .eq("status", "pendiente")
+      .is("technician_id", null)
+      .order("scheduled_start", { nullsFirst: false })
+      .order("number")
+      .limit(50),
   ]);
   check(orders.error);
   check(materials.error);
+  check(available.error);
 
   const rows = orders.data ?? [];
   const ids = rows.map((o) => o.id);
@@ -283,6 +295,20 @@ async function pull(profile: Profile) {
     for (const r of stale) db.runSync("DELETE FROM orders WHERE id = ?", r.id);
   });
 
+  setMeta(
+    "available",
+    (available.data ?? []).map(
+      (o): AvailableOrder => ({
+        id: o.id,
+        number: o.number,
+        title: o.title,
+        scheduled_start: o.scheduled_start,
+        service: o.service_types?.name ?? null,
+        customer: o.customers?.name ?? "—",
+        place: o.sites ? [o.sites.neighborhood, o.sites.address].filter(Boolean).join(" · ") || null : null,
+      }),
+    ),
+  );
   replaceMaterials((materials.data ?? []).map((m) => ({ ...m, unit_price: Number(m.unit_price), stock: Number(m.stock) })));
 }
 
@@ -342,7 +368,8 @@ async function syncOnce() {
 }
 
 // ---------------------------------------------------------------------------
-// Sincroniza al volver la señal, cada minuto y cuando el despachador cambia una orden.
+// Sincroniza al volver la señal, cada minuto y cuando cambia una orden de la empresa
+// que el técnico puede ver (las suyas y las de la bolsa; la RLS filtra el resto).
 // ---------------------------------------------------------------------------
 export function startSyncLoop(): () => void {
   const netSub = Network.addNetworkStateListener((s) => {
@@ -363,7 +390,7 @@ export function startSyncLoop(): () => void {
       .channel(`tecnico:${profile.membershipId}`)
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "work_orders", filter: `technician_id=eq.${profile.membershipId}` },
+        { event: "*", schema: "public", table: "work_orders", filter: `company_id=eq.${profile.companyId}` },
         () => void sync(),
       )
       .subscribe();

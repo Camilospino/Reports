@@ -5,6 +5,7 @@ import { ImageManipulator, SaveFormat } from "expo-image-manipulator";
 import { db, enqueue, getOrder, saveOrder, type LocalOrder, type Material, type PhotoKind } from "./db";
 import { reload } from "./store";
 import { sync } from "./sync";
+import { supabase } from "./supabase";
 
 // Cada acción del técnico se guarda primero en el celular (orden local + cola)
 // y después se intenta subir. Sin señal, queda en la cola.
@@ -19,6 +20,16 @@ function update(orderId: string, change: (o: LocalOrder) => void) {
 function commit() {
   reload();
   void sync();
+}
+
+// Tomar una orden de la bolsa. Necesita señal: si otro técnico la tomó primero, falla.
+export async function takeOrder(orderId: string) {
+  const { error } = await supabase.rpc("take_work_order", { p_order: orderId });
+  if (error) {
+    void sync();
+    throw new Error(/fetch|network/i.test(error.message) ? "Necesitas señal para tomar la orden." : error.message);
+  }
+  await sync();
 }
 
 // GPS sin bloquear: si no hay permiso o tarda, se sigue sin ubicación.

@@ -93,6 +93,17 @@ export type Profile = {
   fullName: string;
 };
 
+// Orden pendiente sin técnico (la "bolsa"): cualquier técnico de la empresa la puede tomar.
+export type AvailableOrder = {
+  id: string;
+  number: number;
+  title: string;
+  scheduled_start: string | null;
+  service: string | null;
+  customer: string;
+  place: string | null;
+};
+
 export type LocalItem = { id: string; material_id: string | null; description: string; quantity: number; unit_price: number };
 export type PhotoKind = "foto_antes" | "foto_despues" | "firma";
 // local = tomada en el celular y todavía sin subir.
