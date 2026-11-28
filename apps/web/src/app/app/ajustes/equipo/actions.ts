@@ -93,6 +93,8 @@ export async function addMember(_: MemberState, fd: FormData): Promise<MemberSta
     // La cuenta recién creada sin empresa no sirve para nada: se borra para poder intentar de nuevo.
     if (created) await admin.auth.admin.deleteUser(userId);
     if (membershipError.code === "23505") return { error: "Esa persona ya está en tu equipo." };
+    // Límite de técnicos del plan (lo hace cumplir la base de datos).
+    if (membershipError.code === "P0001") return { error: membershipError.message };
     return { error: "No pudimos agregar a la persona." };
   }
 

@@ -28,9 +28,9 @@ const NAV = [
   { href: "/app/clientes", label: "Clientes", icon: User },
   { href: "/app/instalaciones", label: "Instalaciones", icon: Cctv },
   { href: "/app/tecnicos", label: "Técnicos", icon: Wrench },
-  { href: "/app/cotizaciones", label: "Cotizaciones", icon: FileText },
+  { href: "/app/cotizaciones", label: "Cotizaciones", icon: FileText, extra: true },
   { href: "/app/inventario", label: "Inventario", icon: Package },
-  { href: "/app/reportes", label: "Reportes", icon: BarChart3 },
+  { href: "/app/reportes", label: "Reportes", icon: BarChart3, extra: true },
   { href: "/app/ajustes", label: "Ajustes", icon: Settings },
 ];
 
@@ -39,11 +39,14 @@ export function Sidebar({
   userName,
   planTitle,
   planDetail,
+  extras,
 }: {
   companyName: string;
   userName: string;
   planTitle: string;
   planDetail: string;
+  /** El plan incluye cotizaciones y reportes (desde Equipo). */
+  extras: boolean;
 }) {
   const pathname = usePathname();
   const [openOn, setOpenOn] = useState<string | null>(null);
@@ -76,7 +79,7 @@ export function Sidebar({
         className={`${open ? "flex" : "hidden"} flex-col gap-4 px-4 pb-5 lg:flex lg:flex-1 lg:px-0 lg:pb-0`}
       >
         <nav aria-label="Principal" className="flex flex-col gap-0.5">
-          {NAV.map(({ href, label, icon: Icon }) => {
+          {NAV.filter((item) => extras || !("extra" in item)).map(({ href, label, icon: Icon }) => {
             const active = isActive(href);
             return (
               <Link

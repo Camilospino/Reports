@@ -4,6 +4,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { StatCard } from "@/components/ui/stat-card";
 import { RealtimeRefresh } from "@/components/panel/realtime-refresh";
 import { requireStaff } from "@/lib/session";
+import { planOf, upgradeHref } from "@/lib/plan";
 import { cop, copMillions, duration, qty } from "@/lib/format";
 
 export const metadata = { title: "Inventario · Tecnio" };
@@ -39,6 +40,27 @@ export default async function InventoryPage({ searchParams }: { searchParams: Pr
 
 async function Materials({ params }: { params: Search }) {
   const { supabase, company } = await requireStaff();
+  if (!planOf(company.plan).extras) {
+    return (
+      <>
+        <PageHeader title="Inventario" description="Los tipos de servicio que ofreces." />
+        <Tabs tab="materiales" />
+        <div className="max-w-lg rounded-[14px] border border-line bg-surface p-6">
+          <h2 className="font-display text-lg font-bold text-ink">Materiales y stock: desde el plan Equipo</h2>
+          <p className="mt-2 text-sm text-muted">
+            Lleva el catálogo de materiales con precio y stock, y que se descuenten solos cuando el técnico cierra la orden.
+            Los tipos de servicio sí están en tu plan.
+          </p>
+          <div className="mt-5 flex flex-wrap gap-2.5">
+            <Link href="/app/inventario?tab=servicios" className="btn-outline">Ver tipos de servicio</Link>
+            <a href={upgradeHref(company.name, company.plan)} target="_blank" rel="noopener noreferrer" className="btn-accent">
+              Escríbenos para cambiar de plan
+            </a>
+          </div>
+        </div>
+      </>
+    );
+  }
   const q = clean(params.q ?? "");
   const archived = params.archivados === "1";
   const lowOnly = params.bajos === "1";

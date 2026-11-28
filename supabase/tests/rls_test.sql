@@ -4,7 +4,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 set search_path = public, extensions;
 
-select plan(171);
+select plan(177);
 
 -- ---------------------------------------------------------------------------
 -- Contexto (como postgres, antes de cambiar de usuario)
@@ -422,6 +422,22 @@ select throws_ok($$select take_work_order((select wo_bolsa from ctx_bolsa))$$, '
 reset role;
 select pg_temp.login((select tech2_a from ctx_ins));
 select throws_ok($$select take_work_order((select wo_bolsa from ctx_bolsa))$$, 'P0001', null, 'otro técnico no toma una orden ya tomada');
+
+-- ---------------------------------------------------------------------------
+-- Límites del plan: B está en Arranque (3 técnicos, sin inventario ni cotizaciones); A en Equipo.
+-- ---------------------------------------------------------------------------
+reset role;
+select pg_temp.login('b0000000-0000-0000-0000-000000000001'::uuid);
+select throws_ok($$insert into memberships (user_id, company_id, role, full_name) select owner_a, co_b, 'technician', 'Cuarto' from ctx$$,
+                 'P0001', null, 'Arranque: el dueño no agrega un cuarto técnico');
+select lives_ok($$update memberships set active = false where id = (select tech_b_m from ctx)$$, 'Arranque: el dueño desactiva un técnico');
+select lives_ok($$update memberships set active = true where id = (select tech_b_m from ctx)$$, 'Arranque: y lo vuelve a activar (sigue en 3)');
+select throws_ok($$insert into materials (company_id, name) select co_b, 'Nuevo' from ctx$$, '42501', null, 'Arranque: no crea materiales');
+select throws_ok($$insert into quotes (company_id, customer_id) select co_b, cust_b from ctx$$, '42501', null, 'Arranque: no crea cotizaciones');
+
+reset role;
+select pg_temp.login((select owner_a from ctx));
+select lives_ok($$insert into materials (company_id, name) select co_a, 'Material plan Equipo' from ctx$$, 'Equipo: sí crea materiales');
 
 -- ---------------------------------------------------------------------------
 -- Verificaciones finales como postgres

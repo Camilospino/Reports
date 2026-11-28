@@ -13,6 +13,7 @@
     "db:types": "npx supabase gen types typescript --local > packages/db/database.types.ts",
     "dev:mobile": "npm run start -w mobile",
     "db:test": "npx supabase test db",
-    "check": "npm run db:test && npx tsc --noEmit -p apps/web && npx tsc --noEmit -p apps/mobile && npm run lint -w web"
+    "check": "npm run db:test && npx tsc --noEmit -p apps/web && npx tsc --noEmit -p apps/mobile && npm run lint -w web",
+    "plan": "node scripts/plan.mjs"
   }
 }

@@ -2,8 +2,7 @@ import { redirect } from "next/navigation";
 import { Sidebar } from "@/components/panel/sidebar";
 import { Toaster } from "@/components/ui/toast";
 import { getSession } from "@/lib/session";
-
-const PLAN_NAMES: Record<string, string> = { arranque: "Arranque", equipo: "Equipo", empresa: "Empresa" };
+import { planOf } from "@/lib/plan";
 
 export default async function PanelLayout({ children }: { children: React.ReactNode }) {
   const { supabase, membership, company } = await getSession();
@@ -16,7 +15,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
     .eq("role", "technician")
     .eq("active", true);
 
-  const plan = PLAN_NAMES[company.plan] ?? company.plan;
+  const plan = planOf(company.plan);
   const n = technicians ?? 0;
   // No hay prueba gratis: la suscripción está activa, con pago pendiente o cancelada.
   const planDetail =
@@ -37,8 +36,9 @@ export default async function PanelLayout({ children }: { children: React.ReactN
       <Sidebar
         companyName={company.name}
         userName={membership.full_name}
-        planTitle={`Plan ${plan} · ${n} ${n === 1 ? "técnico" : "técnicos"}`}
+        planTitle={`Plan ${plan.name} · ${n} de ${plan.technicians} técnicos`}
         planDetail={planDetail}
+        extras={plan.extras}
       />
       <main id="contenido" tabIndex={-1} className="min-w-0 flex-1 px-4 py-6 outline-none sm:px-8 sm:py-7">{children}</main>
       <Toaster />

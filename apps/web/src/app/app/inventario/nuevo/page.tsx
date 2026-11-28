@@ -1,14 +1,17 @@
 import Link from "next/link";
 import { ActionForm } from "@/components/ui/action-form";
 import { PageHeader } from "@/components/ui/page-header";
+import { redirect } from "next/navigation";
 import { requireStaff } from "@/lib/session";
+import { planOf } from "@/lib/plan";
 import { createMaterial } from "../actions";
 import { MaterialFields } from "../fields";
 
 export const metadata = { title: "Nuevo material · Tecnio" };
 
 export default async function NewMaterialPage() {
-  await requireStaff();
+  const { company } = await requireStaff();
+  if (!planOf(company.plan).extras) redirect("/app/inventario");
   return (
     <>
       <nav aria-label="Migas" className="mb-2 text-sm text-muted">

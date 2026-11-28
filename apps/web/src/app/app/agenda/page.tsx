@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 import { RealtimeRefresh } from "@/components/panel/realtime-refresh";
 import { requireStaff } from "@/lib/session";
+import { planOf } from "@/lib/plan";
 import { bogotaDateKey } from "@/lib/format";
 import {
   addDays,
@@ -193,7 +194,10 @@ export default async function AgendaPage({ searchParams }: { searchParams: Promi
         absences={allAbsences.filter((a) => inView(a.start, a.end))}
         unassigned={pending.map((o) => ({
           ...o,
-          suggested: suggestTechnician(o, techs, allOrders, allAbsences, suggestDay(o))?.name ?? null,
+          // El técnico sugerido es desde el plan Equipo.
+          suggested: planOf(company.plan).extras
+            ? (suggestTechnician(o, techs, allOrders, allAbsences, suggestDay(o))?.name ?? null)
+            : null,
         }))}
       />
     </>
