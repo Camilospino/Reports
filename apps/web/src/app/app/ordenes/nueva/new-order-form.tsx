@@ -7,6 +7,22 @@ import { CustomerCombobox } from "@/components/ui/customer-combobox";
 import { PRIORITY_LABELS, duration } from "@/lib/format";
 import { createWorkOrder } from "../actions";
 
+// Campos de esta pantalla: borde #d6dbd8 y foco verde con halo (alto 44 px y radio 10 px vienen de .input).
+const FIELDS =
+  "[&_.input]:border-[#d6dbd8] [&_.textarea]:border-[#d6dbd8] [&_.input:focus]:border-primary [&_.textarea:focus]:border-primary";
+// Cuadrícula de columnas iguales; con menos de 640 px, una sola columna.
+const GRID = "grid grid-cols-1 gap-x-4 gap-y-[18px]";
+
+function Section({ id, title, description, children }: { id: string; title: string; description: string; children: React.ReactNode }) {
+  return (
+    <section aria-labelledby={id} className="card">
+      <h2 id={id} className="text-[17px] font-semibold text-ink">{title}</h2>
+      <p className="mt-0.5 mb-4 text-[13px] text-muted">{description}</p>
+      {children}
+    </section>
+  );
+}
+
 type Props = {
   today: string;
   initialCustomerId?: string;
@@ -47,7 +63,7 @@ export function NewOrderForm({
   const linked = installation && customerId === installation.customer_id ? installation : null;
 
   return (
-    <form action={action} className="grid max-w-4xl gap-6">
+    <form action={action} className={`flex flex-col gap-5 ${FIELDS}`}>
       {linked && (
         <>
           <input type="hidden" name="installation_id" value={linked.id} />
@@ -56,8 +72,8 @@ export function NewOrderForm({
           </p>
         </>
       )}
-      <fieldset className="card grid gap-4 sm:grid-cols-2">
-        <legend className="font-display float-left mb-1 w-full text-lg font-bold">Cliente y lugar</legend>
+      <Section id="sec-cliente" title="Cliente y lugar" description="A quién y dónde se hace el trabajo.">
+        <div className={`${GRID} sm:grid-cols-2`}>
         <div className="sm:col-span-2">
           <label className="label" htmlFor="customer_id">Cliente</label>
           <CustomerCombobox
@@ -161,34 +177,41 @@ export function NewOrderForm({
             </select>
           </div>
         )}
-      </fieldset>
+        </div>
+      </Section>
 
-      <fieldset className="card grid gap-4 sm:grid-cols-2">
-        <legend className="font-display float-left mb-1 w-full text-lg font-bold">Trabajo</legend>
+      <Section id="sec-trabajo" title="Trabajo" description="Qué hay que hacer y con qué urgencia.">
+        <div className={`${GRID} sm:grid-cols-2`}>
         <div>
           <label className="label" htmlFor="service_type_id">Tipo de servicio</label>
-          <select
-            id="service_type_id"
-            name="service_type_id"
-            className="input"
-            value={serviceId}
-            onChange={(e) => {
-              setServiceId(e.target.value);
-              const st = serviceTypes.find((s) => s.id === e.target.value);
-              if (st && !title) setTitle(st.name);
-            }}
-            aria-describedby="service-hint"
-          >
-            <option value="">Sin tipo</option>
-            {serviceTypes.map((s) => (
-              <option key={s.id} value={s.id}>{s.name}</option>
-            ))}
-          </select>
-          <p id="service-hint" className="mt-1 text-xs text-muted">
-            {service
-              ? `Duración ${duration(service.estimated_minutes * 60_000)} · ${service.checklist.length} ítems de chequeo`
-              : "Copia su lista de chequeo y su duración."}
-          </p>
+          {serviceTypes.length > 0 ? (
+            <select
+              id="service_type_id"
+              name="service_type_id"
+              className="input"
+              value={serviceId}
+              onChange={(e) => {
+                setServiceId(e.target.value);
+                const st = serviceTypes.find((s) => s.id === e.target.value);
+                if (st && !title) setTitle(st.name);
+              }}
+              aria-describedby="service-summary"
+            >
+              <option value="">Sin tipo</option>
+              {serviceTypes.map((s) => (
+                <option key={s.id} value={s.id}>{s.name}</option>
+              ))}
+            </select>
+          ) : (
+            <>
+              <select id="service_type_id" name="service_type_id" className="input" value="" disabled aria-describedby="service-empty">
+                <option value="">No hay tipos de servicio</option>
+              </select>
+              <p id="service-empty" className="mt-1 text-xs text-muted">
+                <Link href="/app/inventario/servicios/nuevo" className="link">Crea un tipo de servicio</Link> en Inventario.
+              </p>
+            </>
+          )}
         </div>
         <div>
           <label className="label" htmlFor="priority">Prioridad</label>
@@ -197,6 +220,22 @@ export function NewOrderForm({
               <option key={v} value={v}>{l}</option>
             ))}
           </select>
+        </div>
+        <div
+          id="service-summary"
+          aria-live="polite"
+          className={`rounded-[10px] border px-3.5 py-3 text-[13px] sm:col-span-2 ${
+            service ? "border-[#cfe2da] bg-[#eef5f2] text-[#1f5b4c]" : "border-line bg-bg text-muted"
+          }`}
+        >
+          {service ? (
+            <>
+              <strong className="font-semibold">{service.name}</strong>
+              {` · ${service.checklist.length} ${service.checklist.length === 1 ? "ítem" : "ítems"} en la lista de chequeo · Duración estimada ${duration(service.estimated_minutes * 60_000)}`}
+            </>
+          ) : (
+            "Al elegir un tipo se copian su lista de chequeo y su duración."
+          )}
         </div>
         <div className="sm:col-span-2">
           <label className="label" htmlFor="title">Título</label>
@@ -216,10 +255,15 @@ export function NewOrderForm({
             </ul>
           </div>
         )}
-      </fieldset>
+        </div>
+      </Section>
 
-      <fieldset className="card grid gap-4 sm:grid-cols-3">
-        <legend className="font-display float-left mb-1 w-full text-lg font-bold">Programación</legend>
+      <Section
+        id="sec-programacion"
+        title="Programación"
+        description="Cuándo se hace y quién va. Sin técnico, la orden queda disponible para que un técnico la tome."
+      >
+        <div className={`${GRID} sm:grid-cols-3`}>
         <div>
           <label className="label" htmlFor="date">Fecha</label>
           <input id="date" name="date" type="date" defaultValue={initialDate ?? today} className="input" />
@@ -239,12 +283,13 @@ export function NewOrderForm({
             ))}
           </select>
         </div>
-      </fieldset>
+        </div>
+      </Section>
 
       <FormMessage state={state} />
-      <div className="flex flex-wrap gap-2.5">
-        <button className="btn-accent" disabled={pending}>{pending ? "Creando…" : "Crear orden"}</button>
+      <div className="flex flex-wrap justify-end gap-2.5">
         <Link href="/app/ordenes" className="btn-outline">Cancelar</Link>
+        <button className="btn-accent" disabled={pending}>{pending ? "Creando…" : "Crear orden"}</button>
       </div>
     </form>
   );

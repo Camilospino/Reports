@@ -31,11 +31,11 @@ export default async function NewOrderPage({ searchParams }: { searchParams: Pro
   const maintenanceType = mantenimiento ? serviceTypes.data?.find((s) => s.is_maintenance) : undefined;
 
   return (
-    <>
+    <div className="mx-auto w-full max-w-[880px]">
       <nav aria-label="Migas" className="mb-2 text-sm text-muted">
         <Link href="/app/ordenes" className="hover:underline">Órdenes</Link> / Nueva
       </nav>
-      <PageHeader title="Nueva orden" />
+      <PageHeader title="Nueva orden de trabajo" />
       <NewOrderForm
         today={today}
         initialCustomerId={ins?.customer_id ?? (customers.data?.some((c) => c.id === cliente) ? cliente : undefined)}
@@ -51,6 +51,6 @@ export default async function NewOrderPage({ searchParams }: { searchParams: Pro
         }))}
         technicians={technicians.data ?? []}
       />
-    </>
+    </div>
   );
 }
